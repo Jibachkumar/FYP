@@ -7,8 +7,8 @@ for gitignore: using gitignore generator
 
 for system related info: using .env (variable environment)
 
-# 1. working with database
+# working with database
 
-using mongoDB atlas
+for database: using mongoDB atlas
 
 # database connection
