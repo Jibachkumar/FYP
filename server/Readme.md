@@ -43,6 +43,16 @@ middleware: for user get req and server provide res. between req and res we add 
 
 cookie-parse: user browser cookie access
 
+# modeling / structure of data
+
+user
+
+for database : mongoose lib
+
+for password security and hash password : bcrypt
+
+middleware: userScheme
+
 # library used:
 
 dotenv: for environment variable, concept(only giving access who belongs to same origin)
