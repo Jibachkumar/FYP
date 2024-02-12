@@ -45,9 +45,9 @@ cookie-parse: user browser cookie access
 
 # modeling / structure of data
 
-user
-
 for database : mongoose lib
+
+# ////// setting / config server
 
 for password security and hash password : bcrypt
 
@@ -64,3 +64,5 @@ mongoose: for database connection
 cors: cross resource origin share,
 
 cookie-parse:
+
+jsonwebtoken(jwt): jwt is a barrer token, its like a key who ever give me key give them a data, create token bassed on bcrypt,
