@@ -9,16 +9,17 @@ dotenv.config({
   path: "./env",
 });
 
-connectDB();
 // in bd file async return promise so handling promise
-then(() => {
-  app.on((err) => {
-    console.log(`Error:${err}`);
-    throw err;
+connectDB()
+  .then(() => {
+    // app.on((err) => {
+    //   console.log(`Error:${err}`);
+    //   throw err;
+    // });
+    app.listen(process.env.PORT || 7000, () => {
+      console.log(`Server is running at port: ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log(`mongoDB connection failed !!!, ${err}`);
   });
-  app.listen(process.env.PORT || 7000, () => {
-    console.log(`Server is running at port: ${process.env.PORT}`);
-  });
-}).catch((err) => {
-  console.log(`mongoDB connection failed !!!, ${err}`);
-});

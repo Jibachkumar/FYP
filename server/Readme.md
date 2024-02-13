@@ -1,4 +1,4 @@
-# project setup
+# project setup Start
 
 for restart backend: whenever we make change we have to restart the server to told the server is updated (hot reloading concept)
 using nodemon: its hepls to restart the server whenever we make change
@@ -50,8 +50,17 @@ for database : mongoose lib
 # ////// setting / config server
 
 for password security and hash password : bcrypt
+for Authorization, access expire, token: jwt
 
 middleware: userScheme
+
+# project setup End
+
+# writing routes and logic/functionality start
+
+creating user router
+
+implementing user register functionality
 
 # library used:
 
@@ -65,4 +74,4 @@ cors: cross resource origin share,
 
 cookie-parse:
 
-jsonwebtoken(jwt): jwt is a barrer token, its like a key who ever give me key give them a data, create token bassed on bcrypt,
+jsonwebtoken(jwt):create token bassed on bcrypt, jwt is a barrer token, its like a key who ever give me key give them a data, ,

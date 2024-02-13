@@ -21,4 +21,12 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" })); // url data // e
 app.use(express.static("public")); // pdf or photo store public folder
 app.use(cookieParser());
 
+// import routes
+import { userRouter } from "./routes/user.routes.js";
+
+// routes declaration
+// eg: http://localhost:7000/api/v1/users/register
+
+app.use("/api/v1/users", userRouter);
+
 export { app };
