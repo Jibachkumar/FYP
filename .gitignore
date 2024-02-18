@@ -137,3 +137,20 @@ dist
 
 # SvelteKit build / generate output
 .svelte-kit
+
+
+##### for frontend #####
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+dist-ssr
+*.local
+lerna-debug.log*
