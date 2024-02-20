@@ -1,7 +1,11 @@
 import React from "react";
 
 function Home() {
-  return <div>Home</div>;
+  return (
+    <div className="w-full">
+      <h1>Home</h1>
+    </div>
+  );
 }
 
 export default Home;

@@ -1,30 +1,19 @@
 import { useState } from "react";
 
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import { Provider } from "react-redux";
-import store from "./store/store.js";
+// import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
-import Home from "./pages/Home.jsx";
-import Login from "./pages/Login.jsx";
+import Header from "./components/Header/Header.jsx";
+import Footer from "./components/Footer/Footer.jsx";
+import { Outlet } from "react-router-dom";
 
 function App() {
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Home />,
-      children: [
-        {
-          path: "/login",
-          element: <Login />,
-        },
-      ],
-    },
-  ]);
   return (
-    <div>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
+    <div className="w-auto">
+      <Header />
+      <main>
+        <Outlet />
+      </main>
+      <Footer />
     </div>
   );
 }
