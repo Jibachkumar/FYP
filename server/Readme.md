@@ -1,7 +1,7 @@
 # project setup Start
 
-for restart backend: whenever we make change we have to restart the server to told the server is updated (hot reloading concept)
-using nodemon: its hepls to restart the server whenever we make change
+restart backend: whenever we make change we have to restart the server to told the server is updated (hot reloading concept)
+using nodemon: its helps to restart the server whenever we make change
 
 for gitignore: using gitignore generator
 
@@ -59,6 +59,8 @@ middleware: userScheme
 # writing routes and logic/functionality start
 
 creating user router
+
+Controller:
 
 implementing user register functionality
 
