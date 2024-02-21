@@ -7,17 +7,22 @@ import { ApiResponse } from "../utils/apiResponse.js";
 export const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
   // form, json data comes in body
-  const { fullName, email, password } = req.body;
-  console.log("email:", email, "fullName:", fullName, "password:", password);
+  const { userName, email, password } = req.body;
+  console.log("email:", email, "fullName:", userName, "password:", password);
 
   //  validation - field empty, username/email unique
-  if ([fullName, email, password].some((field) => field?.trim() === ""))
+  if (
+    [userName, email, password].some(
+      (field) => typeof field === "string" && field?.trim() === " "
+    )
+  ) {
     throw new ApiError(400, "All fields are required");
+  }
 
   // Check if user already exists: username, email through Check
   // with the help of user we can directly talk with DB, boz User are created by mongoose
-  const existedUser = User.findOne({
-    $or: [{ fullName }, { email }],
+  const existedUser = await User.findOne({
+    $or: [{ userName }, { email }],
   });
 
   if (existedUser)
@@ -28,7 +33,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   // create user object(holds user data) - create user and entry in db
   const user = await User.create({
-    fullName,
+    userName,
     email,
     password,
   });

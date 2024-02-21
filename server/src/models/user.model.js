@@ -25,7 +25,6 @@ const userSchema = new Schema(
     },
     refreahToken: {
       type: String,
-      required: [true, "Password is required"],
     },
   },
   { timestamps: true }
