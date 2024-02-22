@@ -28,7 +28,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   if (existedUser)
     throw new ApiError(
       409,
-      "User with email or username already exists please fullfill unique name and username"
+      "User with email or username already exists please fullfill unique username and email"
     );
 
   // create user object(holds user data) - create user and entry in db
