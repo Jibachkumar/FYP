@@ -10,7 +10,12 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      index: true, // for database searching field
+      // index: true, // for database searching field
+    },
+    phoneNumber: {
+      type: Number,
+      required: true,
+      unique: true,
     },
     email: {
       type: String,

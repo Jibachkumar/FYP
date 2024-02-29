@@ -2,12 +2,13 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import jwt from "jsonwebtoken";
 
-/*--------- this method goes through express so we have req, res --------*/
+/*--------- registerUser: this method goes through express so we have req, res --------*/
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
   // form, json data comes in body
-  const { userName, email, password } = req.body;
+  const { userName, phoneNumber, email, password } = req.body;
   // console.log("email:",email,"userName:",userName,"password:", typeof password);
 
   //  validation - field empty, username/email unique
@@ -34,6 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // create user object(holds user data) - create user and entry in db
   const user = await User.create({
     userName,
+    phoneNumber,
     email,
     password,
   });
@@ -100,12 +102,12 @@ const loginUser = asyncHandler(async (req, res) => {
     user._id
   );
 
-  //NOTE here: user is undefined so update DB or make query DB
+  //NOTE: user is undefined so update DB or make query DB
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
 
-  // send access and refresh token with cookie
+  // send access and refresh token through cookie
   const options = {
     httpOnly: true,
     secure: true,
@@ -131,7 +133,7 @@ const loginUser = asyncHandler(async (req, res) => {
 /*--------------------LogoutUser --------------------------*/
 
 const logoutUser = asyncHandler(async (req, res) => {
-  // user is authonizated or not based on that user get logged out
+  // user is authonizated or not, based on that user get logged out
   await User.findByIdAndUpdate(
     req.user._id,
     {
@@ -154,6 +156,57 @@ const logoutUser = asyncHandler(async (req, res) => {
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "you are Successfully Logout"));
+});
+
+/*---------------- refersh and access Token end point ----------------------*/
+
+// whenever user access token got expired hit the end point to re login
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  // get user refresh token from BD
+  const incomingRefreshToken =
+    (await req.cookies.refreshToken) || req.body.refreshToken;
+
+  if (!incomingRefreshToken) throw ApiError(401, "unauthorized request");
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    // now we have decoded data from data find user thorugh "_id"
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user) throw new ApiError(401, "Invalid refresh token");
+
+    if (incomingRefreshToken !== user?.refreshToken)
+      throw new ApiError(401, "Refresh token is expired or used");
+
+    const { accessToken, refreshToken: newRefreshToken } =
+      await generateAccessAndRefreshToken(user._id);
+
+    options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          {
+            accessToken,
+            newRefreshToken,
+          },
+          "refresh Token refreshed"
+        )
+      );
+  } catch (error) {
+    throw new ApiError(401, error?.message || "Invalid refresh token");
+  }
 });
 
 export { registerUser, loginUser, logoutUser };

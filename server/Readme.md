@@ -58,11 +58,16 @@ middleware: userScheme
 
 # writing routes and logic/functionality start
 
-creating user router
+creating user router, trip route
 
-Controller:
+# Controller:
 
-implementing user register functionality
+1. implementing user register, login, logout functionality
+
+2. implementing create trip functionality
+
+1: jwt: for Auth
+2.cookie-parser: access user data from browser
 
 # library used:
 
