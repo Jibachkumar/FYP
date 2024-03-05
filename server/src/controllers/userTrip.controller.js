@@ -7,10 +7,17 @@ import { Trip } from "../models/trip.model.js";
 /*---------------------createUserTrip -------------------------*/
 const createUserTrip = asyncHandler(async (req, res) => {
   // get user data
-  const { destination, startDate, endDate, duration, people, places } =
-    req.body;
+  const {
+    destination,
+    startDate,
+    endDate,
+    duration,
+    people,
+    activities,
+    user,
+  } = req.body;
   console.log(
-    `destination: ${destination}, startDate: ${startDate}, endDate: ${endDate}, duration: ${duration}, people: ${people}, places: ${places}`
+    `destination: ${destination}, startDate: ${startDate}, endDate: ${endDate}, duration: ${duration}, people: ${people}, places: ${activities}, user:${user}`
   );
 
   // validation
@@ -18,7 +25,7 @@ const createUserTrip = asyncHandler(async (req, res) => {
   //   throw new ApiError(400, "All fields are required");
   // }
   if (
-    [destination, startDate, endDate, duration, people, places].some(
+    [destination, startDate, endDate, duration, people].some(
       (field) => typeof field === "string" && field?.trim() === " "
     )
   ) {
@@ -28,27 +35,26 @@ const createUserTrip = asyncHandler(async (req, res) => {
   try {
     // Check user is authenticated
     // find auth user in DB
-    const user = await User.findById(req.user._id).select(
-      "-password -refreshToken"
-    );
-    console.log(user);
+    const authUser = await User.findOne({ _id: req.user._id });
+    console.log("AuthUser:", authUser);
 
-    if (!user) throw new ApiError(404, "you are not authenticated");
+    if (!authUser) throw new ApiError(404, "User not found");
 
     // create user trip object(holds trip data)
     const userTrip = await Trip.create({
-      user,
       destination,
       startDate,
       endDate,
       duration,
       people,
-      places,
+      activities,
+      user,
     });
     console.log(userTrip);
 
     // Check trip is created
     const createdTrip = await Trip.findById(userTrip._id);
+    console.log("createdTrip:", createdTrip);
 
     if (!createdTrip)
       throw new ApiError(500, "Something went wrong while creating trip");

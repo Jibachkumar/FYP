@@ -25,7 +25,6 @@ const registerUser = asyncHandler(async (req, res) => {
   const existedUser = await User.findOne({
     $or: [{ userName }, { email }],
   });
-
   if (existedUser)
     throw new ApiError(
       409,
