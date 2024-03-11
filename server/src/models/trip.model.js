@@ -58,11 +58,11 @@ const tripPlanScheme = new Schema(
       type: String,
       lowercase: true,
     },
-    // Other fields specific to tripPlan
-
-    // Embed user trip details within tripPlan
-
-    user: {
+    price: {
+      type: Number,
+    },
+    // Embed user trip details
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },

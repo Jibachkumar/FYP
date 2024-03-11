@@ -22,15 +22,18 @@ function Header() {
   ];
 
   return (
-    <div className="w-full">
-      <header className="flex h-[4.3rem] bg-white border-b">
-        <nav className="flex mx-auto my-auto">
-          <ul className="flex gap-4">
+    <div className="w-full h-auto">
+      <header className="w-full flex justify-between items-center h-[4.8rem] bg-white border-b fixed">
+        <div className="ml-[10rem] text-xl ">
+          Explore-<span className="block ml-[3rem]">-Nepal</span>
+        </div>
+        <nav className="">
+          <ul className="flex gap-4  sm:mr-[13rem] ">
             {navItems.map((items) => (
               <li
                 key={items.name}
                 onClick={() => navigate(items.slug)}
-                className="text-[16px] text-black font-serif font-medium cursor-pointer"
+                className="text-[16px] text-black font-serif font-medium cursor-pointer hover: bg-white "
               >
                 {items.name}
               </li>

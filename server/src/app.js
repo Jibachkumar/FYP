@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+// import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const app = express();
 
@@ -14,12 +15,13 @@ app.use(
 );
 
 // express config
-// middleware set which type of data should be taken to store eg: (url, json, from, body etc )
+// middleware setting, which type of data should be taken to store eg: (url, json, from, body etc )
 // almost all method have options: obj
 app.use(express.json({ limit: "16kb" })); // json data
 app.use(express.urlencoded({ extended: true, limit: "16kb" })); // url data // extended{}: for nested obj
 app.use(express.static("public")); // pdf or photo store public folder
 app.use(cookieParser());
+// app.use(aggregatePaginate); // for Db query
 
 // import routes
 import { userRouter } from "./routes/user.routes.js";

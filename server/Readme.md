@@ -62,12 +62,13 @@ creating user router, trip route
 
 # Controller:
 
+1: jwt: for Auth
+2.cookie-parser: access user data from browser
+3.mongoose-aggregate-paginate-v2: DB query
+
 1. implementing user register, login, logout functionality
 
 2. implementing create trip functionality
-
-1: jwt: for Auth
-2.cookie-parser: access user data from browser
 
 # library used:
 
@@ -81,4 +82,6 @@ cors: cross resource origin share,
 
 cookie-parse:
 
-jsonwebtoken(jwt):create token bassed on bcrypt, jwt is a barrer token, its like a key who ever give me key give them a data, ,
+jsonwebtoken(jwt):create token bassed on bcrypt, jwt is a barrer token, its like a key who ever give me key give them a data,
+
+mongoose-aggregate-paginate-v2: for DB query

@@ -8,7 +8,7 @@ import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <div className="w-auto">
+    <div className="w-auto h-auto">
       <Header />
       <main>
         <Outlet />

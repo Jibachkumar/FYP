@@ -4,6 +4,16 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
 import { Trip } from "../models/trip.model.js";
 
+/*---------------------getUserDetails -------------------------*/
+// pipline: stages of
+const getUserDetails = asyncHandler(async (req, res) => {
+  Trip.aggregate([
+    {
+      $match: {},
+    },
+  ]);
+});
+
 /*---------------------createUserTrip -------------------------*/
 const createUserTrip = asyncHandler(async (req, res) => {
   // get user data
@@ -14,11 +24,12 @@ const createUserTrip = asyncHandler(async (req, res) => {
     duration,
     people,
     activities,
-    user,
+    user_id,
+    price,
   } = req.body;
-  console.log(
-    `destination: ${destination}, startDate: ${startDate}, endDate: ${endDate}, duration: ${duration}, people: ${people}, places: ${activities}, user:${user}`
-  );
+  // console.log(
+  //   `destination: ${destination}, startDate: ${startDate}, endDate: ${endDate}, duration: ${duration}, people: ${people}, places: ${activities}, user:${user}`
+  // );
 
   // validation
   // if (![destination, startDate, endDate, duration, people, places].every(field => typeof field === "string" && field.trim())) {
@@ -48,7 +59,7 @@ const createUserTrip = asyncHandler(async (req, res) => {
       duration,
       people,
       activities,
-      user,
+      user_id,
     });
     console.log(userTrip);
 
