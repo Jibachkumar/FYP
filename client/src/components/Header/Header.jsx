@@ -22,23 +22,32 @@ function Header() {
   ];
 
   return (
-    <div className="w-full h-auto">
-      <header className="w-full flex justify-between items-center h-[4.8rem] bg-white border-b fixed">
-        <div className="ml-[10rem] text-xl ">
-          Explore-<span className="block ml-[3rem]">-Nepal</span>
-        </div>
-        <nav className="">
-          <ul className="flex gap-4  sm:mr-[13rem] ">
-            {navItems.map((items) => (
-              <li
-                key={items.name}
-                onClick={() => navigate(items.slug)}
-                className="text-[16px] text-black font-serif font-medium cursor-pointer hover: bg-white "
-              >
-                {items.name}
-              </li>
-            ))}
-          </ul>
+    <div>
+      <header className="">
+        <nav className="w-full h-[3.8rem] bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-50 border-b-2">
+          <div className=" flex text-[18px] font-mono text-red-700 md:pl-[11rem]">
+            <span className="italic font-semibold inline-block transform skew-x-30">
+              explore
+            </span>
+            <div className="mt-[3px]">
+              <span className="italic font-semibold font-bolditalic inline-block transform skew-x-85 ">
+                nepal
+              </span>
+            </div>
+          </div>
+          <div>
+            <ul className="flex gap-4  sm:mr-[13rem] ">
+              {navItems.map((items) => (
+                <li
+                  key={items.name}
+                  onClick={() => navigate(items.slug)}
+                  className="text-[16px] text-zinc-700 font-serif cursor-pointer hover: bg-white ml-4"
+                >
+                  {items.name}
+                </li>
+              ))}
+            </ul>
+          </div>
         </nav>
       </header>
     </div>
@@ -46,3 +55,20 @@ function Header() {
 }
 
 export default Header;
+
+{
+  /* <div className="ml-[10rem] text-md ">
+          Explore-<span className="">-Nepal</span>
+        </div>
+        <ul className="flex gap-4  sm:mr-[13rem] ">
+          {navItems.map((items) => (
+            <li
+              key={items.name}
+              onClick={() => navigate(items.slug)}
+              className="text-[16px] text-black font-serif font-medium cursor-pointer hover: bg-white ml-4"
+            >
+              {items.name}
+            </li>
+          ))}
+        </ul> */
+}

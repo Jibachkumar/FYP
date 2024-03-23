@@ -4,33 +4,21 @@ function Home() {
   const [trip, settrip] = useState("");
 
   return (
-    <div className=" max-w-auto h-auto">
-      {/* trip plan section */}
-      <div className=" bg-slate-900 h-[40rem] overflow-hidden">
-        <form className="pt-[18rem] ">
-          <div className="pl-[6rem] mb-2 md:pl-[38.5%]">
-            <label
-              className=" text-lg from-neutral-400 italic mb-2 text-white"
-              htmlFor=""
-            >
-              Plan your next Destination
-            </label>
-          </div>
-          <div className="sm:flex items-center justify-center">
-            <input
-              className="w-[24rem] h-[3rem] shadow appearance-none border rounded-lg  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="destination"
-              type="text"
-              placeholder="Destination"
-            ></input>
-            <button className="bg-white hover:bg-slate-200 text-black font-bold py-3 px-8 rounded-3xl focus:outline-none focus:shadow-outline">
-              Create
-            </button>
-          </div>
-        </form>
+    <div className=" mt-[3.8rem] overflow-hidden">
+      <div className="relative">
+        <img
+          className=" w-full h-[30.5rem] object-cover z-30"
+          src="https://panindiatours.com/uploads/home-package/1616113920best-of-nepal-tour2.jpg"
+          alt=""
+        />
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center">
+          <h2 className=" text-white text-lg">hello</h2>
+          <form action="" className="">
+            <input type="text" className=" w-[20rem] h-[2rem] rounded-2xl " />
+            <button>create</button>
+          </form>
+        </div>
       </div>
-
-      {/* trip section */}
     </div>
   );
 }
