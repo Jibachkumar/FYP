@@ -23,6 +23,12 @@ app.use(express.static("public")); // pdf or photo store public folder
 app.use(cookieParser());
 // app.use(aggregatePaginate); // for Db query
 
+// Middleware to set 'X-Content-Type-Options' header
+// app.use((req, res, next) => {
+//   res.setHeader("X-Content-Type-Options", "nosniff");
+//   next();
+// });
+
 // import routes
 import { userRouter } from "./routes/user.routes.js";
 import { tripRouter } from "./routes/trip.routes.js";

@@ -8,12 +8,16 @@ import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <Header />
+    <div className=" w-full h-full">
+      <div>
+        <Header />
+      </div>
       <main>
         <Outlet />
       </main>
-      <Footer />
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 }
