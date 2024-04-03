@@ -41,9 +41,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Check user is creation
   // remove "password" and "refreshToken" from response: mongoose return everything in response
-  const createdUser = await User.findById(user._id).select(
-    " -password -refreahToken"
-  );
+  const createdUser = await User.findById(user._id).select(" -password ");
 
   if (!createdUser)
     throw new ApiError(500, "Something Went Wrong while registering the user");

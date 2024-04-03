@@ -1,6 +1,7 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid"; // Import uuid function from the uuid library
 
+// for passing data to parent component using forwardRef hook
 const Input = React.forwardRef(function Input(
   { label, type = "text", className = "", ...props },
   ref

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 function Signup() {
   const navigate = useNavigate();
   const [error, setError] = useState(""); // for error message
+  const [success, setSuccess] = useState("");
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   // const [isregister, setSstRegister] = useState({});
@@ -19,33 +20,37 @@ function Signup() {
     try {
       setError("");
       const { name, phoneNumber, email, password } = data;
-      const response = await fetch(
-        "http://localhost:7000/api/v1/users/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userName: name,
-            phoneNumber: phoneNumber,
-            email: email,
-            password: password,
-          }),
-        }
-      );
+      const response = await fetch("/api/v1/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userName: name,
+          phoneNumber: phoneNumber,
+          email: email,
+          password: password,
+        }),
+      });
+      console.log(response);
 
+      // to handle success or error useing the ok property of the response object, which indicates whether the request was successful
       if (!response.ok) {
         throw new Error(
-          `Failed to register user. Server response with ${response.status}`
+          `Failed to register user. Server response with ${response.status}!`
         );
+
+        // if (response.status === 409) {}
+        //   throw new Error("username and email already exit");
       }
 
       const userData = await response.json();
       console.log(userData);
 
+      setSuccess(`${userData.message}`);
       dispatch(login({ userData }));
-      navigate("/");
+
+      navigate("/login");
     } catch (error) {
       setError(error.message);
       console.log(error.message);
@@ -109,6 +114,10 @@ function Signup() {
           </div>
           <div>
             {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
+            {success && (
+              <p className="text-red-600 mt-8 text-center">{success}</p>
+            )}
+
             <div className=" text-center mt-14 mb-4">
               <button
                 type="submit"
