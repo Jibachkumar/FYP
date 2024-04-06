@@ -70,27 +70,46 @@ const tripPlanScheme = new Schema(
   { timestamps: true }
 );
 
-// // Assuming you have your trip schema defined
-// const Trip = require('./models/trip');
+// logic to calculate the price of the trip based on destination and other factors
+// tripPlanScheme.methods.calculatePrice = function (
+//   destination,
+//   people,
+//   duration
+// ) {
+//   let price = 0;
 
-// // Express route to handle the calculation of the trip price
-// app.post('/calculatePrice', async (req, res) => {
-//   // Assuming req.body contains the trip details sent from the client
-//   const { destination, startDate, endDate, accommodation, transportation } = req.body;
+//   const destinationName = [
+//     { name: kathmandu, price: 2000 },
+//     { name: pohkara, price: 5000 },
+//     mustang,
+//     tilcho,
+//     Pokhara,
+//     Bhaktapur,
+//     Patan,
+//     Chitwan,
+//     Lumbini,
+//     Nagarkot,
+//     Gosaikunda_Lake,
+//     Kanchenjunga,
+//     makalu,
+//     Annapurna_Base_Camp,
+//     Langtang_National_Park,
+//     Rara_Lake,
+//     Everest_Base_Camp,
+//     Manang,
+//     Tansen,
+//     Janakpur,
+//     Bardia_National_Park,
+//     Ilam,
+//   ];
 
-//   // Calculate price based on trip details
-//   // This is just a placeholder logic, you should replace it with your actual price calculation logic
-//   let price = 100; // Default price
-//   if (destination === 'Paris') {
-//     price += 200; // Additional cost for Paris
+//   console.log(destinationName.name);
+
+//   if (destinationName.hasOwnProperty(destination) || people > 1) {
+//     price = destinationName.price[destination] * people * duration;
 //   }
-//   // Adjust price based on other trip details
 
-//   try {
-//     // Send the calculated price back to the client
-//     res.status(200).json({ price });
-//   } catch (error) {
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
+//   return price;
+// };
+
 export const Trip = mongoose.model("Trip", tripPlanScheme);

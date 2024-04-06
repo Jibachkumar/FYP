@@ -7,7 +7,7 @@ const userSchema = new Schema(
     userName: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
       lowercase: true,
       trim: true,
       // index: true, // for database searching field
@@ -74,5 +74,43 @@ userSchema.methods.generateRefreshToken = function () {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
     }
   );
+};
+
+// caluclate price
+userSchema.methods.calculatePrice = function (destination, people, duration) {
+  let price = 0;
+
+  const destinationName = {
+    kathmandu: 2000,
+    pohkara: 5000,
+    mustang: 5000,
+    tilcho: 5000,
+    Pokhara: 5000,
+    Bhaktapur: 5000,
+    Patan: 5000,
+    Chitwan: 5000,
+    Lumbini: 5000,
+    Nagarkot: 5000,
+    Gosaikunda_Lake: 5000,
+    Kanchenjunga: 5000,
+    makalu: 5000,
+    Annapurna_Base_Camp: 5000,
+    Langtang_National_Park: 5000,
+    Rara_Lake: 5000,
+    Everest_Base_Camp: 5000,
+    Manang: 5000,
+    Tansen: 5000,
+    Janakpur: 5000,
+    Bardia_National_Park: 5000,
+    Ilam: 5000,
+  };
+
+  console.log(destinationName.name);
+
+  if (destinationName.hasOwnProperty(destination) || people > 1) {
+    price = destinationName[destination] * people * duration;
+  }
+
+  return price;
 };
 export const User = mongoose.model("User", userSchema);
