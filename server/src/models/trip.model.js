@@ -58,6 +58,11 @@ const tripPlanScheme = new Schema(
       type: String,
       lowercase: true,
     },
+    // vehicle: [
+    //   {
+    //     name: String,
+    //   },
+    // ],
     price: {
       type: Number,
     },

@@ -43,7 +43,11 @@ const createUserTrip = asyncHandler(async (req, res) => {
 
     if (!authUser) throw new ApiError(404, "User not found");
 
-    const price = await authUser.calculatePrice(destination, people, duration);
+    const tripPrice = await authUser.calculatePrice(
+      destination,
+      people,
+      duration
+    );
 
     // create user trip object(holds trip data)
     const userTrip = await Trip.create({
@@ -53,7 +57,7 @@ const createUserTrip = asyncHandler(async (req, res) => {
       duration,
       people,
       activities,
-      price: price,
+      price: tripPrice,
       user_id: authUser,
     });
     console.log(userTrip);

@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import { ApiError } from "../utils/apiError.js";
 const userSchema = new Schema(
   {
     userName: {
@@ -79,38 +79,74 @@ userSchema.methods.generateRefreshToken = function () {
 // caluclate price
 userSchema.methods.calculatePrice = function (destination, people, duration) {
   let price = 0;
+  // let day = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
   const destinationName = {
     kathmandu: 2000,
-    pohkara: 5000,
+    pohkara: 2000,
     mustang: 5000,
-    tilcho: 5000,
-    Pokhara: 5000,
-    Bhaktapur: 5000,
-    Patan: 5000,
-    Chitwan: 5000,
-    Lumbini: 5000,
-    Nagarkot: 5000,
-    Gosaikunda_Lake: 5000,
-    Kanchenjunga: 5000,
-    makalu: 5000,
-    Annapurna_Base_Camp: 5000,
-    Langtang_National_Park: 5000,
-    Rara_Lake: 5000,
-    Everest_Base_Camp: 5000,
+    tilcho: 6000,
+    Bhaktapur: 1000,
+    Patan: 1000,
+    Chitwan: 1600,
+    Lumbini: 2000,
+    gorkha: 2000,
+    Gosaikunda_Lake: 6000,
+    Kanchenjunga: 8000,
+    makalu: 8000,
+    Annapurna_Base_Camp: 8000,
+    Langtang_National_Park: 8000,
+    Rara_Lake: 10000,
+    Everest_Base_Camp: 20000,
     Manang: 5000,
     Tansen: 5000,
-    Janakpur: 5000,
-    Bardia_National_Park: 5000,
-    Ilam: 5000,
+    Janakpur: 3000,
+    Bardia_National_Park: 1600,
+    Ilam: 3000,
   };
 
-  console.log(destinationName.name);
-
-  if (destinationName.hasOwnProperty(destination) || people > 1) {
-    price = destinationName[destination] * people * duration;
+  if (!destinationName.hasOwnProperty(destination)) {
+    throw new ApiError(404, "Destination not found");
   }
 
-  return price;
+  if (duration === 3 || duration === 5) price += 5000;
+  if (duration === 6 || duration === 7) price += 7000;
+  if (duration === 8 || duration === 10) price += 10000;
+  if (duration === 11 || duration === 15) price += 15000;
+
+  const finalPrice = destinationName[destination] * people + price;
+
+  return finalPrice;
+
+  // const durationPrice = day.forEach((dur) => {
+  //   if (dur === duration && (duration === 3 || duration === 5)) price += 5000;
+  //   if (dur === duration && (duration === 6 || duration === 7)) price += 7000;
+  //   if (dur === duration && (duration === 8 || duration === 10)) price += 10000;
+  //   if (dur === duration && (duration === 11 || duration === 15))
+  //     price += 15000;
+  // });
+
+  // for (const [key, value] of Object.entries(destinationName)) {
+  //   console.log("key:", key, "value:", value);
+  //   if (key === destination && durationPrice) {
+  //     finalPrice = value + price;
+  //   }
+  // }
+  // Object.keys(destinationName).forEach((key) => {
+  //   price = destinationName[destination] * people;
+  // });
+
+  // if (duration === 5) price += 5000;
+  // if (duration === 7) price += 7000;
+  // if (duration === 10) price += 10000;
+  // if (duration === 15) price += 15000;
+
+  // destinationName.((ele) => {
+  //   if ((ele = destination && duration === 5)) price += 5000;
+  //   if ((ele = destination && duration === 7)) price += 7000;
+  //   if ((ele = destination && duration === 10)) price += 5000;
+  //   if ((ele = destination && duration === 15)) price += 5000;
+  // });
 };
+
 export const User = mongoose.model("User", userSchema);
