@@ -11,6 +11,8 @@ import Home from "./pages/Home.jsx";
 import Signup from "./pages/Signup.jsx";
 import Login from "./pages/Login.jsx";
 import Protected from "./components/AuthLayout.jsx";
+import Trip from "./pages/Trip.jsx";
+import TripContent from "./components/TripContent.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,22 @@ const router = createBrowserRouter([
         element: (
           <Protected authentication={false}>
             <Login />{" "}
+          </Protected>
+        ),
+      },
+      {
+        path: "/createtrip",
+        element: (
+          <Protected authentication={false}>
+            <Trip />{" "}
+          </Protected>
+        ),
+      },
+      {
+        path: "/tripcontent",
+        element: (
+          <Protected authentication={false}>
+            <TripContent />{" "}
           </Protected>
         ),
       },
