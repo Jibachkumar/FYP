@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { useForm } from "react-hook-form";
-import { login } from "../store/authSlice.js";
 import { useDispatch } from "react-redux";
+import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 
 function Signup() {
   const navigate = useNavigate();
@@ -11,7 +11,11 @@ function Signup() {
   const [success, setSuccess] = useState("");
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
-  // const [isregister, setSstRegister] = useState({});
+  const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword); // Toggle password visibility state
+  };
 
   const create = async (data) => {
     console.log(data);
@@ -48,7 +52,6 @@ function Signup() {
       console.log(userData);
 
       setSuccess(`${userData.message}`);
-      dispatch(login({ userData }));
 
       navigate("/login");
     } catch (error) {
@@ -81,18 +84,20 @@ function Signup() {
               Create and customize your best interests
             </p>
           </div>
-          <div className="mt-16 space-y-5 text-center">
+          <div className="mt-16 flex flex-col justify-center items-center gap-1">
             <Input
               {...register("name", { required: true })}
               label="Full Name : "
-              placeholder="Enter your full name"
+              placeholder=" "
               autoComplete="name"
+              className="md:ml-8 md:w-[20rem] border "
             />
 
             <Input
               {...register("phoneNumber", { required: true })}
-              label="phone-number: "
-              placeholder="Enter your phone number"
+              label="phone-number:"
+              placeholder=" "
+              className="md:ml-1 md:w-[20rem] border "
             />
 
             <Input
@@ -100,17 +105,30 @@ function Signup() {
                 required: true,
               })}
               label="Email : "
-              placeholder="Enter your Email Address"
+              placeholder=" "
               type="email"
               autoComplete="email"
+              className="md:ml-[68px] md:w-[20rem] border "
             />
 
-            <Input
-              {...register("password", { required: true })}
-              label="Password : "
-              type="password"
-              placeholder="Enter your Password"
-            />
+            <div className="relative">
+              <Input
+                {...register("password", { required: true })}
+                label="Password : "
+                type={showPassword ? "text" : "password"} // Use conditional rendering based on the showPassword state
+                placeholder=" "
+                className="md:ml-10 md:w-[20rem] border "
+              />
+              {/* Toggle button to show/hide password */}
+              <button
+                type="button"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 opacity-60"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <RiEyeOffFill /> : <RiEyeFill />}{" "}
+                {/* Use eye icons */}
+              </button>
+            </div>
           </div>
           <div>
             {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
@@ -118,18 +136,18 @@ function Signup() {
               <p className="text-red-600 mt-8 text-center">{success}</p>
             )}
 
-            <div className=" text-center mt-14 mb-4">
+            <div className=" text-center mt-8 mb-4">
               <button
                 type="submit"
-                className=" bg-green-900 w-[20rem] md:w-[27rem] py-[6px] rounded-2xl shadow-md text-white font-semibold font-sans hover:scale-105 transform transition duration-200 ease-in-out"
+                className=" bg-sky-900 w-[20rem] md:w-[25rem] py-[6px] rounded-2xl shadow-md text-white font-semibold font-sans hover:scale-105 transform transition duration-200 ease-in-out"
               >
                 create
               </button>
             </div>
           </div>
         </form>
-        <div className=" text-center font-semibold text-black mb-6">
-          <p className="bg-gray-200 rounded-lg p-5 text-black font-medium text-roman cursor-pointer hover:underline">
+        <div className=" text-center font-semibold text-black">
+          <p className="bg-gray-200 rounded-lg p-3 text-black font-medium text-roman cursor-pointer underline">
             Don&apos;t have an Account?{" "}
             <Link to={"/login"}>
               <span className="font-semibold">login</span>

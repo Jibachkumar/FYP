@@ -1,33 +1,38 @@
 import React from "react";
 
-import { useNavigate } from "react-router-dom";
-// import { Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import Avatar from "../Avatar";
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const authStatus = useSelector((state) => state.auth.status);
+  // console.log(authStatus);
 
   const navItems = [
     {
       name: "Home",
       slug: "/",
     },
-    // {
-    //   name: "Signup",
-    //   slug: "/signup",
-    //   isButton: true,
-    // },
     {
-      name: "Login",
-      slug: "/login",
-      isButton: true,
+      name: "Trip",
+      slug: "/trip",
+    },
+    {
+      name: "Review",
+      slug: "/review",
     },
   ];
 
   return (
     <header className="w-full">
-      <nav className="w-full h-[3.1rem] bg-slate-50 shadow-md flex justify-between items-center fixed top-0 left-0 z-50 ">
+      <nav className="w-full h-[2.7rem] bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-50 ">
         <div
-          className=" flex text-[19px] font-mono text-red-700 pl-[2.5rem] md:pl-[11rem] italic font-semibold"
+          className=" flex text-[18px] font-mono text-red-700 pl-[2.5rem] md:pl-[11rem] italic font-semibold"
           style={{ cursor: "pointer" }}
           onClick={() => navigate("/")}
         >
@@ -37,26 +42,33 @@ function Header() {
           </div>
         </div>
         <div>
-          <ul className="flex mr-[6.7rem] md:mr-[16rem] relative">
+          <ul className="flex items-center gap-8 md:mr-[16rem] relative">
             {navItems.map((items, index) => (
               <li
-                key={items.name}
+                key={index}
                 onClick={() => navigate(items.slug)}
-                className={`text-[16px] text-black opacity-[0.9] font-serif cursor-pointer  ${
-                  index === navItems.length - 1
-                    ? "md:pl-[8rem]"
-                    : " px-[14px] py-[4px] hover:text-white hover:bg-slate-500 rounded-full duration-400 ease-in-out"
-                } `}
+                className={`text-[16px]  text-black opacity-[0.9] font-serif cursor-pointer pr-2 hover:bg-slate-300 px-[10px] py-[3px] duration-300 ease-in-out rounded-full ${
+                  location.pathname === items.slug ? "bg-slate-300 px-2" : ""
+                }`}
               >
-                {items.isButton ? (
-                  <button className=" bg-transparent text-[14px] font-semibold px-3 py-1 rounded-md shadow-sm border border-black opacity-[0.9] hover:text-black hover:scale-105 transform transition duration-400 ease-in-out absolute top-[50%] -translate-y-1/2">
-                    {items.name}
-                  </button>
-                ) : (
-                  items.name
-                )}
+                {items.name}
               </li>
             ))}
+            {authStatus ? (
+              <li className=" cursor-pointer">
+                <Link to={"/profile"}>
+                  <Avatar />
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link to={"/login"}>
+                  <button className="bg-transparent font-serif font-medium px-2  rounded-md shadow-md border-2 border-black opacity-[0.9] hover:scale-105 transform transition duration-300 ease-in-out text-black">
+                    Login
+                  </button>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </nav>

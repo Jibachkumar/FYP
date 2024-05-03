@@ -1,154 +1,315 @@
 import React, { useState } from "react";
 
+import { useForm } from "react-hook-form";
+import Input from "../components/Input";
+import { IoMdSearch } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
+import { FaFire } from "react-icons/fa";
+
 function Home() {
-  const [trip, settrip] = useState("");
+  const { register } = useForm();
+  const navigate = useNavigate();
+
+  const images = [
+    {
+      url: "https://inventpokhara.com/wp-content/uploads/2014/06/pokharacity.jpg",
+      text: "must visited palce",
+      title: "Pokhara",
+    },
+    {
+      url: "https://t4.ftcdn.net/jpg/01/06/24/19/360_F_106241927_AQ3BRjRscmA0GKoYX4VdxQfQLPREZYfa.jpg",
+      text: "chitwan national park",
+      title: "Chitwan",
+    },
+    {
+      url: "https://c8.alamy.com/comp/F06ABC/famous-janaki-mandir-goddess-janaki-temple-in-janakpurdhaam-nepal-F06ABC.jpg",
+      text: "birthplace of god sita",
+      title: "Janakpur",
+    },
+    {
+      url: "https://assets.zeezest.com/blogs/PROD_Kanchenjunga%20banner_1687672795844.png",
+      text: "numerous flora and fauna",
+      title: "kanchenjunga",
+    },
+    {
+      url: "https://www.tripsavvy.com/thmb/WVg26IxyCIsl0kVkAIy0TCNMajI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/suspension-bridge-in-manaslu-circuit-trekking-route--himalaya-mountains-range-in-nepal-1225727807-6e2a6ef2101e44d386312359f660d853.jpg",
+      text: "eighth highest peak",
+      title: "manaslu",
+    },
+    {
+      url: "https://img.traveltriangle.com/blog/wp-content/uploads/2019/04/Paragliding_pokhara_700x467.jpg",
+      text: "centuries-old culture",
+      title: "mustang",
+    },
+    {
+      url: "https://worldexpeditions.com/croppedImages/Indian-Sub-Continent/Nepal/LachlanGardiner_WestNepal_2019_DSLR01_HIGHRES-9781-988225-500px.jpg",
+      text: "text for image 2",
+      title: "title for image 2",
+    },
+  ];
+  const adventurepic = [
+    {
+      url: "https://www.adventurealternative.com/media/817072/langtang-valley-trek.jpg?height=1129&width=1082&quality=&mode=Crop&center=0,0&bgcolor=",
+      text: "oldest monasteries region",
+      title: "Langtang",
+    },
+    {
+      url: "https://walkthroughhimalayas.com/storage/blog_images/FILE-2077507026-20200721094524.jpg",
+      text: "world highest lake",
+      title: "Tilicho",
+    },
+    {
+      url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnaZuiBAHQJvszq153lUZbFMGjGkXpoyv25g&s",
+      text: "centuries-old culture",
+      title: " Mustang",
+    },
+    {
+      url: "https://assets.zeezest.com/blogs/PROD_Kanchenjunga%20banner_1687672795844.png",
+      text: "numerous flora and fauna",
+      title: "kanchenjunga",
+    },
+    {
+      url: "https://www.tripsavvy.com/thmb/WVg26IxyCIsl0kVkAIy0TCNMajI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/suspension-bridge-in-manaslu-circuit-trekking-route--himalaya-mountains-range-in-nepal-1225727807-6e2a6ef2101e44d386312359f660d853.jpg",
+      text: "eighth highest peak",
+      title: "manaslu",
+    },
+    {
+      url: "https://img.traveltriangle.com/blog/wp-content/uploads/2019/04/Paragliding_pokhara_700x467.jpg",
+      text: "centuries-old culture",
+      title: "mustang",
+    },
+    {
+      url: "https://worldexpeditions.com/croppedImages/Indian-Sub-Continent/Nepal/LachlanGardiner_WestNepal_2019_DSLR01_HIGHRES-9781-988225-500px.jpg",
+      text: "text for image 2",
+      title: "title for image 2",
+    },
+  ];
+
+  const initialDisplayCount = 5; // Initial number of images to display
+
+  // State variables for Nepal Tour Package
+  const [nepalCurrentImageIndex, setNepalCurrentImageIndex] = useState(0);
+  const [nepalIsSliding, setNepalIsSliding] = useState(false);
+
+  // State variables for Adventure Destinations
+  const [adventureCurrentImageIndex, setAdventureCurrentImageIndex] =
+    useState(0);
+  const [adventureIsSliding, setAdventureIsSliding] = useState(false);
+
+  // Function to handle next action for Nepal Tour Package
+  const nepalHandleNext = () => {
+    if (!nepalIsSliding) {
+      setNepalIsSliding(true);
+      setNepalCurrentImageIndex((prevIndex) =>
+        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+      );
+      setTimeout(() => setNepalIsSliding(false), 90); // Set a timeout to reset sliding after transition duration
+    }
+  };
+
+  // Function to handle previous action for Nepal Tour Package
+  const nepalHandlePrev = () => {
+    if (!nepalIsSliding) {
+      setNepalIsSliding(true);
+      setNepalCurrentImageIndex((prevIndex) =>
+        prevIndex === 0 ? images.length - 1 : prevIndex - 1
+      );
+      setTimeout(() => setNepalIsSliding(false), 90); // Set a timeout to reset sliding after transition duration
+    }
+  };
+
+  // Function to handle next action for Adventure Destinations
+  const adventureHandleNext = () => {
+    if (!adventureIsSliding) {
+      setAdventureIsSliding(true);
+      setAdventureCurrentImageIndex((prevIndex) =>
+        prevIndex === adventurepic.length - 1 ? 0 : prevIndex + 1
+      );
+      setTimeout(() => setAdventureIsSliding(false), 90); // Set a timeout to reset sliding after transition duration
+    }
+  };
+
+  // Function to handle previous action for Adventure Destinations
+  const adventureHandlePrev = () => {
+    if (!adventureIsSliding) {
+      setAdventureIsSliding(true);
+      setAdventureCurrentImageIndex((prevIndex) =>
+        prevIndex === 0 ? adventurepic.length - 1 : prevIndex - 1
+      );
+      setTimeout(() => setAdventureIsSliding(false), 90); // Set a timeout to reset sliding after transition duration
+    }
+  };
+
+  // Slice images based on current index for Nepal Tour Package
+  const displayImages = images.slice(
+    nepalCurrentImageIndex,
+    nepalCurrentImageIndex + initialDisplayCount
+  );
+
+  // Slice images based on current index for Adventure Destinations
+  const adventureImages = adventurepic.slice(
+    adventureCurrentImageIndex,
+    adventureCurrentImageIndex + initialDisplayCount
+  );
 
   return (
-    <div className=" w-full mt-[3rem] overflow-hidden block">
-      <div className="relative w-full border-y-[2px] shadow-lg">
+    <div className=" w-full mt-[2.7rem]">
+      <div className="relative w-full shadow-sm">
         <img
-          className=" w-full h-[30rem] object-cover z-30 rounded-sm shadow-sm"
-          src="https://panindiatours.com/uploads/home-package/1616113920best-of-nepal-tour2.jpg"
+          className="w-full h-[30rem] object-cover shadow-sm"
+          src="https://www.andbeyond.com/wp-content/uploads/sites/5/pokhara-valley-nepal.jpg"
           alt=""
         />
-        <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center">
-          <form>
-            <h2 className=" text-white text-[32px] font-semibold mb-[3px]">
-              Plan your next{" "}
-              <span className="italic text-red-900 font-bold ">journey</span>
-            </h2>
-            <div className=" h-[2.4rem] flex items-cente bg-white rounded-xl border-[3px] border-sky-600">
-              <input
-                type="text"
-                id="book"
-                placeholder="book"
-                className=" w-[20rem] rounded-l-xl rounded-r-2xl focus:outline-none shadow-sm"
-              />
-              <div className=" bg-gray-500 w-[1px] h-[1.5rem] m-[4px]"></div>
-              <button
-                className=" bg-slate-200 text-black font-semibold px-[10px] py-[2px] rounded-2xl 
-                shadow-md mr-[2px] border border-slate-300 hover:scale-105 transform transition duration-200 ease-in-out"
-              >
-                create
-              </button>
-            </div>
-          </form>
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
+          <h2 className="text-white text-4xl font-bold font-serif">
+            <span className="">T</span>ra
+            <span className=" text-blue-950 italic">vel</span> in{" "}
+            <span className=" text-green-600">s</span>tyle
+          </h2>
+          <p className="text-white w-[26rem] text-[14px] italic font-serif">
+            Enjoy unique journeys with comfort and trust. Your gateway to
+            smarter, safer, and more beautiful travel awaits.
+          </p>
+          <div className="relative w-w-[22rem] mt-2">
+            <Input
+              {...register("createtrip", { required: true })}
+              placeholder="Search destinations"
+              autoComplete="createTrip"
+              className=" md:w-[22rem] h-[37px] rounded-xl border-2 border-sky-700 pl-10 pr-8 text-base font-serif text-black"
+              onClick={() => navigate("/createtrip")}
+            />
+            <IoMdSearch className="h-5 w-5 absolute left-4 top-2 text-gray-700" />
+          </div>
         </div>
       </div>
 
       {/* border line */}
-      <div className="mt-16 border-b border-black-500 w-[80%] mx-auto"></div>
+      <div className=" border-b w-full pt-6"></div>
 
-      {/* package tour */}
-      <div className=" mt-8 md:w-[77%] h-auto mx-auto">
-        <h2 className=" text-[18px] opacity-[0.8] font-semibold font-serif mt-[3.3rem]">
-          {" "}
-          ADVENTURE PACKAGE
-        </h2>
-        <div className="md:flex gap-[22px] justify-center">
-          <div className="relative mt-5">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://highlightstourism.com/wp-content/uploads/2019/10/tilicho-lake.jpg"
-              alt="Adventure"
-            />
-            <div className="absolute top-0 left-0 w-full h-full text-center pt-[118px]">
-              <p className=" font-serif text-sm font-medium text-white">
-                centuries-old culture
-              </p>
-              <h2 className=" mt-[5px] font-serif text-[22px] text-black-950 font-semibold">
-                mustang
-              </h2>
+      <div className=" w-full md:px-52 bg-white">
+        {/* <div className=" pt-4"></div> */}
+
+        {/* Nepal tour package */}
+        <div className=" relative pt-4">
+          <div className=" flex justify-between px-3 py-1 gap-1">
+            <h2 className="font-serif text-xl font-bold">Nepal Tour Package</h2>
+            <div className=" w-16 h-6 text-center">
+              {nepalCurrentImageIndex !== 0 && (
+                <button
+                  onClick={nepalHandlePrev}
+                  className=" rounded-md px-1 pb-1 font-medium text-2xl opacity-60 shadow-sm bg-stone-100 focus:outline-none"
+                >
+                  &lt;
+                </button>
+              )}
+              {nepalCurrentImageIndex !==
+                images.length - initialDisplayCount && (
+                <button
+                  onClick={nepalHandleNext}
+                  className="rounded-md font-medium text-2xl opacity-60 shadow-sm px-1 pb-1 bg-stone-100  focus:outline-none"
+                >
+                  &gt;
+                </button>
+              )}
+            </div>
+          </div>
+          <div className=" flex flex-wrap gap-[22px] justify-center pb-8 relative">
+            {displayImages.map((image, index) => (
+              <div
+                key={index}
+                className="mt-2 overflow-hidden transition-transform duration-500 ease-in-out cursor-pointer "
+                style={{
+                  transform: nepalIsSliding
+                    ? "translateX(-100%)"
+                    : "translateX(0)",
+                  opacity: nepalIsSliding ? 0 : 1,
+                }}
+              >
+                <img
+                  className="w-[13rem] h-[11.4rem] rounded-xl shadow-md "
+                  src={image.url}
+                  alt={image.title}
+                />
+                <div className="absolute top-0 left-0 w-full h-full">
+                  <div className=" mt-3 py-1 w-28 flex items-center custom-shape opacity-90">
+                    <FaFire className=" text-red-800 font-semibold" />
+                    <p className="text-white text-base font-serif pl-2">
+                      Offers
+                    </p>
+                  </div>
+
+                  <div className=" mt-16 text-center z-50 text-white">
+                    <p className="font-serif text-[16px]">{image.text}</p>
+                    <h2 className="font-serif text-2xl">{image.title}</h2>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Trekking place */}
+        <div className="relative">
+          <div className=" flex justify-between px-3 py-1 gap-1">
+            <h2 className="font-serif text-xl font-bold">
+              Adventure Destinations
+            </h2>
+            <div className=" w-16 h-6 text-center">
+              {adventureCurrentImageIndex !== 0 && (
+                <button
+                  onClick={adventureHandlePrev}
+                  className="rounded-md px-1 pb-1 font-medium text-2xl opacity-60 shadow-sm bg-stone-100 focus:outline-none"
+                >
+                  &lt;
+                </button>
+              )}
+              {adventureCurrentImageIndex !==
+                adventurepic.length - initialDisplayCount && (
+                <button
+                  onClick={adventureHandleNext}
+                  className="rounded-md px-1 pb-1 font-medium text-2xl opacity-60 shadow-sm bg-stone-100 focus:outline-none"
+                >
+                  &gt;
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="mt-5">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://www.globaladventuretrekking.com/uploads/img/Rara-Lake.jpg"
-              alt="Adventure"
-            />
-          </div>
+          <div className=" flex flex-wrap gap-[22px] justify-center pb-8 relative">
+            {adventureImages.map((image, index) => (
+              <div
+                key={index}
+                className="mt-2 overflow-hidden transition-transform duration-500 ease-in-out cursor-pointer "
+                style={{
+                  transform: adventureIsSliding
+                    ? "translateX(-100%)"
+                    : "translateX(0)",
+                  opacity: adventureIsSliding ? 0 : 1,
+                }}
+              >
+                <img
+                  className="w-[13rem] h-[11.4rem] rounded-xl shadow-md "
+                  src={image.url}
+                  alt={image.title}
+                />
+                <div className="absolute top-0 left-0 w-full h-full">
+                  <div className=" mt-3 py-1 w-28 flex items-center custom-shape">
+                    <FaFire className=" text-white font-semibold" />
+                    <p className="text-white text-base font-serif pl-2">
+                      Trekking
+                    </p>
+                  </div>
 
-          <div className="mt-5">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://th.bing.com/th/id/R.b9b7a4934d1b88a68146f0e5b1716484?rik=IrlhBU3zwWhfNQ&pid=ImgRaw&r=0"
-              alt="Adventure"
-            />
-          </div>
-
-          <div className="mt-5">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://highlightstourism.com/wp-content/uploads/2019/10/tilicho-lake.jpg"
-              alt="Adventure"
-            />
-          </div>
-          <div className="mt-5">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://highlightstourism.com/wp-content/uploads/2019/10/tilicho-lake.jpg"
-              alt="Adventure"
-            />
+                  <div className=" mt-16 text-center z-50 text-white">
+                    <p className="font-serif text-[16px]">{image.text}</p>
+                    <h2 className="font-serif text-2xl">{image.title}</h2>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
-
-      {/* Famouse place */}
-      <div className=" mt-8 w-[77%] h-auto mx-auto">
-        <h2 className=" text-[18px] opacity-[0.8] font-semibold font-serif mt-[5rem]">
-          {" "}
-          MOST VISITED PLACES
-        </h2>
-        <div className="flex gap-[22px] justify-center ">
-          <div className="relative mt-5 ">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://highlightstourism.com/wp-content/uploads/2019/10/tilicho-lake.jpg"
-              alt="Adventure"
-            />
-            <div className="absolute top-0 left-0 w-full h-full text-center pt-[118px]">
-              <p className=" font-serif text-sm font-medium text-white">
-                centuries-old culture
-              </p>
-              <h2 className=" mt-[5px] font-serif text-[22px] text-black-950 font-semibold">
-                mustang
-              </h2>
-            </div>
-          </div>
-
-          <div className="mt-5">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://www.globaladventuretrekking.com/uploads/img/Rara-Lake.jpg"
-              alt="Adventure"
-            />
-          </div>
-
-          <div className="mt-5">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://th.bing.com/th/id/R.b9b7a4934d1b88a68146f0e5b1716484?rik=IrlhBU3zwWhfNQ&pid=ImgRaw&r=0"
-              alt="Adventure"
-            />
-          </div>
-
-          <div className="mt-5">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://highlightstourism.com/wp-content/uploads/2019/10/tilicho-lake.jpg"
-              alt="Adventure"
-            />
-          </div>
-          <div className="mt-5">
-            <img
-              className=" w-[14rem] h-[12rem] rounded-xl shadow-md "
-              src="https://highlightstourism.com/wp-content/uploads/2019/10/tilicho-lake.jpg"
-              alt="Adventure"
-            />
-          </div>
-        </div>
+        {/* <div className=" pb-4"></div> */}
       </div>
     </div>
   );

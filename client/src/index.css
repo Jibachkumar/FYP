@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.custom-shape {
+  /* Add rounded corners for top and bottom right */
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  /* Set background to linear gradient for the left side */
+  background: linear-gradient(to left, transparent 50%, rgb(121, 63, 63) 50%);
+  /* Add radial gradient for the middle part */
+  background: radial-gradient(
+    circle at top right,
+    transparent 20px,
+    rgb(189, 102, 102) 20px
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%, 100% 100%;
+  /* Adjust padding and margin as needed */
+  padding: 0 4px; /* Adjust as needed */
+  margin: 3px; /* Adjust as needed */
+}

@@ -10,7 +10,10 @@ const Input = React.forwardRef(function Input(
   return (
     <div>
       {label && (
-        <label htmlFor={id} className="text-[17px] font-medium font-serif pr-2">
+        <label
+          htmlFor={id}
+          className={`text-[17px] font-medium font-serif pr-[2px]}`}
+        >
           {label}
         </label>
       )}
@@ -20,7 +23,7 @@ const Input = React.forwardRef(function Input(
         ref={ref}
         id={id}
         {...props}
-        className={` text-[13px] p-[4px] w-[15rem] md:w-[20rem] focus:outline-none border rounded-md border-black opacity-[0.5] bg-slate-300 placeholder-gray-900 ${className}`}
+        className={` text-[13px] p-[4px] w-[15rem]  focus:outline-none  rounded-md bg-slate-50 placeholder-gray-500 shadow-sm ${className}`}
       />
     </div>
   );
