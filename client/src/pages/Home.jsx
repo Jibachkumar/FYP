@@ -27,19 +27,19 @@ function Home() {
       title: "Janakpur",
     },
     {
-      url: "https://assets.zeezest.com/blogs/PROD_Kanchenjunga%20banner_1687672795844.png",
-      text: "numerous flora and fauna",
-      title: "kanchenjunga",
+      url: "https://www.nepaliteatraders.com/cdn/shop/articles/Ilam_Tea_Gardens_1600x.jpg?v=1568132900",
+      text: "stunning natural beauty",
+      title: "Ilam",
     },
     {
-      url: "https://www.tripsavvy.com/thmb/WVg26IxyCIsl0kVkAIy0TCNMajI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/suspension-bridge-in-manaslu-circuit-trekking-route--himalaya-mountains-range-in-nepal-1225727807-6e2a6ef2101e44d386312359f660d853.jpg",
-      text: "eighth highest peak",
-      title: "manaslu",
+      url: "https://booking-manager-api-hop-nepal.s3.eu-west-1.amazonaws.com/file-manager/page/image-jiri-dolakha-district.jpg",
+      text: "switzerland of nepal",
+      title: "Jiri",
     },
     {
-      url: "https://img.traveltriangle.com/blog/wp-content/uploads/2019/04/Paragliding_pokhara_700x467.jpg",
-      text: "centuries-old culture",
-      title: "mustang",
+      url: "https://visiteverestnepal.com/wp-content/uploads/2022/10/Pathibhara-Temple-768x576.jpg",
+      text: "Hindu and Limbu pilgrims",
+      title: "Pathivara",
     },
     {
       url: "https://worldexpeditions.com/croppedImages/Indian-Sub-Continent/Nepal/LachlanGardiner_WestNepal_2019_DSLR01_HIGHRES-9781-988225-500px.jpg",
@@ -74,14 +74,14 @@ function Home() {
       title: "manaslu",
     },
     {
-      url: "https://img.traveltriangle.com/blog/wp-content/uploads/2019/04/Paragliding_pokhara_700x467.jpg",
-      text: "centuries-old culture",
-      title: "mustang",
+      url: "https://content.r9cdn.net/rimg/dimg/b5/83/6bb3ed36-city-53364-16a6dfa3bab.jpg?width=1366&height=768&xhint=2459&yhint=1271&crop=true",
+      text: "Everest Base Camp trek",
+      title: "Lukla",
     },
     {
-      url: "https://worldexpeditions.com/croppedImages/Indian-Sub-Continent/Nepal/LachlanGardiner_WestNepal_2019_DSLR01_HIGHRES-9781-988225-500px.jpg",
-      text: "text for image 2",
-      title: "title for image 2",
+      url: "https://www.altitudehimalaya.com/media/files/Blog/Adventures/Gosaikunda-trekking.jpg",
+      text: " Langtang National Park",
+      title: "Gosaikunda",
     },
   ];
 
@@ -103,7 +103,7 @@ function Home() {
       setNepalCurrentImageIndex((prevIndex) =>
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
-      setTimeout(() => setNepalIsSliding(false), 90); // Set a timeout to reset sliding after transition duration
+      setTimeout(() => setNepalIsSliding(false), 80); // Set a timeout to reset sliding after transition duration
     }
   };
 
@@ -114,7 +114,7 @@ function Home() {
       setNepalCurrentImageIndex((prevIndex) =>
         prevIndex === 0 ? images.length - 1 : prevIndex - 1
       );
-      setTimeout(() => setNepalIsSliding(false), 90); // Set a timeout to reset sliding after transition duration
+      setTimeout(() => setNepalIsSliding(false), 80); // Set a timeout to reset sliding after transition duration
     }
   };
 
@@ -125,7 +125,7 @@ function Home() {
       setAdventureCurrentImageIndex((prevIndex) =>
         prevIndex === adventurepic.length - 1 ? 0 : prevIndex + 1
       );
-      setTimeout(() => setAdventureIsSliding(false), 90); // Set a timeout to reset sliding after transition duration
+      setTimeout(() => setAdventureIsSliding(false), 80); // Set a timeout to reset sliding after transition duration
     }
   };
 
@@ -136,7 +136,7 @@ function Home() {
       setAdventureCurrentImageIndex((prevIndex) =>
         prevIndex === 0 ? adventurepic.length - 1 : prevIndex - 1
       );
-      setTimeout(() => setAdventureIsSliding(false), 90); // Set a timeout to reset sliding after transition duration
+      setTimeout(() => setAdventureIsSliding(false), 80); // Set a timeout to reset sliding after transition duration
     }
   };
 
@@ -282,7 +282,7 @@ function Home() {
                 className="mt-2 overflow-hidden transition-transform duration-500 ease-in-out cursor-pointer "
                 style={{
                   transform: adventureIsSliding
-                    ? "translateX(-100%)"
+                    ? "translateX(100%)"
                     : "translateX(0)",
                   opacity: adventureIsSliding ? 0 : 1,
                 }}
