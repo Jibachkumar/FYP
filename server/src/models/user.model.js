@@ -24,6 +24,13 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    avatar: {
+      type: String, // cloudinary url
+      required: true,
+    },
+    coverImage: {
+      type: String, // cloudinary url
+    },
     password: {
       type: String,
       required: [true, "Password is required"],
@@ -83,7 +90,7 @@ userSchema.methods.calculatePrice = function (destination, people, duration) {
 
   const destinationName = {
     kathmandu: 2000,
-    pohkara: 2000,
+    pokhara: 2000,
     mustang: 5000,
     tilcho: 6000,
     Bhaktapur: 1000,
@@ -109,44 +116,15 @@ userSchema.methods.calculatePrice = function (destination, people, duration) {
     throw new ApiError(404, "Destination not found");
   }
 
-  if (duration === 3 || duration === 5) price += 5000;
-  if (duration === 6 || duration === 7) price += 7000;
+  if (duration === 2 || duration === 3) price += 5000;
+  if (duration === 4 || duration === 7) price += 7000;
   if (duration === 8 || duration === 10) price += 10000;
   if (duration === 11 || duration === 15) price += 15000;
+  if (duration === 16 || duration === 30) price += 20000;
 
   const finalPrice = destinationName[destination] * people + price;
 
   return finalPrice;
-
-  // const durationPrice = day.forEach((dur) => {
-  //   if (dur === duration && (duration === 3 || duration === 5)) price += 5000;
-  //   if (dur === duration && (duration === 6 || duration === 7)) price += 7000;
-  //   if (dur === duration && (duration === 8 || duration === 10)) price += 10000;
-  //   if (dur === duration && (duration === 11 || duration === 15))
-  //     price += 15000;
-  // });
-
-  // for (const [key, value] of Object.entries(destinationName)) {
-  //   console.log("key:", key, "value:", value);
-  //   if (key === destination && durationPrice) {
-  //     finalPrice = value + price;
-  //   }
-  // }
-  // Object.keys(destinationName).forEach((key) => {
-  //   price = destinationName[destination] * people;
-  // });
-
-  // if (duration === 5) price += 5000;
-  // if (duration === 7) price += 7000;
-  // if (duration === 10) price += 10000;
-  // if (duration === 15) price += 15000;
-
-  // destinationName.((ele) => {
-  //   if ((ele = destination && duration === 5)) price += 5000;
-  //   if ((ele = destination && duration === 7)) price += 7000;
-  //   if ((ele = destination && duration === 10)) price += 5000;
-  //   if ((ele = destination && duration === 15)) price += 5000;
-  // });
 };
 
 export const User = mongoose.model("User", userSchema);
