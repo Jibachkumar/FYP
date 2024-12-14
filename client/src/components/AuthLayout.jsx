@@ -9,7 +9,7 @@ function Protected({ children, authentication = true }) {
   const navigate = useNavigate();
 
   const authStatus = useSelector((state) => state.auth.status);
-  console.log(authStatus);
+  //console.log(authStatus);
 
   useEffect(() => {
     if (authentication && authStatus !== authentication) {

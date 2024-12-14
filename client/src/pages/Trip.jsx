@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Input from "../components/Input";
 import { List } from "antd";
@@ -6,7 +6,7 @@ import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { trip } from "../store/tripSlice.js";
+import { trip as tripSlice } from "../store/tripSlice.js";
 
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -64,7 +64,7 @@ function Trip() {
   };
 
   const createTrip = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       const response = await fetch("/api/v1/users/trip", {
         method: "POST",
@@ -84,13 +84,16 @@ function Trip() {
       }
       const tripData = await response.json();
       console.log(tripData);
+      console.log(tripData.message);
+      // console.log(tripData.tripData.data);
 
-      dispatch(trip({ tripData }));
-      const tripAction = trip({ tripData }); // Creating the action object
-      console.log(tripAction); // Logging the dispatched action object
+      if (!tripData) return;
+      dispatch(tripSlice({ tripData: tripData }));
+      // const tripAction = trip({ tripData }); // Creating the action object
+      // console.log(tripAction); // Logging the dispatched action object
       navigate("/tripcontent");
 
-      reset();
+      //reset();
     } catch (error) {
       console.log(error);
     }

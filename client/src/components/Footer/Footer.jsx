@@ -1,11 +1,37 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Footer() {
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    const revealObserver = (entries) => {
+      const [entry] = entries;
+      //console.log(entry);
+
+      if (entry.isIntersecting)
+        entry.target.classList.remove("translate-y-1/4");
+      else entry.target.classList.add("translate-y-1/4");
+    };
+
+    const footerObserver = new IntersectionObserver(revealObserver, {
+      root: null,
+      threshold: 0.1,
+    });
+
+    if (footerRef.current) {
+      footerObserver.observe(footerRef.current);
+      // footerRef.style.
+    }
+  }, [footerRef]);
+
   return (
-    <footer className="text-center text-lg-start bg-body-tertiary text-muted">
+    <footer
+      className="bg-slate-800 mt-3 text-lg-start bg-body-tertiary text-muted translate-y-1/4 duration-150"
+      ref={footerRef}
+    >
       {/* <!-- Section: Social media --> */}
-      <section className="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+      <section className="flex justify-content-center justify-content-lg-between p-4 border-bottom text-white">
         {/* <!-- Left --> */}
         <div className="me-5 d-none d-lg-block">
           <span>Get connected with us on social networks:</span>
@@ -36,28 +62,16 @@ function Footer() {
       {/* <!-- Section: Social media --> */}
 
       {/* <!-- Section: Links  --> */}
-      <section className="">
-        <div className="container text-center text-md-start mt-5">
-          {/* <!-- Grid row --> */}
-          <div className="row mt-3">
-            {/* <!-- Grid column --> */}
-            <div className="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-              {/* <!-- Content --> */}
-              <h6 className="text-uppercase fw-bold mb-4">
-                <i className="fas fa-gem me-3"></i>Company name
-              </h6>
-              <p>
-                Here you can use rows and columns to organize your footer
-                content. Lorem ipsum dolor sit amet, consectetur adipisicing
-                elit.
-              </p>
-            </div>
-            {/* <!-- Grid column --> */}
-
-            {/* <!-- Grid column --> */}
-            <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-              {/* <!-- Links --> */}
-              <h6 className="text-uppercase fw-bold mb-4">Products</h6>
+      <section className="container text-white">
+        {/* <!-- Grid row --> */}
+        <div className="row mt-3 flex justify-around items-center">
+          {/* <!-- Grid column --> */}
+          <div className="col-md-2 col-lg-2 col-xl-2  mb-4">
+            {/* <!-- Links --> */}
+            <h6 className="text-uppercase fw-bold mb-4 text-center">
+              Products
+            </h6>
+            <div className=" mx-20">
               <p>
                 <a href="#!" className="text-reset">
                   Angular
@@ -79,12 +93,17 @@ function Footer() {
                 </a>
               </p>
             </div>
-            {/* <!-- Grid column --> */}
+          </div>
+          {/* <!-- Grid column --> */}
 
-            {/* <!-- Grid column -->  */}
-            <div className="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
-              {/* <!-- Links --> */}
-              <h6 className="text-uppercase fw-bold mb-4">Useful links</h6>
+          {/* <!-- Grid column -->  */}
+          <div className="col-md-3 col-lg-2 col-xl-2 mb-4">
+            {/* <!-- Links --> */}
+
+            <h6 className="text-uppercase fw-bold mb-4 text-center">
+              Useful links
+            </h6>
+            <div className=" mx-20">
               <p>
                 <a href="#!" className="text-reset">
                   Pricing
@@ -106,38 +125,43 @@ function Footer() {
                 </a>
               </p>
             </div>
-            {/* <!-- Grid column --> */}
+          </div>
+          {/* <!-- Grid column --> */}
 
-            {/* <!-- Grid column --> */}
-            <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-              {/* <!-- Links --> */}
-              <h6 className="text-uppercase fw-bold mb-4">Contact</h6>
+          {/* <!-- Grid column --> */}
+          <div className="col-md-4 col-lg-3 col-xl-3 mb-md-0 mb-4">
+            {/* <!-- Links --> */}
+
+            <h6 className="text-uppercase mb-4 font-serif text-center">
+              Contact
+            </h6>
+            <div className=" mx-16">
               <p>
-                <i className="fas fa-home me-3"></i> New York, NY 10012, US
+                <i className="fas fa-home me-3 "></i> New York, NY 10012, US
               </p>
               <p>
                 <i className="fas fa-envelope me-3"></i>
                 info@example.com
               </p>
               <p>
-                <i className="fas fa-phone me-3"></i> + 01 234 567 88
+                <i className="fas fa-phone me-3 "></i> + 01 234 567 88
               </p>
               <p>
                 <i className="fas fa-print me-3"></i> + 01 234 567 89
               </p>
             </div>
           </div>
-          {/* <!-- Grid row --> */}
         </div>
+        {/* <!-- Grid row --> */}
       </section>
       {/* <!-- Section: Links  --> */}
 
       {/* <!-- Copyright --> */}
       <div
-        className="text-center p-4"
+        className="text-center p-4 font-serif text-base text-white"
         // style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}
       >
-        © 2021 Copyright:
+        © 2024 Copyright:
         <a className="text-reset fw-bold" href="">
           Explore nepal
         </a>

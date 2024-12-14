@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, resolvePath, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -9,9 +9,21 @@ function Signup() {
   const navigate = useNavigate();
   const [error, setError] = useState(""); // for error message
   const [success, setSuccess] = useState("");
+  const [avatar, setAvatar] = useState(null);
+  const [coverImage, setCoverImage] = useState(null);
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
+
+  const handleAvatarChange = (event) => {
+    setAvatar(event.target.files[0]); // Store the selected Avatar file
+    console.log(event.target.files[0]);
+  };
+
+  const handleCoverImageChange = (event) => {
+    setCoverImage(event.target.files[0]); // Store the selected Cover Image file
+    console.log(event.target.files[0]);
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword); // Toggle password visibility state
@@ -23,18 +35,17 @@ function Signup() {
 
     try {
       setError("");
-      const { name, phoneNumber, email, password } = data;
+      const formData = new FormData();
+      formData.append("userName", data.userName); // Note: using "userName" here
+      formData.append("phoneNumber", data.phoneNumber);
+      formData.append("email", data.email);
+      formData.append("avatar", avatar); // Assuming avatar is a file input
+      formData.append("coverImage", coverImage); // Assuming coverImage is a file input
+      formData.append("password", data.password);
+
       const response = await fetch("/api/v1/users/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userName: name,
-          phoneNumber: phoneNumber,
-          email: email,
-          password: password,
-        }),
+        body: formData,
       });
       console.log(response);
 
@@ -43,9 +54,6 @@ function Signup() {
         throw new Error(
           `Failed to register user. Server response with ${response.status}!`
         );
-
-        // if (response.status === 409) {}
-        //   throw new Error("username and email already exit");
       }
 
       const userData = await response.json();
@@ -86,18 +94,18 @@ function Signup() {
           </div>
           <div className="mt-16 flex flex-col justify-center items-center gap-1">
             <Input
-              {...register("name", { required: true })}
+              {...register("userName", { required: true })}
               label="Full Name : "
               placeholder=" "
               autoComplete="name"
-              className="md:ml-8 md:w-[20rem] border "
+              className="md:ml-8 md:w-[20rem] border  p-[4px]"
             />
 
             <Input
               {...register("phoneNumber", { required: true })}
               label="phone-number:"
               placeholder=" "
-              className="md:ml-1 md:w-[20rem] border "
+              className="md:ml-1 md:w-[20rem] border  p-[4px]"
             />
 
             <Input
@@ -108,7 +116,25 @@ function Signup() {
               placeholder=" "
               type="email"
               autoComplete="email"
-              className="md:ml-[68px] md:w-[20rem] border "
+              className="md:ml-[68px] md:w-[20rem] border  p-[4px]"
+            />
+
+            <Input
+              {...register("avatar", { required: true })}
+              type="file"
+              label="Avatar : "
+              placeholder=""
+              className="md:ml-[68px] md:w-[20rem] border"
+              style={{ paddingLeft: "1px" }}
+              onChange={handleAvatarChange}
+            />
+            <Input
+              {...register("coverImage", { required: true })}
+              type="file"
+              label="Cover Image : "
+              placeholder=""
+              className="md:ml-[26px] md:w-[20rem] border"
+              onChange={handleCoverImageChange}
             />
 
             <div className="relative">
@@ -117,7 +143,7 @@ function Signup() {
                 label="Password : "
                 type={showPassword ? "text" : "password"} // Use conditional rendering based on the showPassword state
                 placeholder=" "
-                className="md:ml-10 md:w-[20rem] border "
+                className="md:ml-10 md:w-[20rem] border  p-[4px]"
               />
               {/* Toggle button to show/hide password */}
               <button

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  status: null,
+  status: false,
   tripData: null,
 };
 
@@ -10,9 +10,9 @@ const tripSlice = createSlice({
   initialState,
   reducers: {
     trip: (state, action) => {
-      console.log(action.payload.tripData); // Log tripData
+      console.log(action.payload); // Log tripData
       state.status = true;
-      state.tripData = action.payload.tripData;
+      state.tripData = action.payload;
     },
   },
 });

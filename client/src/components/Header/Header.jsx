@@ -47,11 +47,19 @@ function Header() {
               <li
                 key={index}
                 onClick={() => navigate(items.slug)}
-                className={`text-[16px]  text-black opacity-[0.9] font-serif cursor-pointer pr-2 hover:bg-slate-300 px-[10px] py-[3px] duration-300 ease-in-out rounded-full ${
-                  location.pathname === items.slug
-                    ? "bg-slate-300 px-2 shadow-sm"
-                    : ""
-                }`}
+                className={`text-[16px]  text-black  font-serif cursor-pointer pr-2  px-[10px] py-[3px] duration-300 ease-in-out hover:opacity-10 
+                  ${
+                    items.slug === location.pathname
+                      ? "opacity-50"
+                      : "opacity-100"
+                  } 
+                `}
+
+                // onMouseOver={(e) => {
+                //   if (items.slug) e.currentTarget.style.opacity = "1";
+                //   else "0.5";
+                // }}
+                // onMouseOut={(e) => (e.currentTarget.style.opacity = "0.5")}
               >
                 {items.name}
               </li>

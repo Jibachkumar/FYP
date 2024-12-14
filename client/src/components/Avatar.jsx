@@ -7,8 +7,13 @@ import { Avatar, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, message } from "antd";
 
+import { useDispatch } from "react-redux";
+import { logout } from "../store/authSlice";
+
 function AvatarProfile() {
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const items = [
     {
@@ -16,32 +21,33 @@ function AvatarProfile() {
       key: "1",
       slug: "/profile",
     },
-    {
-      label: "Trip",
-      key: "2",
-      slug: "/",
-    },
-    {
-      label: "Rating",
-      key: "3",
-      slug: "/rating",
-    },
+    // {
+    //   label: "Trip",
+    //   key: "2",
+    //   slug: "/trip",
+    // },
+    // {
+    //   label: "Rating",
+    //   key: "3",
+    //   slug: "/rating",
+    // },
     {
       label: "Logout",
       key: "4",
-      slug: "/logout",
     },
   ];
 
   const onClick = ({ key }) => {
-    // Find the item with the matching key
-    const selectedItem = items.find((item) => item.key === key);
-
-    // Navigate using the slug property of the selected item
-    if (selectedItem) {
-      navigate(selectedItem.slug);
+    if (key === "4") {
+      dispatch(logout());
     } else {
-      message.info(`Item with key ${key} not found`);
+      // Find the item with the matching key
+      const selectedItem = items.find((item) => item.key === key);
+
+      // Navigate using the slug property of the selected item
+      if (selectedItem) {
+        navigate(selectedItem.slug);
+      }
     }
   };
 

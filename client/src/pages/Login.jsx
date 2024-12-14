@@ -56,7 +56,7 @@ function Login() {
       console.log(userData);
       console.log(userData.message);
       if (userData) {
-        dispatch(authLogin({ userData }));
+        dispatch(authLogin(userData));
         navigate("/");
         setSuccess(userData.message);
       }
@@ -85,7 +85,7 @@ function Login() {
         </button>
 
         <form onSubmit={handleSubmit(login)}>
-          <div className=" text-center text-roman p-6 bg-sky-950">
+          <div className=" text-center text-roman p-6 bg-sky-950 w-full h-full">
             <h2 className="  font-semibold md:text-lg text-base text-white">
               Welcome to explore-
               <span className="">-nepal</span>
@@ -103,7 +103,7 @@ function Login() {
                 required: true,
               })}
               autoComplete="email"
-              className="md:ml-6 md:w-[20rem]"
+              className="md:ml-6 md:w-[20rem]  p-[4px]"
             />
             <div className="relative">
               <Input
@@ -111,7 +111,7 @@ function Login() {
                 label="Password : "
                 type={showPassword ? "text" : "password"} // Use conditional rendering based on the showPassword state
                 placeholder="Enter your Password"
-                className="md:w-[20rem]"
+                className="md:w-[20rem]  p-[4px]"
               />
               {/* Toggle button to show/hide password */}
               <button

@@ -23,7 +23,7 @@ const Input = React.forwardRef(function Input(
         ref={ref}
         id={id}
         {...props}
-        className={` text-[13px] p-[4px] w-[15rem]  focus:outline-none  rounded-md bg-slate-50 placeholder-gray-500 shadow-sm ${className}`}
+        className={` text-[13px] focus:outline-none  rounded-md bg-slate-50 placeholder-gray-500 shadow-sm ${className}`}
       />
     </div>
   );
