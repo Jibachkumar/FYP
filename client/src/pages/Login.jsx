@@ -45,23 +45,17 @@ function Login() {
       });
 
       if (!response.ok) {
-        throw new Error(`log in Error ${response.status}!`);
-
-        // if (response.status === 409) {}
-        //   throw new Error("username and email already exit");
+        throw new Error(`Error ${response.status}!`);
       }
 
       const userData = await response.json();
 
-      console.log(userData);
-      console.log(userData.message);
       if (userData) {
         dispatch(authLogin(userData));
         navigate("/");
         setSuccess(userData.message);
       }
     } catch (error) {
-      console.log(error);
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";
       setError(errorMessage);

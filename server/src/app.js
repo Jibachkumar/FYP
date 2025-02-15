@@ -32,11 +32,13 @@ app.use(cookieParser());
 // import routes
 import { userRouter } from "./routes/user.routes.js";
 import { tripRouter } from "./routes/trip.routes.js";
+import { payment } from "./routes/payment.routes.js";
 
 // routes declaration
 // eg: http://localhost:7000/api/v1/users/register
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/users", tripRouter);
+app.use("/api/v1/users", payment);
 
 export { app };

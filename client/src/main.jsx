@@ -14,6 +14,7 @@ import Protected from "./components/AuthLayout.jsx";
 import Profile from "./components/Profile.jsx";
 import Trip from "./pages/Trip.jsx";
 import TripContent from "./components/editTrip.jsx";
+import Success from "./pages/Success.jsx";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,14 @@ const router = createBrowserRouter([
         element: (
           <Protected authentication={true}>
             <TripContent />{" "}
+          </Protected>
+        ),
+      },
+      {
+        path: "/paymentsuccess",
+        element: (
+          <Protected authentication={false}>
+            <Success />{" "}
           </Protected>
         ),
       },

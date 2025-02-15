@@ -27,7 +27,7 @@ function Footer() {
 
   return (
     <footer
-      className="bg-slate-800 mt-3 text-lg-start bg-body-tertiary text-muted translate-y-1/4 duration-150"
+      className="bg-slate-800 text-lg-start bg-body-tertiary text-muted translate-y-1/4 duration-150"
       ref={footerRef}
     >
       {/* <!-- Section: Social media --> */}

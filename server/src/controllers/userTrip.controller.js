@@ -17,24 +17,16 @@ const getUserDetails = asyncHandler(async (req, res) => {
 /*---------------------createUserTrip -------------------------*/
 const createUserTrip = asyncHandler(async (req, res) => {
   // get user data
-  const { destination, startDate, endDate, duration, people, activities } =
-    req.body;
-  // console.log(
-  //   `destination: ${destination}, startDate: ${startDate}, endDate: ${endDate}, duration: ${duration}, people: ${people}, places: ${activities}, user:${user}`
-  // );
+  const { destination, startDate, duration, people, activities } = req.body;
 
-  // validation
-  // if (![destination, startDate, endDate, duration, people, places].every(field => typeof field === "string" && field.trim())) {
-  //   throw new ApiError(400, "All fields are required");
-  // }
   if (
-    [destination, startDate, endDate, duration, people].some(
+    [destination, startDate, duration, people].some(
       (field) => typeof field === "string" && field?.trim() === " "
     )
   ) {
     throw new ApiError(400, "all fields are required");
   }
-
+  const rate = 4;
   try {
     // Check user is authenticated
     // find auth user in DB
@@ -53,11 +45,11 @@ const createUserTrip = asyncHandler(async (req, res) => {
     const userTrip = await Trip.create({
       destination,
       startDate,
-      endDate,
       duration,
       people,
       activities,
       price: tripPrice,
+      rating: rate,
       user_id: authUser,
     });
     console.log(userTrip);
@@ -79,4 +71,11 @@ const createUserTrip = asyncHandler(async (req, res) => {
   }
 });
 
-export { createUserTrip };
+const makePayment = asyncHandler(async (req, res) => {
+  try {
+  } catch (err) {
+    throw new ApiError();
+  }
+});
+
+export { createUserTrip, makePayment };
