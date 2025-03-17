@@ -131,7 +131,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
-
+  console.log(loggedInUser);
   // send access and refresh token through cookie
   const options = {
     httpOnly: true,

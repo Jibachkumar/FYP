@@ -84,45 +84,40 @@ userSchema.methods.generateRefreshToken = function () {
 };
 
 // caluclate price
-userSchema.methods.calculatePrice = function (destination, people, duration) {
-  let price = 0;
-  // let day = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-
-  const destinationName = {
-    kathmandu: 2000,
-    pokhara: 2000,
-    mustang: 5000,
-    tilcho: 6000,
-    Bhaktapur: 1000,
-    Patan: 1000,
-    Chitwan: 1600,
-    Lumbini: 2000,
-    gorkha: 2000,
-    Gosaikunda_Lake: 6000,
-    Kanchenjunga: 8000,
-    makalu: 8000,
-    Annapurna_Base_Camp: 8000,
-    Langtang_National_Park: 8000,
-    Rara_Lake: 10000,
-    Everest_Base_Camp: 20000,
-    Manang: 5000,
-    Tansen: 5000,
-    Janakpur: 3000,
-    Bardia_National_Park: 1600,
-    Ilam: 3000,
+userSchema.methods.calculatePrice = function (people, duration, price) {
+  const durations = {
+    2: 3000,
+    3: 5000,
+    4: 6000,
+    5: 7000,
+    6: 8000,
+    7: 10000,
+    8: 11000,
+    9: 12000,
+    10: 13000,
+    11: 14000,
+    12: 15000,
+    13: 16000,
+    14: 17000,
+    15: 18000,
+    16: 19000,
+    17: 20000,
+    18: 21000,
+    19: 22000,
+    20: 25000,
   };
 
-  if (!destinationName.hasOwnProperty(destination)) {
-    throw new ApiError(404, "Destination not found");
+  if (duration === 1) {
+    return price * people;
   }
 
-  if (duration === 2 || duration === 3) price += 5000;
-  if (duration === 4 || duration === 7) price += 7000;
-  if (duration === 8 || duration === 10) price += 10000;
-  if (duration === 11 || duration === 15) price += 15000;
-  if (duration === 16 || duration === 30) price += 20000;
+  if (!durations.hasOwnProperty(duration))
+    throw new ApiError(
+      404,
+      "sorry we don't have long duration package available"
+    );
 
-  const finalPrice = destinationName[destination] * people + price;
+  const finalPrice = price * people + durations[duration];
 
   return finalPrice;
 };
