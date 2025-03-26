@@ -4,18 +4,20 @@ const ratingScheme = new Schema({
   rating: {
     type: Number,
     required: true,
+    min: 1,
+    max: 5,
   },
-  description: {
-    Type: String,
+  comments: {
+    type: String,
     lowercase: true,
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
   },
   trip: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Trip",
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
 });
 
