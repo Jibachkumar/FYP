@@ -2,33 +2,33 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Footer() {
-  const footerRef = useRef(null);
+  // const footerRef = useRef(null);
 
-  useEffect(() => {
-    const revealObserver = (entries) => {
-      const [entry] = entries;
-      //console.log(entry);
+  // useEffect(() => {
+  //   const revealObserver = (entries) => {
+  //     const [entry] = entries;
+  //     //console.log(entry);
 
-      if (entry.isIntersecting)
-        entry.target.classList.remove("translate-y-1/4");
-      else entry.target.classList.add("translate-y-1/4");
-    };
+  //     if (entry.isIntersecting)
+  //       entry.target.classList.remove("translate-y-1/4");
+  //     else entry.target.classList.add("translate-y-1/4");
+  //   };
 
-    const footerObserver = new IntersectionObserver(revealObserver, {
-      root: null,
-      threshold: 0.1,
-    });
+  //   const footerObserver = new IntersectionObserver(revealObserver, {
+  //     root: null,
+  //     threshold: 0.1,
+  //   });
 
-    if (footerRef.current) {
-      footerObserver.observe(footerRef.current);
-      // footerRef.style.
-    }
-  }, [footerRef]);
+  //   if (footerRef.current) {
+  //     footerObserver.observe(footerRef.current);
+  //     // footerRef.style.
+  //   }
+  // }, [footerRef]);
 
   return (
     <footer
-      className="bg-slate-800 text-lg-start bg-body-tertiary text-muted translate-y-1/4 duration-150"
-      ref={footerRef}
+      className="bg-slate-800 text-lg-start bg-body-tertiary text-muted"
+      // ref={footerRef}
     >
       {/* <!-- Section: Social media --> */}
       <section className="flex justify-content-center justify-content-lg-between p-4 border-bottom text-white">

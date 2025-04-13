@@ -29,10 +29,10 @@ function Header() {
   ];
 
   return (
-    <header className="w-full">
-      <nav className="w-full h-[2.7rem] bg-white shadow-md flex justify-between items-center fixed top-0 left-0 z-50 ">
+    <header className="w-full h-full">
+      <nav className="w-full h-[2.9rem] bg-slate-700 shadow-lg flex justify-between items-center fixed top-0 left-0 z-50 ">
         <div
-          className=" flex text-[18px] font-mono text-red-700 pl-[2.5rem] md:pl-[11rem] italic font-semibold"
+          className=" flex text-xl font-mono text-red-950 pl-[2.5rem] md:pl-[11rem] italic font-semibold"
           style={{ cursor: "pointer" }}
           onClick={() => navigate("/")}
         >
@@ -47,19 +47,13 @@ function Header() {
               <li
                 key={index}
                 onClick={() => navigate(items.slug)}
-                className={`text-[16px]  text-black  font-serif cursor-pointer pr-2  px-[10px] py-[3px] duration-300 ease-in-out hover:opacity-10 
+                className={`text-[17px] text-black/100  font-serif cursor-pointer pr-2  px-[10px] py-[3px] duration-300 ease-in-out hover:opacity-50 
                   ${
                     items.slug === location.pathname
-                      ? "opacity-50"
+                      ? " text-black/50"
                       : "opacity-100"
                   } 
                 `}
-
-                // onMouseOver={(e) => {
-                //   if (items.slug) e.currentTarget.style.opacity = "1";
-                //   else "0.5";
-                // }}
-                // onMouseOut={(e) => (e.currentTarget.style.opacity = "0.5")}
               >
                 {items.name}
               </li>
@@ -87,20 +81,3 @@ function Header() {
 }
 
 export default Header;
-
-{
-  /* <div className="ml-[10rem] text-md ">
-          Explore-<span className="">-Nepal</span>
-        </div>
-        <ul className="flex gap-4  sm:mr-[13rem] ">
-          {navItems.map((items) => (
-            <li
-              key={items.name}
-              onClick={() => navigate(items.slug)}
-              className="text-[16px] text-black font-serif font-medium cursor-pointer hover: bg-white ml-4"
-            >
-              {items.name}
-            </li>
-          ))}
-        </ul> */
-}

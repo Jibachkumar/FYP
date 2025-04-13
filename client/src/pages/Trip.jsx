@@ -12,18 +12,21 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function Trip() {
-  const { register, handleSubmit, control, reset } = useForm();
+  const { register, handleSubmit, control, trigger, reset } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [currentInputIndex, setCurrentInputIndex] = useState(0);
   const [date, setDates] = useState(dayjs());
   const [selectedDuration, setSelectedDuration] = useState(3); // Initialize selectedDuration state
+  const [dataSourceError, setDataSourceError] = useState("");
 
   const inputFields = [
     {
       label: "What destination would be your favorite to visit next?",
       name: "destination",
       placeholder: "Enter places where you wanna go",
+      type: "text",
+      defaultValue: "",
     },
     {
       label: "Choose the start date for your vacation",
@@ -37,11 +40,20 @@ function Trip() {
       options: [3, 5, 7, 10],
     },
     {
-      label: "Who will be on this trip with you?",
+      label: "How many people are with you on this trip?",
       name: "people",
       placeholder: "Enter Number of People",
     },
   ];
+
+  const setError = (value) => {
+    if (value <= 0) {
+      setDataSourceError("Value must be greater than or equal to 0");
+      return false; // Prevent form submission
+    }
+    setDataSourceError(""); // Clear the error message if validation passes
+    return true; // Allow form submission
+  };
 
   const navigateInput = (direction) => {
     setCurrentInputIndex((prevIndex) => {
@@ -64,7 +76,7 @@ function Trip() {
   };
 
   const createTrip = async (data) => {
-    // console.log(data);
+    //const tripDetails = JSON.parse(JSON.stringify(data));
     try {
       const response = await fetch("/api/v1/users/trip", {
         method: "POST",
@@ -75,27 +87,27 @@ function Trip() {
           ...data,
         }),
       });
+      console.log(response);
+
+      const tripData = await response.json();
+      console.log("tripData: ", tripData);
 
       if (!response.ok) {
-        throw new Error(`log in Error ${response.status}!`);
-
-        // if (response.status === 409) {}
-        //   throw new Error("username and email already exit");
+        throw new Error(`log in Error ${response.status}`);
       }
-      const tripData = await response.json();
-      console.log(tripData);
+
       console.log(tripData.message);
       // console.log(tripData.tripData.data);
 
-      if (!tripData) return;
+      if (!tripData) throw new Error(tripData.message);
       dispatch(tripSlice({ tripData: tripData }));
-      // const tripAction = trip({ tripData }); // Creating the action object
-      // console.log(tripAction); // Logging the dispatched action object
+
       navigate("/tripcontent");
 
       //reset();
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
+      new Error(error.message);
     }
   };
 
@@ -105,7 +117,26 @@ function Trip() {
 
   const renderCurrentInput = () => {
     const field = inputFields[currentInputIndex];
-    if (field.type === "date") {
+    if (field.name === "destination") {
+      //console.log(field);
+      return (
+        <>
+          <div className="w-full text-center mt-[5rem]">
+            <Input
+              {...field}
+              {...register(field.name, {
+                required: true,
+                validate: (value) => setError(value),
+              })}
+              className={`lg:w-[20rem] border border-green-500 sm:h-10 font-serif shadow-md`}
+            />
+            {dataSourceError && (
+              <p className=" text-red-500 ">{dataSourceError}</p>
+            )}
+          </div>
+        </>
+      );
+    } else if (field.type === "date") {
       return (
         <>
           <h2 className="mb-8 text-[17px] font-semibold font-serif text-center">
@@ -138,6 +169,7 @@ function Trip() {
           <h2 className="mb-8 text-[17px] font-semibold font-serif text-center">
             {field.label}
           </h2>
+
           <Controller
             name={field.name}
             control={control}
@@ -146,10 +178,11 @@ function Trip() {
               <List
                 size="large"
                 bordered
-                dataSource={[3, 5, 7, 10, 12, 15, 20]}
+                dataSource={[3, 5, 7, 9, 10, 12, 15]}
                 renderItem={(item) => (
                   <List.Item
                     onClick={() => {
+                      console.log(item);
                       field.onChange(item);
                       handleDurationSelection(item); // Update selectedDuration
                     }}
@@ -187,12 +220,19 @@ function Trip() {
       );
     } else {
       return (
-        <div className="w-full mt-8 text-center">
+        // TODO: do not repeat your self
+        <div className="w-full text-center mt-[5rem]">
+          {dataSourceError && (
+            <p className=" text-red-500 ">{dataSourceError}</p>
+          )}
           <Input
             label={field.label}
             placeholder={field.placeholder}
-            {...register(field.name, { required: true })}
-            className={`mt-10 border border-green-500 sm:h-10 font-serif shadow-md`}
+            {...register(field.name, {
+              required: true,
+              validate: (value) => setError(value),
+            })}
+            className={`lg:w-[16rem] border border-green-500 sm:h-10 font-serif shadow-md `}
           />
         </div>
       );
@@ -200,32 +240,58 @@ function Trip() {
   };
 
   return (
-    <div className="w-full pb-32 bg-white">
-      <div className="mt-[3rem] flex justify-between">
+    <div className="w-full pb-32 bg-white h-screen">
+      <div
+        className={`relative top-20 flex  ${
+          currentInputIndex === 0 ? " justify-end " : "justify-between"
+        } `}
+      >
         <button
           type="button"
           onClick={goBack}
           disabled={currentInputIndex === 0}
-          className={`bg-slate-200 text-black font-semibold px-10px py-2px rounded-2xl shadow-md mr-2px border border-slate-300 hover:scale-105 transform transition duration-200 ease-in-out ${
-            currentInputIndex === 0 ? "opacity-50 cursor-not-allowed" : ""
+          className={`text-black px-4 py-2 rounded-md shadow-md mr-2 border hover:scale-105 hover:outline-none transform transition duration-200 ease-in-out ${
+            currentInputIndex === 0 ? " hidden" : ""
           }`}
         >
-          Back
+          <svg
+            className="w-5 mr-2"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+              clipRule="evenodd"
+            ></path>
+          </svg>
         </button>
 
         <button
           type="button"
           onClick={goNext}
           disabled={currentInputIndex === inputFields.length - 1}
-          className={`bg-slate-200 text-black font-semibold px-10px py-2px rounded-2xl shadow-md mr-2px border border-slate-300 hover:scale-105 transform transition duration-200 ease-in-out ${
-            currentInputIndex === inputFields.length - 1
-              ? "opacity-50 cursor-not-allowed"
-              : ""
+          className={`text-black px-4 py-2 rounded-md shadow-md border hover:scale-105 hover:outline-none transform transition duration-200 ease-in-out ${
+            currentInputIndex === inputFields.length - 1 ? " hidden" : ""
+            // opacity-50 cursor-not-allowed
           }`}
         >
-          Next
+          <svg
+            className="w-5 ml-2"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            ></path>
+          </svg>
         </button>
       </div>
+
       <div className="max-w-md mx-auto">
         <form onSubmit={handleSubmit(createTrip)}>
           <div>
@@ -235,6 +301,14 @@ function Trip() {
               </div>
             ))}
           </div>
+          {currentInputIndex === inputFields.length - 1 && (
+            <button
+              type="submit"
+              className="md:ml-[10.5rem] my-8 flex justify-center items-center bg-indigo-700 font-serif text-lg font-medium text-white px-7 rounded-md py-1"
+            >
+              submit
+            </button>
+          )}
         </form>
       </div>
     </div>

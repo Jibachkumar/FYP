@@ -33,6 +33,8 @@ function Login() {
     try {
       setError("");
       const { email, password } = data;
+      if (!email || !password) throw new Error("empty email or password !");
+
       const response = await fetch("/api/v1/users/login", {
         method: "POST",
         headers: {
@@ -50,15 +52,17 @@ function Login() {
 
       const userData = await response.json();
 
+      console.log(userData.message);
+
       if (userData) {
         dispatch(authLogin(userData));
         navigate("/");
         setSuccess(userData.message);
+        console.log(userData.message);
       }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "An error occurred";
-      setError(errorMessage);
+      console.log(error.message);
+      setError(error.message);
     } finally {
       setLoader(false);
     }
@@ -90,17 +94,18 @@ function Login() {
           </div>
           <div className="mt-16 space-y-4 flex flex-col justify-center items-center">
             <Input
+              autoComplete="auto"
               label="Email : "
               placeholder="Email Address"
               type="email"
               {...register("email", {
                 required: true,
               })}
-              autoComplete="email"
               className="md:ml-6 md:w-[20rem]  p-[4px]"
             />
             <div className="relative">
               <Input
+                autoComplete="off"
                 {...register("password", { required: true })}
                 label="Password : "
                 type={showPassword ? "text" : "password"} // Use conditional rendering based on the showPassword state

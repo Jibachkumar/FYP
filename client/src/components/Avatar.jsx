@@ -21,16 +21,6 @@ function AvatarProfile() {
       key: "1",
       slug: "/profile",
     },
-    // {
-    //   label: "Trip",
-    //   key: "2",
-    //   slug: "/trip",
-    // },
-    // {
-    //   label: "Rating",
-    //   key: "3",
-    //   slug: "/rating",
-    // },
     {
       label: "Logout",
       key: "4",

@@ -15,6 +15,10 @@ import Profile from "./components/Profile.jsx";
 import Trip from "./pages/Trip.jsx";
 import TripContent from "./components/editTrip.jsx";
 import Success from "./pages/Success.jsx";
+import Admin from "./pages/Admin.jsx";
+import Package from "./pages/Package.jsx";
+import Review from "./pages/Review.jsx";
+import ViewTrip from "./components/ViewTrip.jsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +28,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/review",
+        element: (
+          <Protected authentication={false}>
+            <Review />,
+          </Protected>
+        ),
       },
       {
         path: "/signup",
@@ -38,6 +50,22 @@ const router = createBrowserRouter([
         element: (
           <Protected authentication={false}>
             <Login />{" "}
+          </Protected>
+        ),
+      },
+      {
+        path: "/trip",
+        element: (
+          <Protected authentication={false}>
+            <Package />
+          </Protected>
+        ),
+      },
+      {
+        path: "/trip/:id",
+        element: (
+          <Protected authentication={false}>
+            <ViewTrip />
           </Protected>
         ),
       },
@@ -70,6 +98,14 @@ const router = createBrowserRouter([
         element: (
           <Protected authentication={false}>
             <Success />{" "}
+          </Protected>
+        ),
+      },
+      {
+        path: "/admincomponent",
+        element: (
+          <Protected authentication={false}>
+            <Admin />{" "}
           </Protected>
         ),
       },

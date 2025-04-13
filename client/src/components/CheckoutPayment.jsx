@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-//import { useSelector } from "react-redux";
-//import { useNavigate } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 
 function CheckoutPayment({ trip }) {
-  //const trip = useSelector((state) => state.trip.tripData.tripData);
-
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
@@ -15,7 +13,6 @@ function CheckoutPayment({ trip }) {
   );
 
   const handleCheckout = async () => {
-    //console.log("button is clicked");
     console.log("trip Data:", trip);
     try {
       const stripe = await stripePromise;
@@ -32,7 +29,6 @@ function CheckoutPayment({ trip }) {
       if (!response.ok) {
         throw new Error(`Error ${response.status}!`);
       }
-      console.log(response);
 
       const session = await response.json();
       console.log("session data", session);

@@ -23,7 +23,9 @@ const Input = React.forwardRef(function Input(
         ref={ref}
         id={id}
         {...props}
-        className={` text-[13px] focus:outline-none  rounded-md bg-slate-50 placeholder-gray-500 shadow-sm ${className}`}
+        className={` text-[13px]  text-center focus:outline-none  rounded-md bg-slate-50 placeholder-slate-300 shadow-sm ${className}`}
+        onFocus={(e) => (e.target.placeholder = "")} // Hide placeholder on focus
+        //onBlur={(e) => (e.target.placeholder = placeholder || "")} // Show placeholder back on blur
       />
     </div>
   );
