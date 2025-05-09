@@ -4,15 +4,17 @@ import Input from "../components/Input";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
+import { Spin } from "antd";
+import { ToastContainer, toast } from "react-toastify";
 
 function Signup() {
   const navigate = useNavigate();
+  const [loader, setLoader] = useState(false);
   const [error, setError] = useState(""); // for error message
   const [success, setSuccess] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
   const { register, handleSubmit } = useForm();
-  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
 
   const handleAvatarChange = (event) => {
@@ -30,8 +32,7 @@ function Signup() {
   };
 
   const create = async (data) => {
-    console.log(data);
-    // console.log(setSstRegister(data));
+    setLoader(true);
 
     try {
       setError("");
@@ -49,7 +50,6 @@ function Signup() {
       });
       console.log(response);
 
-      // to handle success or error useing the ok property of the response object, which indicates whether the request was successful
       if (!response.ok) {
         throw new Error(
           `Failed to register user. Server response with ${response.status}!`
@@ -57,19 +57,22 @@ function Signup() {
       }
 
       const userData = await response.json();
-      console.log(userData);
 
-      setSuccess(`${userData.message}`);
-
-      navigate("/login");
+      if (userData) {
+        setSuccess(`${userData.message}`);
+        sessionStorage.setItem("toastMessage", userData.message);
+        navigate("/login");
+      }
     } catch (error) {
       setError(error.message);
       console.log(error.message);
+    } finally {
+      setLoader(false);
     }
   };
 
   return (
-    <div className=" w-full bg-slate-900">
+    <div className=" w-full h-screen bg-slate-700">
       {/* overlay */}
       <div className=" absolute top-0 left-0 w-full h-full bg-black z-50 opacity-60 blur-[20rem]"></div>
 
@@ -181,6 +184,11 @@ function Signup() {
           </p>
         </div>
       </div>
+      {loader && (
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-opacity-50 z-50">
+          <Spin />
+        </div>
+      )}
     </div>
   );
 }

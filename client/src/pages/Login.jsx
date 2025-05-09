@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { login as authLogin } from "../store/authSlice.js";
@@ -10,12 +10,11 @@ import Input from "../components/Input.jsx";
 
 function Login() {
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
-  // useEffect(() => {}, [isSignup]);
 
   const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
 
@@ -24,8 +23,7 @@ function Login() {
   };
 
   const login = async (data) => {
-    console.log(data);
-    setLoader(true); // Set loader state to true before initiating login
+    setLoader(true);
 
     // Simulate a delay of 1 second (1000 milliseconds)
     // await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -45,23 +43,21 @@ function Login() {
           password,
         }),
       });
+      console.log("response: ", response);
 
       if (!response.ok) {
-        throw new Error(`Error ${response.status}!`);
+        throw new Error(`Login in Error ${response.status}!`);
       }
 
       const userData = await response.json();
 
-      console.log(userData.message);
-
       if (userData) {
         dispatch(authLogin(userData));
-        navigate("/");
-        setSuccess(userData.message);
-        console.log(userData.message);
+        // Save toast message for the next page load
+        sessionStorage.setItem("toastMessage", userData.message);
+        navigate(location.state?.from || "/", { replace: true });
       }
     } catch (error) {
-      console.log(error.message);
       setError(error.message);
     } finally {
       setLoader(false);
@@ -69,9 +65,9 @@ function Login() {
   };
 
   return (
-    <div className=" w-full bg-slate-900">
+    <div className="w-full h-screen">
       {/* overlay */}
-      <div className=" absolute top-0 left-0 w-full h-full bg-black z-50 opacity-60 blur-[20rem]"></div>
+      <div className=" absolute top-0 left-0 w-full bg-black z-50 opacity-20 blur-[20rem]"></div>
 
       <div className="absolute top-0 left-0 z-50 bg-slate-100 w-[70%] sm:w-[35%] rounded-xl shadow-2xl my-[2rem] mx-[4.5rem] sm:mx-[30%]">
         {/* <!-- close button  --> */}
@@ -129,9 +125,6 @@ function Login() {
             </p>
 
             {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-            {success && (
-              <p className="text-red-600 mt-8 text-center">{success}</p>
-            )}
 
             <div className="text-center mt-10 mb-4">
               <button
