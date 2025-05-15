@@ -8,9 +8,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 /*--------- registerUser: this method goes through express so we have req, res --------*/
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
-  // form, json data comes in body
   const { userName, phoneNumber, email, password } = req.body;
-  // console.log("email:",email,"userName:",userName,"password:", typeof password);
 
   //  validation - field empty, username/email unique
   if (
@@ -22,7 +20,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // Check if user already exists: username, email through Check
-  // with the help of user we can directly talk with DB, boz User are created by mongoose
   const existedUser = await User.findOne({
     $or: [{ userName }, { email }],
   });

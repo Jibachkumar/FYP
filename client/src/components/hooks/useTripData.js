@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 
 export const useTripData = () => {
   const [tripData, setTripData] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const fetchTrips = async () => {
+      setLoader(true);
       try {
         const response = await fetch(
           "http://localhost:7000/api/v1/users/alltrip"
@@ -16,14 +18,15 @@ export const useTripData = () => {
 
         const data = await response.json();
         setTripData(data.data);
-        // dispatch(tripSlice({ tripData: data }));
       } catch (error) {
         console.log(error.message);
+      } finally {
+        setLoader(false);
       }
     };
 
     fetchTrips();
   }, []);
 
-  return tripData;
+  return { tripData, loader };
 };

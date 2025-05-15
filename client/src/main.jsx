@@ -64,7 +64,7 @@ const router = createBrowserRouter([
       {
         path: "/trip/:id",
         element: (
-          <Protected authentication={false}>
+          <Protected authentication={true}>
             <ViewTrip />
           </Protected>
         ),

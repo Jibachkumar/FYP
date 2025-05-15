@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
-import { ratingTrip } from "../controllers/rating.user.controller.js";
+import { ratingTrip } from "../controllers/rating.controller.js";
 
-const tripRating = Router();
+const ratingRoute = Router();
 
-tripRating.route("/rating").post(verifyJWT, ratingTrip);
+ratingRoute.route("/rating").post(verifyJWT, ratingTrip);
 
-export { tripRating };
+export { ratingRoute };

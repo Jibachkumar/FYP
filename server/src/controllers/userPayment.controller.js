@@ -2,14 +2,16 @@ import Stripe from "stripe";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { Destination } from "../models/destination.model.js";
 
 const userPayment = asyncHandler(async (req, res) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-  console.log(stripe);
+
   try {
     const { trip } = req.body;
+    console.log("tripData from Payment:", trip);
 
-    if (!trip) throw new ApiError(400, "Invalid input data");
+    if (!trip) throw new ApiError(400, "trip data not available");
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -18,10 +20,10 @@ const userPayment = asyncHandler(async (req, res) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: trip.data.destination,
-              description: `Charge for trip: ${trip.data.destination}`,
+              name: trip.name,
+              description: `Charge for trip: ${trip.name}`,
             },
-            unit_amount: Math.round(trip.data.price * 100), // Amount in cents
+            unit_amount: Math.round(trip.price * 100), // Amount in cents
           },
           quantity: 1,
         },
