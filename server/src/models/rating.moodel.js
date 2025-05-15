@@ -3,19 +3,21 @@ import mongoose, { Schema } from "mongoose";
 const ratingScheme = new Schema({
   rating: {
     type: Number,
-    required: true,
+    required: false,
     min: 1,
     max: 5,
   },
   comments: {
     type: String,
+    required: false,
     lowercase: true,
   },
-  trip: {
+  trip_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Trip",
+    index: true,
   },
-  user: {
+  user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },

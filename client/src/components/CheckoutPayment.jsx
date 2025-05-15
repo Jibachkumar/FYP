@@ -25,6 +25,7 @@ function CheckoutPayment({ trip }) {
           trip,
         }),
       });
+      console.log(response);
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}!`);
@@ -44,6 +45,7 @@ function CheckoutPayment({ trip }) {
 
       setSuccess(session.message);
     } catch (error) {
+      console.log(error.message);
       setError(error.message);
     }
   };

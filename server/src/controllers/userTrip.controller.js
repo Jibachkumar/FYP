@@ -49,7 +49,7 @@ const createUserTrip = asyncHandler(async (req, res) => {
         "destination not found! please provide other destination"
       );
 
-    const { price } = location;
+    const price = 2000;
     const image = location.images.map((img) => img.url);
 
     const tripPrice = await authUser.calculatePrice(people, duration, price);

@@ -89,12 +89,12 @@ function Trip() {
       });
       console.log(response);
 
-      const tripData = await response.json();
-      console.log("tripData: ", tripData);
-
       if (!response.ok) {
         throw new Error(`log in Error ${response.status}`);
       }
+
+      const tripData = await response.json();
+      console.log("tripData: ", tripData);
 
       console.log(tripData.message);
       // console.log(tripData.tripData.data);
@@ -292,7 +292,7 @@ function Trip() {
         </button>
       </div>
 
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto mt-3">
         <form onSubmit={handleSubmit(createTrip)}>
           <div>
             {inputFields.map((_, index) => (

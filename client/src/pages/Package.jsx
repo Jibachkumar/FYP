@@ -3,30 +3,24 @@ import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 import StarIcon from "@mui/icons-material/Star";
 import { useTripData } from "../components/hooks/useTripData";
-
-// import { trip as tripSlice } from "../store/tripPackageSlice.js";
-// import { useDispatch } from "react-redux";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Spin } from "antd";
 
 function Package() {
-  // const dispatch = useDispatch();
-  //const navigate = useNavigate();
+  const { tripData, loader } = useTripData();
 
-  const tripData = useTripData();
+  const navigate = useNavigate();
 
-  // const viewTrip = () => {
-  //   const tripId = data.data.map((data) => data._id);
-  //   navigate(`/trip/${tripId}`)
-  // }
-
-  const tripTitle = `trip 10 Day "(Kathmandu - \n Pokhara)"... `;
-  const text = `"The tour included the iconic Pyramids of Giza, where I \n marveled at the ancient engineering and the enigmatic \n Sphinx."`;
+  const text = `"The tour included the captivating city renowned for its stunning, where I \n natural beauty, particularly its majestic mountain views and the tranquil \n Phewa Lake.."`;
   return (
     <div className="w-full mt-14">
-      {tripData.length > 0 ? (
+      {tripData.length > 0 && (
         <div className="flex flex-col w-full px-4">
           {tripData.map((tripData) => (
-            <div className="flex self-stretch mb-6 px-4 shadow-sm rounded-xl py-3 overflow-hidden border-2 border-gray-200 mx-auto">
+            <div
+              key={tripData._id}
+              className="flex self-stretch mb-6 px-4 shadow-sm rounded-xl py-3 overflow-hidden border-2 border-gray-200 mx-auto"
+            >
               {/* left content */}
               <div className=" lg:h-[12.7rem] h-[11.7rem] border p-1 border-gray-300 rounded-md">
                 <img
@@ -51,14 +45,18 @@ function Package() {
                 <div className="flex ">
                   <div>
                     <h2 className="mt-4 text-xl font-sans lg:font-serif font-semibold whitespace-pre-line">
-                      {tripData.name} {tripTitle}
+                      {tripData.name} trip {tripData.duration} Day "(Kathmandu -{" "}
+                      <br />
+                      {tripData.name}
+                      )"...
                     </h2>
                     {/* TODO: rating */}
                     <div className=" flex gap-x-2">
                       <Box>
                         <Rating
                           name="hover-feedback"
-                          value={tripData.averageRating || 4}
+                          value={tripData.averageRating}
+                          readOnly
                           emptyIcon={
                             <StarIcon
                               style={{ opacity: 0.55 }}
@@ -95,7 +93,7 @@ function Package() {
                       Age Range
                     </span>
                     <span className="font-serif ml-[4.7rem]">
-                      15 to 99 +1 more
+                      From 15 to {tripData.age_range}
                     </span>
                   </h2>
                   <h2 htmlFor="operatedIn">
@@ -103,7 +101,7 @@ function Package() {
                       Operated In
                     </span>
                     <span className="font-serif ml-16">
-                      Nepali, Hindi, English
+                      {tripData.operated_in}
                     </span>
                   </h2>
                   <h2 htmlFor="operator">
@@ -131,14 +129,17 @@ function Package() {
                   </div>
 
                   <div className="flex justify-evenly text-sm font-mono ">
-                    <label htmlFor="price">10 days</label>
-                    <label htmlFor="duration">$100</label>
+                    <label htmlFor="price">{tripData.duration}</label>
+                    <label htmlFor="duration">${tripData.price}</label>
                   </div>
 
                   <p className="mt-4 font-serif text-sm text-black/40">
                     book now + easy payment{" "}
                   </p>
-                  <button className="bg-cyan-700 mt-14 ml-2 px-4 py-1 rounded-2xl shadow-md text-lg font-mono text-white/90 font-semibold outline-none hover:outline-none hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer">
+                  <button
+                    className="bg-cyan-700 mt-14 ml-2 px-4 py-1 rounded-2xl shadow-md text-lg font-mono text-white/90 font-semibold outline-none hover:outline-none hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                    onClick={() => navigate(`/trip/${tripData._id}`)}
+                  >
                     view tour
                   </button>
                 </div>
@@ -146,8 +147,11 @@ function Package() {
             </div>
           ))}
         </div>
-      ) : (
-        <p>Loading</p>
+      )}
+      {loader && (
+        <div className="relative top-0 left-0 w-full h-screen flex items-center justify-center bg-opacity-50 z-50">
+          <Spin />
+        </div>
       )}
     </div>
   );

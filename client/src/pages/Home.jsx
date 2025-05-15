@@ -1,11 +1,9 @@
-import React, { useState } from "react";
-
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Input from "../components/Input";
 import { IoMdSearch } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaFire } from "react-icons/fa";
-import { InfiniteLooper } from "../components/InfiniteLooper";
 
 function Home() {
   const { register } = useForm();
@@ -155,11 +153,12 @@ function Home() {
 
   return (
     <div className=" w-full mt-[2.7rem]">
-      <div className="relative w-full">
+      {/* 1st section */}
+      <div className="relative w-full bg-slate-700">
         {/* <!-- Image --> */}
         <div className="w-full h-full">
           <img
-            className="w-full h-[30rem] object-cover"
+            className="w-full h-[36rem] object-cover"
             src="https://www.andbeyond.com/wp-content/uploads/sites/5/pokhara-valley-nepal.jpg"
             alt=""
           />
@@ -189,7 +188,7 @@ function Home() {
         </div>
 
         {/* curve view {/* <!-- Bottom wave SVG --> */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none rotate-180">
+        {/* <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none rotate-180">
           <svg
             data-name="Layer 1"
             xmlns="http://www.w3.org/2000/svg"
@@ -202,94 +201,184 @@ function Home() {
               className="fill-white"
             ></path>
           </svg>
-        </div>
+        </div> */}
       </div>
 
       {/* <!-- Information Section of Trips, image or styling css --> */}
-      <div className="relative top-0 left-0 bg-sky-950 h-[20rem] flex justify-between items-center">
-        <div className=" relative text-white z-10 pl-[16rem] font-serif pt-4">
-          <h1 className=" font-bold text-2xl text-indigo-950 pl-2">
-            WAYS TO <span className=" text-red-950">TRAVEL</span>
-          </h1>
-          <p className=" font-bold text-lg">
-            We offer you authentic ways <br /> to travel with us Classical{" "}
-            <br /> Adventures, Real Adventures, <br /> or Luxury Adventures!
-          </p>
+      <div className="bg-[#f9f7f0]">
+        <h1
+          className="text-5xl font-extrabold text-gray-800 text-center pt-4"
+          style={{ fontFamily: "'Dancing Script', cursive" }}
+        >
+          Places to go
+        </h1>
+        <h2 className="text-center font-mono font-bold text-xl">
+          Nepal Tourism Board
+        </h2>
+        <div className="relative top-3 left-0 h-[20rem] flex justify-between items-center">
+          <div className=" relative text-black -top-[35px] z-10 pl-[13rem] font-serif">
+            <h1
+              className=" font-extrabold text-5xl text-indigo-950 pl-2"
+              style={{ fontFamily: "'Dancing Script', cursive" }}
+            >
+              WAYS TO <span className=" text-red-950">TRAVEL</span>
+            </h1>
+            <p className=" font-semibold text-indigo-950 italic text-md">
+              We offer you authentic ways to travel with us Classical
+              <br />
+              Adventures, Real Adventures, or Luxury Adventures!
+            </p>
+            <Link to={"/trip"}>
+              <button
+                className="px-5 py-2 mt-3 text-xl font-serif font-semibold sm:text-base text-yellow-800 border border-yellow-400 rounded-md hover:outline-none hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                type="button"
+              >
+                SEE ALL TRIPS
+              </button>
+            </Link>
+          </div>
 
-          <button className=" mt-2 mx-4 border-white border rounded-xl outline-none shadow-md px-3 py-2 hover:outline-none hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer">
-            SEE ALL TRIPS
+          <div className="absolute flex top-0 gap-2 z-10 ml-auto right-16">
+            {images.slice(0, 3).map((img) => (
+              <div
+                key={img.title}
+                className="relative w-[15rem] h-[15rem] overflow-hidden"
+              >
+                <img
+                  className="w-full h-full rounded-full shadow-sm object-cover transition-transform duration-1000 ease-in-out hover:scale-150 cursor-pointer"
+                  src={img.url}
+                  alt={img.title}
+                />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white pointer-events-none">
+                  <h2 className=" relative top-14 font-serif text-3xl ">
+                    {img.title}
+                  </h2>
+                </div>
+                ;
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-[#123458] relative -top-24 font-serif ml-auto lg:right-[357px] z-10 text-white p-8 max-w-[600px]">
+          <h1 className="font-extrabold text-xl leading-tight mb-4">
+            Customize your Trip and book trip package
+          </h1>
+          <p className="text-base leading-relaxed mb-6">
+            Create new core memories with the family this summer in Nepal.{" "}
+            <br />
+            Redeem our offer today!
+          </p>
+          <button
+            className="bg-white text-[#1a1a1a] font-semibold rounded-full px-6 py-2 inline-flex items-center space-x-2 shadow-md hover:shadow-lg transition-shadow"
+            type="button"
+          >
+            <span>Find out more</span>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="#1a1a1a"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
           </button>
         </div>
 
-        <div className="absolute flex top-[4.4rem] gap-8 z-10 ml-auto right-16">
-          {images.slice(0, 3).map((img) => (
-            <div
-              key={img.title}
-              className="relative w-[16rem] h-[18rem] overflow-hidden"
-            >
-              <img
-                className="w-full h-full rounded-xl shadow-sm object-cover transition-transform duration-1000 ease-in-out hover:scale-150 cursor-pointer"
-                src={img.url}
-                alt={img.title}
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-white pointer-events-none">
-                <div
-                  className="relative -top-16 -left-20 py-3 px-5 w-[8rem] bg-orange-700 opacity-60 text-white flex items-center justify-center"
-                  style={{
-                    clipPath:
-                      "polygon(0 50%, 25% 0, 70% 35%, 40% 0, 80% 10%, 90% 80%, 75% 100%, 50% 90%, 25% 100%, 0 90%)",
-                  }}
-                >
-                  <p className="font-semibold font-serif">
-                    let,s smake <br /> Memories <br />
+        <div className=" relative -top-16 z-10">
+          <h1 className=" text-center font-serif font-bold text-xl text-indigo-950 pl-2">
+            A blog with travel inspiration
+          </h1>
+          <p className=" text-center font-mono font-semibold">
+            Take a look here for inspiring information to optimally prepare for{" "}
+            <br />
+            your trip, to make your trip more sustainable or to add some special{" "}
+            <br />
+            elements to your trip.
+          </p>
+
+          <div className=" relative max-w-7xl  mx-auto font-serif">
+            <div className="absolute mt-20 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* <!-- Card Template --> */}
+              <div className="group relative bg-white rounded-xl p-6  overflow-hidden cursor-pointer">
+                <div className="relative z-10 space-y-3">
+                  <h2 className="text-[#2c3e50] text-xl font-bold">
+                    Equipment And Safety
+                  </h2>
+                  <p className="text-[#7f7f7f] text-sm sm:text-base leading-relaxed">
+                    We provide high-quality equipment for tents, foam
+                    mattresses, remote and high-altitude areas—all essential for
+                    porters & staff.
                   </p>
                 </div>
-                <h2 className=" relative top-14 font-serif text-3xl ">
-                  {img.title}
-                </h2>
+                <div className="absolute bottom-0 left-0 w-full h-0 bg-[#0047b3] rounded-b-xl transition-all duration-700 group-hover:h-full z-0"></div>
               </div>
-              ;
-            </div>
-          ))}
-        </div>
 
-        {/* curver */}
-        <div class="absolute top-0 left-0 w-full overflow-hidden leading-none">
-          <svg
-            data-name="Layer 1"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-            className="relative block w-[calc(100%+1.3px)] h-[235px]"
-          >
-            <path
-              d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-              opacity=".25"
-              className="fill-white"
-            ></path>
-            <path
-              d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
-              opacity=".5"
-              className="fill-white"
-            ></path>
-            <path
-              d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
-              className="fill-white"
-            ></path>
-          </svg>
+              {/* <!-- Transportation --> */}
+              <div className="group relative bg-white rounded-xl p-6 overflow-hidden cursor-pointer">
+                <div className="relative z-10 space-y-3">
+                  <h2 className="font-playfair text-[#2c3e50] text-lg sm:text-xl font-bold">
+                    Transportation
+                  </h2>
+                  <p className="text-[#7f7f7f] text-sm sm:text-base leading-relaxed">
+                    Our guides will escort you to all destinations. Trips
+                    outside the Kathmandu Valley use large buses or Toyota Land
+                    Cruisers.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 w-full h-0 bg-[#0047b3] rounded-b-xl transition-all duration-700 group-hover:h-full z-0"></div>
+              </div>
+
+              {/* <!-- Staff --> */}
+              <div className="group relative bg-white rounded-xl p-6  overflow-hidden cursor-pointer">
+                <div className="relative z-10 space-y-3">
+                  <h2 className="font-playfair text-[#2c3e50] text-lg sm:text-xl font-bold">
+                    Staff
+                  </h2>
+                  <p className="text-[#7f7f7f] text-sm sm:text-base leading-relaxed">
+                    Our staff (Guides, Sherpas, cooks) are trained and certified
+                    by Nepal's Ministry of Tourism and Civil Aviation.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 w-full h-0 bg-[#0047b3] rounded-b-xl transition-all duration-700 group-hover:h-full z-0"></div>
+              </div>
+
+              {/* <!-- Price & Guarantee --> */}
+              <div className="group relative bg-white rounded-xl p-6  overflow-hidden cursor-pointer">
+                <div className="relative z-10 space-y-3">
+                  <h2 className="font-playfair text-[#2c3e50] text-lg sm:text-xl font-bold">
+                    Price &amp; Guarantee
+                  </h2>
+                  <p className="text-[#7f7f7f] text-sm sm:text-base leading-relaxed">
+                    Our motto is client satisfaction. We offer fair pricing with
+                    professional-grade services and full transparency.
+                  </p>
+                </div>
+                <div className="absolute bottom-0 left-0 w-full h-0 bg-[#0047b3] rounded-b-xl transition-all duration-700 group-hover:h-full z-0"></div>
+              </div>
+            </div>
+          </div>
         </div>
+        {/* <!-- Large yellow circle top left --> */}
+        <div className="relative -top-[39rem] left-10 w-40 h-40 rounded-full bg-[#e6a600] "></div>
+        {/* <!-- Large green circle bottom right --> */}
+        <div className="relative -top-[25rem] -right-[34rem] w-40 h-40 rounded-full bg-[#3adba1]"></div>
       </div>
 
       {/* infinite swap card  */}
-      <div className=" relative w-full h-[15rem] bg-slate-900">
-        <InfiniteLooper speed={30000} />
-      </div>
+      {/* <div className=" relative w-full h-[15rem] bg-[#FFF2F2]">
+        <InfiniteLooper speed={50000} />
+      </div> */}
 
-      <div className=" w-full md:px-52 bg-gray-950">
+      <div className=" w-full md:px-52 bg-white">
         {/* Nepal tour package */}
         <div className=" relative pt-4">
           <div className=" flex justify-between px-3 py-1 gap-1">
-            <h2 className="font-serif text-white text-xl font-bold">
+            <h2 className="font-serif text-black text-xl font-bold">
               Nepal Tour Package
             </h2>
             <div className=" w-16 h-6 text-center">
@@ -348,7 +437,7 @@ function Home() {
         {/* Trekking place */}
         <div className="relative">
           <div className=" flex justify-between px-3 py-1 gap-1">
-            <h2 className="font-serif text-white text-xl font-bold">
+            <h2 className="font-serif text-black text-xl font-bold">
               Adventure Destinations
             </h2>
             <div className=" w-16 h-6 text-center">

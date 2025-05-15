@@ -9,14 +9,6 @@ function TripContent() {
   const { data } = tripData;
   console.log(data);
 
-  const { currentImageIndex, setCurrentImageIndex } = useState(0);
-
-  const handleImage = () => {
-    setCurrentImageIndex((prev) => {
-      prev ? prev + 1 : 0;
-    });
-  };
-
   return (
     <div className=" py-[3rem] w-full bg-slate-50">
       {tripData && (
@@ -26,17 +18,15 @@ function TripContent() {
           </h2>
           {/* cards render card */}
           <div className="w-full flex justify-center">
-            <div className="w-full ml-[2rem]">
-              <div className="rounded-md shadow-sm border mr-4 flex overflow-hidden ">
-                <img
-                  src={data.images[currentImageIndex]}
-                  alt={data.destination}
-                  className=" max-w-md overflow-hidden  "
-                />
-
-                <button className=" absolute" onClick={handleImage}>
-                  Next
-                </button>
+            <div className="w-full lg:ml-[4rem]">
+              <div className="max-w-5xl mx-auto border bg-slate-800 rounded-md px-3 py-4 grid grid-cols-3 gap-2">
+                {data.image.map((url) => (
+                  <img
+                    src={url}
+                    alt={data.destination}
+                    className="object-cover rounded-sm w-[14rem] h-[9rem]"
+                  />
+                ))}
               </div>
             </div>
             <div className="w-full">

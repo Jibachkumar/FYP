@@ -27,12 +27,17 @@ const tripPlanScheme = new Schema(
     price: {
       type: Number,
     },
-    image: [],
-    rating: {
-      type: Number,
-      min: 1,
-      max: 5,
-    },
+    image: [{ type: String }],
+
+    // // Store the calculated rating
+    // averageRating: {
+    //   type: Number,
+    //   default: 0, // Default rating is 0
+    // },
+    // ratingCount: {
+    //   type: Number,
+    //   default: 0, // Default count is 0p
+    // },
     // Embed user details
     user_id: {
       type: mongoose.Schema.Types.ObjectId,

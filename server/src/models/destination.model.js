@@ -5,9 +5,23 @@ const destinationSchema = new Schema({
     type: String,
     lowercase: true,
     unique: false,
+    required: true,
   },
   price: {
     type: Number,
+    required: true,
+  },
+  // Store the calculated rating
+  averageRating: {
+    type: Number,
+    default: 0, // Default rating is 0
+  },
+  ratingCount: {
+    type: Number,
+    default: 0, // Default count is 0
+  },
+  description: {
+    type: String,
   },
   images: [
     {
@@ -17,6 +31,15 @@ const destinationSchema = new Schema({
       },
     },
   ],
+  duration: {
+    type: Number,
+  },
+  age_range: {
+    type: String,
+  },
+  operated_in: {
+    type: String,
+  },
 });
 
 //TODO:
