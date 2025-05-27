@@ -18,10 +18,10 @@ import { Destination } from "../models/destination.model.js";
 /*---------------------createUserTrip -------------------------*/
 const createUserTrip = asyncHandler(async (req, res) => {
   // get user data
-  const { destination, startDate, duration, people } = req.body;
+  const { name, startDate, duration, people } = req.body;
 
   if (
-    [destination, startDate, duration, people].some(
+    [name, startDate, duration, people].some(
       (field) => typeof field === "string" && field?.trim() === " "
     )
   ) {
@@ -40,7 +40,7 @@ const createUserTrip = asyncHandler(async (req, res) => {
     if (!authUser) throw new ApiError(404, "User not found");
 
     // check if destination exit or not
-    const location = await Destination.findOne({ name: destination });
+    const location = await Destination.findOne({ name: name });
     // console.log("images: ", location.images);
 
     if (!location)
@@ -56,7 +56,7 @@ const createUserTrip = asyncHandler(async (req, res) => {
 
     // create user trip object(holds trip data)
     const userTrip = await Trip.create({
-      destination,
+      name,
       startDate,
       duration,
       people,

@@ -27,7 +27,7 @@ function Footer() {
 
   return (
     <footer
-      className="bg-[#3F7D58] text-lg-start bg-body-tertiary font-serif"
+      className="bg-[#a19e94] text-lg-start bg-body-tertiary font-serif"
       // ref={footerRef}
     >
       {/* <!-- Section: Social media --> */}

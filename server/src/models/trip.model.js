@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const tripPlanScheme = new Schema(
   {
-    destination: {
+    name: {
       type: String,
       lowercase: true,
       trim: true,

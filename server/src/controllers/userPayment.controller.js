@@ -20,10 +20,10 @@ const userPayment = asyncHandler(async (req, res) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: trip.name,
-              description: `Charge for trip: ${trip.name}`,
+              name: trip.data.name,
+              description: `Charge for trip: ${trip.data.name}`,
             },
-            unit_amount: Math.round(trip.price * 100), // Amount in cents
+            unit_amount: Math.round(trip.data.price * 100), // Amount in cents
           },
           quantity: 1,
         },

@@ -7,7 +7,7 @@ function useRedirectToast() {
   // Show toast if sessionStorage has a message
   useEffect(() => {
     const msg = sessionStorage.getItem("toastMessage");
-    console.log(msg);
+    // console.log(msg);
     if (msg) {
       toast.success(msg);
       sessionStorage.removeItem("toastMessage");

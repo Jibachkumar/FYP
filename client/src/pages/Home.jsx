@@ -4,10 +4,13 @@ import Input from "../components/Input";
 import { IoMdSearch } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import { FaFire } from "react-icons/fa";
+import { getTrip } from "../store/tripSlice.js";
+import { useDispatch } from "react-redux";
 
 function Home() {
   const { register } = useForm();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const images = [
     // {
@@ -94,6 +97,7 @@ function Home() {
   const [adventureCurrentImageIndex, setAdventureCurrentImageIndex] =
     useState(0);
   const [adventureIsSliding, setAdventureIsSliding] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
 
   // Function to handle next action for Nepal Tour Package
   const nepalHandleNext = () => {
@@ -151,6 +155,36 @@ function Home() {
     adventureCurrentImageIndex + initialDisplayCount
   );
 
+  const handleDestinationSearch = async (name) => {
+    try {
+      if (!name) return;
+      const response = await fetch(
+        "http://localhost:7000/api/v1/users/alltrip"
+      );
+
+      if (!response.ok) {
+        throw new Error(`${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      const matchDestination = data.data.find(
+        (place) => place.name === name.toLowerCase()
+      );
+      if (matchDestination) {
+        console.log(matchDestination);
+        dispatch(getTrip(matchDestination));
+        navigate("/createtrip");
+      } else {
+        dispatch(getTrip("Sorry did not match destination name"));
+        console.log("Sorry did not match destination name");
+        navigate("/createtrip");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className=" w-full mt-[2.7rem]">
       {/* 1st section */}
@@ -175,15 +209,18 @@ function Home() {
             Enjoy unique journeys with comfort and trust. Your gateway to
             smarter, safer, and more beautiful travel awaits.
           </p>
-          <div className="relative w-[22rem] mt-2">
+          <div className="relative mt-2 flex items-center rounded-full overflow-hidden border border-slate-50  bg-white">
             <Input
-              {...register("createtrip", { required: true })}
               placeholder="Search destinations"
-              autoComplete="createTrip"
-              className="md:w-[22rem] h-[37px] rounded-xl border-2 border-sky-700 pl-10 pr-8 text-base font-serif text-black"
-              onClick={() => navigate("/createtrip")}
+              className="flex-grow text-black px-5 py-[5px] placeholder-gray-400 focus:ring-0 focus:outline-none"
+              onChange={(e) => setSearchInput(e.target.value)}
             />
-            <IoMdSearch className="h-5 w-5 absolute left-4 top-2 text-gray-700" />
+            <button
+              onClick={() => handleDestinationSearch(searchInput)}
+              className="h-full px-3 bg-[#4E6688] hover:bg-gray-900 text-white flex items-center justify-center"
+            >
+              <IoMdSearch className="h-5 w-5" />
+            </button>
           </div>
         </div>
 

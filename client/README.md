@@ -13,4 +13,7 @@ Todos:
 Trip Package: add Home page all feature, add Trip page.
 Review: add review feature.
 add created trip displayed to review trip
+
+use Debounce for optimization process: it pause/hold wait until the user pauses typing based on dependencies
+
 -->

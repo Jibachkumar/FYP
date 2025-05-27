@@ -19,6 +19,13 @@ import Admin from "./pages/Admin.jsx";
 import Package from "./pages/Package.jsx";
 import Review from "./pages/Review.jsx";
 import ViewTrip from "./components/ViewTrip.jsx";
+import {
+  Dashboard,
+  AdminLayout,
+  Employee,
+  Sales,
+  Report,
+} from "./components/index.js";
 
 const router = createBrowserRouter([
   {
@@ -106,6 +113,48 @@ const router = createBrowserRouter([
         element: (
           <Protected authentication={false}>
             <Admin />{" "}
+          </Protected>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: (
+      <Protected authentication={true} role="admin">
+        <AdminLayout />
+      </Protected>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <Protected authentication={true} role="admin">
+            <Dashboard />
+          </Protected>
+        ),
+      },
+      {
+        path: "employee",
+        element: (
+          <Protected authentication={true} role="admin">
+            <Employee />
+          </Protected>
+        ),
+      },
+      {
+        path: "sales",
+        element: (
+          <Protected authentication={true} role="admin">
+            <Sales />
+          </Protected>
+        ),
+      },
+      {
+        path: "report",
+        element: (
+          <Protected authentication={true} role="admin">
+            <Report />
           </Protected>
         ),
       },

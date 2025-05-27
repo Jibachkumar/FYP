@@ -29,10 +29,10 @@ function Header() {
   ];
 
   return (
-    <header className="w-full h-full">
-      <nav className="w-full h-[2.9rem] bg-slate-700 shadow-lg flex justify-between items-center fixed top-0 left-0 z-50 ">
+    <header className="w-full h-full ">
+      <nav className="w-full py-[13px] bg-[#213448] shadow-lg flex justify-between items-center fixed top-0 left-0 z-50 ">
         <div
-          className=" flex text-xl font-mono text-red-950 pl-[2.5rem] md:pl-[11rem] italic font-semibold"
+          className=" flex text-xl font-mono text-red-950 md:pl-[11rem] italic font-semibold"
           style={{ cursor: "pointer" }}
           onClick={() => navigate("/")}
         >

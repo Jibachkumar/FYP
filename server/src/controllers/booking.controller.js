@@ -4,6 +4,7 @@ import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
 import { Destination } from "../models/destination.model.js";
 import { Booking } from "../models/Booking.model.js";
+import { Trip } from "../models/trip.model.js";
 
 const bookingTrip = asyncHandler(async (req, res) => {
   //get trip id from frontend
@@ -55,4 +56,107 @@ const getUserBookingTrip = asyncHandler(async (req, res) => {
   }
 });
 
-export { bookingTrip, getUserBookingTrip };
+const getBookingTrip = asyncHandler(async (_, res) => {
+  try {
+    const bookings = await Booking.find().populate("trip");
+    const trips = await Trip.find();
+
+    // Count bookings per trip name
+    const bookingCountByName = {};
+    let totalEarningsFromBookings = 0;
+    bookings.forEach(({ trip }) => {
+      if (trip?.name) {
+        bookingCountByName[trip.name] =
+          (bookingCountByName[trip.name] || 0) + 1;
+        totalEarningsFromBookings += trip.price || 0;
+      }
+    });
+
+    // Count trips per trip name
+    const tripCountByName = {};
+    let totalEarningsFromTrips = 0;
+    trips.forEach((trip) => {
+      if (trip.name) {
+        tripCountByName[trip.name] = (tripCountByName[trip.name] || 0) + 1;
+        totalEarningsFromTrips += trip.price || 0;
+      }
+    });
+
+    // Find highest booking trip name by count
+    let highestBookingName = null;
+    let maxBookingCount = 0;
+    for (const [name, count] of Object.entries(bookingCountByName)) {
+      if (count > maxBookingCount) {
+        maxBookingCount = count;
+        highestBookingName = name;
+      }
+    }
+
+    // Find highest trip name by count
+    let highestTripName = null;
+    let maxTripCount = 0;
+    for (const [name, count] of Object.entries(tripCountByName)) {
+      if (count > maxTripCount) {
+        maxTripCount = count;
+        highestTripName = name;
+      }
+    }
+
+    // Decide final highest name based on count
+    let finalHighestName = null;
+    if (maxBookingCount > maxTripCount) {
+      finalHighestName = highestBookingName;
+    } else if (maxTripCount > maxBookingCount) {
+      finalHighestName = highestTripName;
+    } else {
+      finalHighestName = highestBookingName || highestTripName;
+    }
+
+    // Find latest created name from bookings and trips
+    let latestCreatedDate = null;
+    let latestCreatedName = null;
+
+    bookings.forEach(({ trip, createdAt }) => {
+      if (trip?.name && createdAt) {
+        if (!latestCreatedDate || createdAt > latestCreatedDate) {
+          latestCreatedDate = createdAt;
+          latestCreatedName = trip.name;
+        }
+      }
+    });
+
+    trips.forEach(({ name, createdAt }) => {
+      if (name && createdAt) {
+        if (!latestCreatedDate || createdAt > latestCreatedDate) {
+          latestCreatedDate = createdAt;
+          latestCreatedName = name;
+        }
+      }
+    });
+
+    const totalEarnings = totalEarningsFromBookings + totalEarningsFromTrips;
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          total: bookings.length + trips.length,
+          highestBookingName,
+          highestTripName,
+          finalHighestName,
+          latestCreatedName,
+          totalEarningsFromBookings,
+          totalEarningsFromTrips,
+          totalEarnings,
+          bookings,
+          trips,
+        },
+        "Trips and bookings fetched successfully"
+      )
+    );
+  } catch (err) {
+    throw new ApiError(500, err.message);
+  }
+});
+
+export { bookingTrip, getUserBookingTrip, getBookingTrip };
