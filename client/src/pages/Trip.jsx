@@ -417,14 +417,29 @@ function Trip() {
                 <div className="w-6"></div>
               </div>
               {/* <!-- Image --> */}
-              <div className="flex justify-center p-5">
+              <div className="flex relative justify-center p-5">
                 <img
-                  alt="Hotel room interior with two twin beds, wooden floor, a desk with a lamp and chair, and a door in the background"
+                  src={tripBookedData.data.image[currentIndex]}
+                  alt={tripBookedData.data.name}
                   className="rounded-xl max-w-full max-h-[320px] object-cover"
                   height="320"
-                  src="https://storage.googleapis.com/a1aa/image/e0f026f3-52a6-4e29-2abf-f28bfa3d81b7.jpg"
                   width="720"
                 />
+                {/* Previous Button */}
+                <button
+                  onClick={goToPrevious}
+                  className="absolute top-1/2 left-20 transform -translate-y-1/2 px-2 bg-white/70 focus:outline-none rounded-full hover:bg-white"
+                >
+                  <i class="fas fa-chevron-left text-base"></i>
+                </button>
+
+                {/* Next Button */}
+                <button
+                  onClick={goToNext}
+                  className="absolute top-1/2 right-20 transform -translate-y-1/2 bg-white/70 focus:outline-none px-2 rounded-full hover:bg-white"
+                >
+                  <i class="fas fa-chevron-right text-base"></i>
+                </button>
               </div>
               {/* <!-- Room Title and View --> */}
               <div className="px-6 pb-4">
@@ -502,16 +517,21 @@ function Trip() {
                   </span>
                   <a
                     href="#"
-                    className="text-xs text-gray-700 underline hover:text-gray-900"
+                    className="text-xs text-green-700 underline hover:text-gray-900"
                   >
                     {tripBookedData.data.duration} day/night
                   </a>
-                  <div className="text-sm font-semibold text-gray-900">
-                    <span className="line-through text-gray-400 mr-1">
-                      $827
+                  <div className="flex items-center gap-1">
+                    <i class="fa-solid fa-id-badge text-lg text-green-700"></i>
+                    <span className="text-base text-green-700">
+                      {tripBookedData.data.people}
                     </span>
+                    <span className="text-sm text-green-700">people</span>
+                  </div>
+                  <div className="text-sm font-semibold text-green-700">
                     ${tripBookedData.data.price} total
                   </div>
+
                   <div className="text-xs text-green-700 flex items-center gap-1">
                     <i className="fas fa-check"></i>
                     <span>Total includes taxes and fees</span>

@@ -1,35 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-
 function Footer() {
-  // const footerRef = useRef(null);
-
-  // useEffect(() => {
-  //   const revealObserver = (entries) => {
-  //     const [entry] = entries;
-  //     //console.log(entry);
-
-  //     if (entry.isIntersecting)
-  //       entry.target.classList.remove("translate-y-1/4");
-  //     else entry.target.classList.add("translate-y-1/4");
-  //   };
-
-  //   const footerObserver = new IntersectionObserver(revealObserver, {
-  //     root: null,
-  //     threshold: 0.1,
-  //   });
-
-  //   if (footerRef.current) {
-  //     footerObserver.observe(footerRef.current);
-  //     // footerRef.style.
-  //   }
-  // }, [footerRef]);
-
   return (
-    <footer
-      className="bg-[#a19e94] text-lg-start bg-body-tertiary font-serif"
-      // ref={footerRef}
-    >
+    <footer className="bg-[#333446] text-lg-start bg-body-tertiary font-serif">
       {/* <!-- Section: Social media --> */}
       <section className="flex justify-content-center justify-content-lg-between p-4 border-bottom text-white">
         {/* <!-- Left --> */}
@@ -59,7 +30,6 @@ function Footer() {
           </a>
         </div>
       </section>
-      {/* <!-- Section: Social media --> */}
 
       {/* <!-- Section: Links  --> */}
       <section className="container text-white">
@@ -74,7 +44,7 @@ function Footer() {
             <div className=" mx-20">
               <p>
                 <a href="#!" className="text-reset">
-                  Angular
+                  JavaScript
                 </a>
               </p>
               <p>
@@ -84,17 +54,16 @@ function Footer() {
               </p>
               <p>
                 <a href="#!" className="text-reset">
-                  Vue
+                  Node
                 </a>
               </p>
               <p>
                 <a href="#!" className="text-reset">
-                  Laravel
+                  Mongoose
                 </a>
               </p>
             </div>
           </div>
-          {/* <!-- Grid column --> */}
 
           {/* <!-- Grid column -->  */}
           <div className="col-md-3 col-lg-2 col-xl-2 mb-4">
@@ -116,17 +85,16 @@ function Footer() {
               </p>
               <p>
                 <a href="#!" className="text-reset">
-                  Orders
+                  Booking
                 </a>
               </p>
               <p>
                 <a href="#!" className="text-reset">
-                  Help
+                  Guides
                 </a>
               </p>
             </div>
           </div>
-          {/* <!-- Grid column --> */}
 
           {/* <!-- Grid column --> */}
           <div className="col-md-4 col-lg-3 col-xl-3 mb-md-0 mb-4">
@@ -135,26 +103,25 @@ function Footer() {
             <h6 className="text-uppercase mb-4 font-serif text-center">
               Contact
             </h6>
-            <div className=" mx-16">
+            <div className=" mx-14">
               <p>
-                <i className="fas fa-home me-3 "></i> New York, NY 10012, US
+                <i className="fas fa-home me-3 "></i> Bagmati, Kathmandu, NP
               </p>
               <p>
                 <i className="fas fa-envelope me-3"></i>
-                info@example.com
+                jibachhkumar@gmail.com
               </p>
               <p>
-                <i className="fas fa-phone me-3 "></i> + 01 234 567 88
+                <i className="fas fa-phone me-3 "></i> +977 9810266710
               </p>
               <p>
-                <i className="fas fa-print me-3"></i> + 01 234 567 89
+                <i className="fas fa-print me-3"></i> +977 9843962498
               </p>
             </div>
           </div>
         </div>
         {/* <!-- Grid row --> */}
       </section>
-      {/* <!-- Section: Links  --> */}
 
       {/* <!-- Copyright --> */}
       <div

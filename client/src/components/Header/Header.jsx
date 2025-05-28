@@ -30,15 +30,15 @@ function Header() {
 
   return (
     <header className="w-full h-full ">
-      <nav className="w-full py-[13px] bg-[#213448] shadow-lg flex justify-between items-center fixed top-0 left-0 z-50 ">
+      <nav className="w-full py-[10px] bg-[#333446] shadow-lg flex justify-between items-center fixed top-0 left-0 z-50 ">
         <div
-          className=" flex text-xl font-mono text-red-950 md:pl-[11rem] italic font-semibold"
+          className=" flex text-xl font-mono  md:pl-[11rem] italic font-semibold bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-transparent bg-clip-text"
           style={{ cursor: "pointer" }}
           onClick={() => navigate("/")}
         >
-          <span className="">explore</span>
+          <span>explore</span>
           <div className="mt-[3px]">
-            <span className="font-bolditalic">nepal</span>
+            <span>nepal</span>
           </div>
         </div>
         <div>
@@ -47,11 +47,11 @@ function Header() {
               <li
                 key={index}
                 onClick={() => navigate(items.slug)}
-                className={`text-[17px] text-black/100  font-serif cursor-pointer pr-2  px-[10px] py-[3px] duration-300 ease-in-out hover:opacity-50 
+                className={`text-[16px] font-serif cursor-pointer pr-2  px-[8px] py-[3px] duration-300 ease-in-out 
                   ${
                     items.slug === location.pathname
-                      ? " text-black/50"
-                      : "opacity-100"
+                      ? " text-black"
+                      : "text-white/70 hover:text-black"
                   } 
                 `}
               >

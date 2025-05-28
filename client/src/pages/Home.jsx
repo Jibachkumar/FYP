@@ -13,30 +13,23 @@ function Home() {
   const dispatch = useDispatch();
 
   const images = [
-    // {
-    //   url: "https://inventpokhara.com/wp-content/uploads/2014/06/pokharacity.jpg",
-    //   text: "must visited palce",
-    //   title: "Pokhara",
-    // },
     {
       url: "https://t4.ftcdn.net/jpg/01/06/24/19/360_F_106241927_AQ3BRjRscmA0GKoYX4VdxQfQLPREZYfa.jpg",
       text: "chitwan national park",
-      title: "Chitwan",
+      title: "Classic",
+      name: "Chitwan",
     },
     {
       url: "https://c8.alamy.com/comp/F06ABC/famous-janaki-mandir-goddess-janaki-temple-in-janakpurdhaam-nepal-F06ABC.jpg",
       text: "birthplace of god sita",
-      title: "Janakpur",
+      title: "Family",
+      name: "Janakpur",
     },
-    // {
-    //   url: "https://www.nepaliteatraders.com/cdn/shop/articles/Ilam_Tea_Gardens_1600x.jpg?v=1568132900",
-    //   text: "stunning natural beauty",
-    //   title: "Ilam",
-    // },
     {
       url: "https://booking-manager-api-hop-nepal.s3.eu-west-1.amazonaws.com/file-manager/page/image-jiri-dolakha-district.jpg",
       text: "switzerland of nepal",
-      title: "Jiri",
+      title: "Adventure",
+      name: "Jiri",
     },
     {
       url: "https://visiteverestnepal.com/wp-content/uploads/2022/10/Pathibhara-Temple-768x576.jpg",
@@ -172,12 +165,10 @@ function Home() {
         (place) => place.name === name.toLowerCase()
       );
       if (matchDestination) {
-        console.log(matchDestination);
         dispatch(getTrip(matchDestination));
         navigate("/createtrip");
       } else {
         dispatch(getTrip("Sorry did not match destination name"));
-        console.log("Sorry did not match destination name");
         navigate("/createtrip");
       }
     } catch (error) {
@@ -209,7 +200,7 @@ function Home() {
             Enjoy unique journeys with comfort and trust. Your gateway to
             smarter, safer, and more beautiful travel awaits.
           </p>
-          <div className="relative mt-2 flex items-center rounded-full overflow-hidden border border-slate-50  bg-white">
+          <div className="relative w-[25rem] mt-2 flex items-center rounded-full overflow-hidden border border-slate-50  bg-white">
             <Input
               placeholder="Search destinations"
               className="flex-grow text-black px-5 py-[5px] placeholder-gray-400 focus:ring-0 focus:outline-none"
@@ -217,31 +208,15 @@ function Home() {
             />
             <button
               onClick={() => handleDestinationSearch(searchInput)}
-              className="h-full px-3 bg-[#4E6688] hover:bg-gray-900 text-white flex items-center justify-center"
+              className="h-full px-3 ml-[6.5rem] bg-[#FE5D26] hover:bg-gray-900 text-white flex items-center justify-center"
             >
               <IoMdSearch className="h-5 w-5" />
             </button>
           </div>
         </div>
-
-        {/* curve view {/* <!-- Bottom wave SVG --> */}
-        {/* <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none rotate-180">
-          <svg
-            data-name="Layer 1"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-            className="relative block w-[calc(100%+1.3px)] h-[41px]"
-          >
-            <path
-              d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
-              className="fill-white"
-            ></path>
-          </svg>
-        </div> */}
       </div>
 
-      {/* <!-- Information Section of Trips, image or styling css --> */}
+      {/*  2nd section  */}
       <div className="bg-[#f9f7f0]">
         <h1
           className="text-5xl font-extrabold text-gray-800 text-center pt-4"
@@ -326,6 +301,7 @@ function Home() {
           </button>
         </div>
 
+        {/* Policy writing  */}
         <div className=" relative -top-16 z-10">
           <h1 className=" text-center font-serif font-bold text-xl text-indigo-950 pl-2">
             A blog with travel inspiration
@@ -400,17 +376,15 @@ function Home() {
             </div>
           </div>
         </div>
+
         {/* <!-- Large yellow circle top left --> */}
         <div className="relative -top-[39rem] left-10 w-40 h-40 rounded-full bg-[#e6a600] "></div>
+
         {/* <!-- Large green circle bottom right --> */}
         <div className="relative -top-[25rem] -right-[34rem] w-40 h-40 rounded-full bg-[#3adba1]"></div>
       </div>
 
-      {/* infinite swap card  */}
-      {/* <div className=" relative w-full h-[15rem] bg-[#FFF2F2]">
-        <InfiniteLooper speed={50000} />
-      </div> */}
-
+      {/* 3rd section */}
       <div className=" w-full md:px-52 bg-white">
         {/* Nepal tour package */}
         <div className=" relative pt-4">

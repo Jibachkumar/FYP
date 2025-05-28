@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { useReactToPrint } from "react-to-print";
 
 const ComponentToPrint = React.forwardRef((props, ref) => (
@@ -109,6 +109,60 @@ ComponentToPrint.displayName = "ComponentToPrint";
 
 export default function Report() {
   const componentRef = useRef(null);
+  const [tripData, setTripData] = useState([]);
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      // setLoader(true);
+      try {
+        const response = await fetch(
+          "http://localhost:7000/api/v1/users/trip/userbookedtripdetails"
+        );
+
+        if (!response.ok) {
+          throw new Error(`${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setTripData([data.data]);
+      } catch (error) {
+        console.log(error.message);
+      } finally {
+        // setLoader(false);
+      }
+    };
+
+    fetchTrips();
+  }, []);
+
+  const allItems = useMemo(() => {
+    const bookings = tripData[0]?.bookings || [];
+    const trips = tripData[0]?.trips || [];
+
+    // Normalize bookings
+    const bookingItems = bookings.map((b) => ({
+      type: "booking",
+      userName: b.user?.userName,
+      phoneNumber: b.user?.phoneNumber,
+      email: b.user?.email,
+      destination: b.trip?.name,
+      duration: b.trip?.duration,
+    }));
+
+    // Normalize trips
+    const tripItems = trips.map((t) => ({
+      type: "trip",
+      userName: t.user_id.userName,
+      phoneNumber: t.user_id?.phoneNumber || "N/A",
+      email: t.user_id?.email || "N/A",
+      destination: t.name || t.destination,
+      duration: t.duration,
+    }));
+
+    // Combine both arrays
+    return [...bookingItems, ...tripItems];
+  }, [tripData]);
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
