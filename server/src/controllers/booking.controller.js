@@ -159,4 +159,34 @@ const getBookingTrip = asyncHandler(async (_, res) => {
   }
 });
 
-export { bookingTrip, getUserBookingTrip, getBookingTrip };
+const getUserBookedDetails = asyncHandler(async (req, res) => {
+  try {
+    const bookings = await Booking.find().populate("trip").populate("user"); // populate user in bookings
+
+    const trips = await Trip.find().populate("user_id"); // populate user in trips
+
+    if (!bookings || !trips) {
+      throw new ApiError(500, "Internal Server Error");
+    }
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          bookings, // each booking includes trip + user
+          trips, // each trip includes user info via user_id
+        },
+        "Trip booked user details fetched successfully"
+      )
+    );
+  } catch (err) {
+    throw new ApiError(500, err.message);
+  }
+});
+
+export {
+  bookingTrip,
+  getUserBookingTrip,
+  getBookingTrip,
+  getUserBookedDetails,
+};

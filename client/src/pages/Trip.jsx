@@ -9,21 +9,31 @@ import { useNavigate } from "react-router-dom";
 import { IoMdSearch } from "react-icons/io";
 import { getTrip } from "../store/tripSlice.js";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import CheckoutPayment from "../components/CheckoutPayment.jsx";
 
 function Trip() {
   const tripData = useSelector((state) => state.trip.trips);
+  console.log(tripData);
 
-  const { register, handleSubmit, control, watch, setValue } = useForm({
+  const tripBookedData = useSelector((state) => state.trip?.tripData?.tripData);
+  console.log(tripBookedData?.success);
+  console.log(tripBookedData);
+
+  const { register, handleSubmit, control, watch, setValue, reset } = useForm({
     defaultValues: {
       name: tripData?.name || "",
+      startDate: null,
+      duration: "",
+      people: "",
+      message: "",
     },
   });
 
   useEffect(() => {
-    if (tripData?.name) {
-      setValue("destination", tripData.name); // ✅ Set on initial load
+    if (tripData && typeof tripData === "object" && tripData.name) {
+      setValue("name", tripData.name);
     }
-  }, [tripData, setValue]);
+  }, [tripData?.name, setValue]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,6 +42,21 @@ function Trip() {
   const [searchInput, setSearchInput] = useState("");
 
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [tripView, setTripView] = useState(false);
+  const [selectedExtra, setSelectedExtra] = useState("no-extras");
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) =>
+      prev === 0 ? tripBookedData.data.image.length - 1 : prev - 1
+    );
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) =>
+      prev === tripBookedData.data.image.length - 1 ? 0 : prev + 1
+    );
+  };
 
   const setError = (value) => {
     if (value <= 0) {
@@ -60,10 +85,10 @@ function Trip() {
       );
       if (matchDestination) {
         dispatch(getTrip(matchDestination));
-        setValue("destination", matchDestination.name);
+        setValue("name", matchDestination.name);
       } else {
         dispatch(getTrip("Sorry did not match destination name"));
-        setValue("destination", "");
+        setValue("name", "");
       }
     } catch (error) {
       console.log(error.message);
@@ -97,7 +122,11 @@ function Trip() {
 
       if (!tripData) throw new Error(tripData.message);
       dispatch(tripSlice({ tripData: tripData }));
-      navigate("/tripcontent");
+      // navigate("/tripcontent");
+      setTripView(true);
+      setSearchInput("");
+
+      reset();
     } catch (error) {
       console.log(error.message);
       new Error(error.message);
@@ -369,6 +398,140 @@ function Trip() {
           )}
         </div>
       </div>
+      {tripView && (
+        <div className="fixed top-14 inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-lg">
+            <div className="overflow-y-auto">
+              {/* <!-- Header --> */}
+              <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
+                <button
+                  aria-label="Close"
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  onClick={() => setTripView(false)}
+                >
+                  <i className="fas fa-times text-lg"></i>
+                </button>
+                <h2 className="text-lg font-semibold text-blue-950 font-serif">
+                  Trip information
+                </h2>
+                <div className="w-6"></div>
+              </div>
+              {/* <!-- Image --> */}
+              <div className="flex justify-center p-5">
+                <img
+                  alt="Hotel room interior with two twin beds, wooden floor, a desk with a lamp and chair, and a door in the background"
+                  className="rounded-xl max-w-full max-h-[320px] object-cover"
+                  height="320"
+                  src="https://storage.googleapis.com/a1aa/image/e0f026f3-52a6-4e29-2abf-f28bfa3d81b7.jpg"
+                  width="720"
+                />
+              </div>
+              {/* <!-- Room Title and View --> */}
+              <div className="px-6 pb-4">
+                <h3 className="font-semibold text-gray-900 text-base mb-1 font-serif">
+                  {tripBookedData.data.name} trip
+                </h3>
+                <p className="text-gray-500 text-sm font-mono">
+                  {tripData.description}
+                </p>
+              </div>
+              {/* <!-- Features --> */}
+              <div className="border-t border-gray-200 px-6 py-4 flex justify-between text-center text-gray-700 text-xs select-none">
+                <div className="flex flex-col items-center space-y-1 w-1/3">
+                  <i class="fa-solid fa-map-location text-lg"></i>
+                  <span className="font-serif">Hotel available</span>
+                </div>
+                <div className="flex flex-col items-center space-y-1 w-1/3">
+                  <i className="fas fa-snowflake text-lg"></i>
+                  <span className="font-serif">Food available</span>
+                </div>
+                <div className="flex flex-col items-center space-y-1 w-1/3">
+                  <i class="fa-solid fa-truck-pickup text-lg"></i>
+                  <span className="font-serif">transport available</span>
+                </div>
+              </div>
+
+              {/* booking details */}
+              <div className="max-w-3xl  mx-auto border border-gray-300 rounded-lg p-5 mb-4 font-serif">
+                <h2 className="text-gray-900 font-semibold text-lg mb-3">
+                  Price details
+                </h2>
+                <div className="flex justify-between text-gray-700 text-sm mb-2">
+                  <span className="font-semibold">Extras</span>
+                  <span className="text-xs self-center">price</span>
+                </div>
+                <div>
+                  <label className="flex items-center mb-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="extras"
+                      value="no-extras"
+                      defaultChecked
+                      className="form-radio text-blue-600 border-gray-300 focus:ring-0"
+                    />
+
+                    <span className="ml-2 text-gray-700 text-sm">
+                      No extras
+                    </span>
+                    <span className="ml-auto text-gray-700 text-sm">+ $0</span>
+                  </label>
+                  <label className="flex items-center mb-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="extras"
+                      value="no-extras"
+                      checked={selectedExtra === "no-extras"}
+                      onChange={(e) => setSelectedExtra(e.target.value)}
+                      className="form-radio text-blue-600 border-gray-300 focus:ring-0"
+                    />
+                    <span className="ml-2 text-gray-700 text-sm">
+                      Trip price
+                    </span>
+                    <span className="ml-auto text-gray-700 text-sm">
+                      + ${tripBookedData.data.price}
+                    </span>
+                  </label>
+                </div>
+                <div className="text-xs text-red-700 mb-3 flex items-center gap-1">
+                  <span>Non-refundable</span>
+                  <i className="fas fa-info-circle"></i>
+                </div>
+                <div className="flex flex-col items-end space-y-1 mb-4">
+                  <span className="bg-green-700 text-white text-xs font-medium px-2 py-0.5 rounded">
+                    $10% vat include
+                  </span>
+                  <a
+                    href="#"
+                    className="text-xs text-gray-700 underline hover:text-gray-900"
+                  >
+                    {tripBookedData.data.duration} day/night
+                  </a>
+                  <div className="text-sm font-semibold text-gray-900">
+                    <span className="line-through text-gray-400 mr-1">
+                      $827
+                    </span>
+                    ${tripBookedData.data.price} total
+                  </div>
+                  <div className="text-xs text-green-700 flex items-center gap-1">
+                    <i className="fas fa-check"></i>
+                    <span>Total includes taxes and fees</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-md py-2 mb-2"
+                >
+                  <CheckoutPayment trip={tripBookedData} />
+                </button>
+                <p className="text-center text-xs text-gray-600">
+                  You will not be charged yet
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

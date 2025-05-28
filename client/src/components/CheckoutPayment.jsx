@@ -53,11 +53,7 @@ function CheckoutPayment({ trip }) {
   return (
     <>
       {trip && (
-        <button
-          className=" lg:w-96 bg-cyan-600 px-4 py-1 shadow-md rounded-md font-semibold"
-          onClick={handleCheckout}
-          type="submit"
-        >
+        <button className="" onClick={handleCheckout} type="submit">
           Book a Trip
         </button>
       )}

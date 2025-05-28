@@ -106,7 +106,7 @@ function Dashboard() {
                 <i className="fas fa-chart-line text-sm"></i>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-gray-900">{tripData.total}</p>
+                <p className="font-semibold text-blue-900">{tripData.total}</p>
                 <p className="text-xs text-gray-600">Total Booking</p>
               </div>
             </div>
@@ -115,7 +115,7 @@ function Dashboard() {
                 <i className="fas fa-cash-register text-sm"></i>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold text-blue-900">
                   {tripData.finalHighestName}
                 </p>
                 <p className="text-xs text-gray-600">Highest Booked Trip</p>
@@ -126,7 +126,7 @@ function Dashboard() {
                 <span className="text-sm font-semibold">$</span>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold text-blue-900">
                   {tripData.totalEarnings}
                 </p>
                 <p className="text-xs text-gray-600">Total Earning</p>

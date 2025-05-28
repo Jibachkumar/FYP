@@ -1,7 +1,64 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 function Sales() {
+  const [tripData, setTripData] = useState([]);
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      // setLoader(true);
+      try {
+        const response = await fetch(
+          "http://localhost:7000/api/v1/users/trip/userbookedtripdetails"
+        );
+
+        if (!response.ok) {
+          throw new Error(`${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setTripData([data.data]);
+      } catch (error) {
+        console.log(error.message);
+      } finally {
+        // setLoader(false);
+      }
+    };
+
+    fetchTrips();
+  }, []);
+
+  const allItems = useMemo(() => {
+    const bookings = tripData[0]?.bookings || [];
+    const trips = tripData[0]?.trips || [];
+
+    // Normalize bookings
+    const bookingItems = bookings.map((b) => ({
+      type: "booking",
+      userName: b.user?.userName,
+      phoneNumber: b.user?.phoneNumber,
+      email: b.user?.email,
+      destination: b.trip?.name,
+      duration: b.trip?.duration,
+    }));
+
+    // Normalize trips
+    const tripItems = trips.map((t) => ({
+      type: "trip",
+      userName: t.user_id.userName,
+      phoneNumber: t.user_id?.phoneNumber || "N/A",
+      email: t.user_id?.email || "N/A",
+      destination: t.name || t.destination,
+      duration: t.duration,
+    }));
+
+    // Combine both arrays
+    return [...bookingItems, ...tripItems];
+  }, [tripData]);
+
+  console.log(allItems);
+
   return (
     <div>
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,7 +109,7 @@ function Sales() {
           </div>
         </section>
 
-        <section className="border border-[#E5E7EB] rounded-lg p-4">
+        <section className="border border-[#E5E7EB] bg-white rounded-lg p-4">
           <div className="flex space-x-4 mb-3">
             <button
               type="button"
@@ -76,44 +133,59 @@ function Sales() {
                 </th>
                 <th className="pl-2 pr-3 py-2 text-left align-top font-semibold text-[#6B7280] select-none cursor-pointer">
                   <div className="flex items-center space-x-1">
-                    <span>Name / VAT</span>
-                    <i className="fas fa-sort text-[#9CA3AF]"></i>
+                    <span className=" font-serif text-blue-900">userName</span>
+                    <i className="fas fa-sort text-blue-900"></i>
                   </div>
                 </th>
                 <th className="pl-2 pr-3 py-2 text-left align-top font-semibold text-[#6B7280] select-none cursor-pointer">
                   <div className="flex items-center space-x-1">
-                    <span>Phone / email</span>
-                    <i className="fas fa-sort text-[#9CA3AF]"></i>
+                    <span className="font-serif text-blue-900">
+                      Phone / email
+                    </span>
+                    <i className="fas fa-sort text-blue-900"></i>
                   </div>
                 </th>
                 <th className="pl-2 pr-3 py-2 text-left align-top font-semibold text-[#6B7280] select-none cursor-pointer">
                   <div className="flex items-center space-x-1">
-                    <span>Address</span>
-                    <i className="fas fa-sort text-[#9CA3AF]"></i>
+                    <span className="font-serif text-blue-900">
+                      Destination
+                    </span>
+                    <i className="fas fa-sort text-blue-900"></i>
+                  </div>
+                </th>
+                <th className="pl-2 pr-3 py-2 text-left align-top font-semibold text-[#6B7280] select-none cursor-pointer">
+                  <div className="flex items-center space-x-1">
+                    <span className="font-serif text-blue-900">Duration</span>
+                    <i className="fas fa-sort text-blue-900"></i>
                   </div>
                 </th>
               </tr>
             </thead>
-            <tbody className="text-[14px] text-[#111827]">
-              <tr className="border-b border-[#E5E7EB]">
-                <td className="pl-2 pr-3 py-3 align-top">
-                  <input
-                    type="checkbox"
-                    aria-label="Select Lance Armstrong"
-                    className="cursor-pointer"
-                  />
-                </td>
-                <td className="pl-2 pr-3 py-3 align-top font-semibold">
-                  Jibachh Kumar
-                </td>
-                <td className="pl-2 pr-3 py-3 align-top leading-tight">
-                  <div>9810266710</div>
-                  <div>info@jibachh.net</div>
-                </td>
-                <td className="pl-2 pr-3 py-3  align-top leading-tight">
-                  <div>Kathmandu, Bagmati</div>
-                </td>
-              </tr>
+            <tbody className="text-[14px] text-blue-900 font-serif">
+              {allItems.map((trip) => (
+                <tr key={trip._id} className="border-b border-[#E5E7EB]">
+                  <td className="pl-2 pr-3 py-3 align-top">
+                    <input
+                      type="checkbox"
+                      aria-label={`Select ${trip.type || "User"}`}
+                      className="cursor-pointer"
+                    />
+                  </td>
+                  <td className="pl-2 pr-3 py-3 align-top font-semibold">
+                    {trip.userName || "N/A"}
+                  </td>
+                  <td className="pl-2 pr-3 py-3 align-top leading-tight">
+                    <div>{trip.phoneNumber || "N/A"}</div>
+                    <div>{trip.email || "N/A"}</div>
+                  </td>
+                  <td className="pl-2 pr-3 py-3 align-top leading-tight">
+                    <div>{trip.destination || "N/A"}</div>
+                  </td>
+                  <td className="pl-2 pr-3 py-3 align-top leading-tight">
+                    <div>{trip.duration || "N/A"}</div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
 
