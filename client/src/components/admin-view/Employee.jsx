@@ -2,7 +2,7 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 
-function Employee() {
+function post() {
   const { register, handleSubmit, reset } = useForm();
 
   const postTrip = async (data) => {
@@ -15,6 +15,7 @@ function Employee() {
     formData.append("duration", data.duration);
     formData.append("age_range", data.age_range);
     formData.append("operated_in", data.operated_in);
+    formData.append("type", data.type);
     // ✅ Append multiple files
     for (let i = 0; i < data.images.length; i++) {
       formData.append("images", data.images[i]);
@@ -73,6 +74,18 @@ function Employee() {
                 {...register("duration", { required: true })}
                 type="text"
                 placeholder="duration."
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+              />
+            </div>
+
+            <div>
+              <label for="number" className="block font-semibold mb-1">
+                Type.
+              </label>
+              <input
+                {...register("type", { required: true })}
+                type="text"
+                placeholder="type"
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
               />
             </div>
@@ -161,4 +174,4 @@ function Employee() {
   );
 }
 
-export default Employee;
+export default post;

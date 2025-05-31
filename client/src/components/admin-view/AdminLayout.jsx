@@ -82,7 +82,7 @@ function AdminLayout() {
             Sales
           </NavLink>
           <NavLink
-            to="employee"
+            to="post"
             className={({ isActive }) =>
               `flex items-center gap-2 px-4 py-2 rounded-r-lg ${
                 isActive
@@ -103,27 +103,6 @@ function AdminLayout() {
               <rect x="3" y="19" width="18" height="2" rx="1" />
             </svg>
             POST
-          </NavLink>
-
-          <NavLink
-            to="report"
-            className={({ isActive }) =>
-              `flex items-center gap-2 px-4 py-2 rounded-r-lg ${
-                isActive
-                  ? "bg-sky-200 text-[#393E46]"
-                  : "text-[#393E46] hover:bg-sky-50"
-              }`
-            }
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M3 17h2v-6H3v6zm4 0h2v-4H7v4zm4 0h2v-8h-2v8zm4 0h2v-2h-2v2zm4 0h2v-10h-2v10z" />
-            </svg>
-            Report
           </NavLink>
         </div>
       </aside>

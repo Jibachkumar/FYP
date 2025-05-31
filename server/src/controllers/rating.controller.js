@@ -22,17 +22,17 @@ const ratingTrip = asyncHandler(async (req, res) => {
     // check if login user created this trip
     const bookingData = await Booking.findOne({ user: user._id });
 
-    if (bookingData)
-      throw new ApiError(403, "you already rated you cannot rate twice");
+    // if (bookingData)
+    //   throw new ApiError(403, "you already rated you cannot rate twice");
 
-    // check user already rating
-    const existingRating = await Rating.findOne({
-      user_id: user._id,
-      trip_id: bookingData.trip,
-    });
+    // // check user already rating
+    // const existingRating = await Rating.findOne({
+    //   user_id: user._id,
+    //   trip_id: bookingData.trip,
+    // });
 
-    if (!existingRating)
-      throw ApiError(409, "already rated you cannot rate twice");
+    // if (!existingRating)
+    //   throw ApiError(409, "already rated you cannot rate twice");
 
     // add rating with some comments
     const rate = await Rating.create({

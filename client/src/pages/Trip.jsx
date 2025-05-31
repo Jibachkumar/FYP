@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Input from "../components/Input";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -140,7 +140,7 @@ function Trip() {
       {tripData.images ? (
         <div className="w-full h-full">
           <img
-            src={tripData.images[5].url}
+            src={tripData.images[0].url}
             alt=""
             className="w-full h-[32rem] object-cover"
           />
@@ -212,12 +212,12 @@ function Trip() {
                   </div>
                 ) : (
                   <div>
-                    <h2 class="text-2xl font-semibold flex flex-wrap font-serif items-center gap-2">
+                    <h2 className="text-2xl font-semibold flex flex-wrap font-serif items-center gap-2">
                       {tripData.name.charAt(0).toUpperCase() +
                         tripData.name.slice(1)}
                     </h2>
 
-                    <div class="flex items-center space-x-1 mt-2 text-lg">
+                    <div className="flex items-center space-x-1 mt-2 text-lg">
                       <div className=" flex gap-x-2">
                         <Box>
                           <Rating
@@ -238,53 +238,53 @@ function Trip() {
                       </div>
                     </div>
 
-                    <div class="mt-4 text-gray-700 font-mono text-sm leading-relaxed max-w-3xl">
-                      <p class="mt-1">{tripData.description}</p>
+                    <div className="mt-4 text-gray-700 font-mono text-sm leading-relaxed max-w-3xl">
+                      <p className="mt-1">{tripData.description}</p>
 
-                      <p class="mt-1">
-                        <span class="italic font-semibold text-green-700">
+                      <p className="mt-1">
+                        <span className="italic font-semibold text-green-700">
                           Price includes:
                         </span>
                       </p>
-                      <ul class="list-disc list-inside mt-1 space-y-0.5 text-gray-700">
+                      <ul className="list-disc list-inside mt-1 space-y-0.5 text-gray-700">
                         <li>Comfortable transport during the tour.</li>
                         <li>include food and hotel.</li>
                         <li>Entrance fee.</li>
                       </ul>
                     </div>
 
-                    <div class="mt-8 flex flex-wrap gap-2 max-w-md">
+                    <div className="mt-8 flex flex-wrap gap-2 max-w-md">
                       <button
-                        class="flex items-center bg-[#3fc1c9] text-white px-4 py-2 text-sm font-medium rounded-sm"
+                        className="flex items-center bg-[#3fc1c9] text-white px-4 py-2 text-sm font-medium rounded-sm"
                         type="button"
                       >
-                        <i class="far fa-calendar-alt mr-2"></i>1
+                        <i className="far fa-calendar-alt mr-2"></i>1
                       </button>
                       <button
-                        class="bg-[#3fc1c9] text-white px-6 py-2 text-sm font-light rounded-sm"
+                        className="bg-[#3fc1c9] text-white px-6 py-2 text-sm font-light rounded-sm"
                         type="button"
                       >
                         Classic &amp; Cultural
                       </button>
                       <button
-                        class="bg-[#3fc1c9] text-white px-6 py-2 text-sm font-light rounded-sm"
+                        className="bg-[#3fc1c9] text-white px-6 py-2 text-sm font-light rounded-sm"
                         type="button"
                       >
                         Popular Tours
                       </button>
                     </div>
 
-                    <div class="mt-8 max-w-md flex justify-between text-sm font-semibold text-gray-900">
+                    <div className="mt-8 max-w-md flex justify-between text-sm font-semibold text-gray-900">
                       <span className="font-mono">Departure Time</span>
                       <span className="text-green-700 font-mono">10:00 AM</span>
                     </div>
-                    <div class="mt-8 max-w-md flex justify-between text-sm font-semibold text-gray-900">
+                    <div className="mt-8 max-w-md flex justify-between text-sm font-semibold text-gray-900">
                       <span className="font-mono">Departure Location</span>
                       <span className="text-green-700 font-mono">
                         Kathmandu
                       </span>
                     </div>
-                    <div class="mt-8 max-w-md flex justify-between text-sm font-semibold text-gray-900">
+                    <div className="mt-8 max-w-md flex justify-between text-sm font-semibold text-gray-900">
                       <span className="font-mono">Operated In</span>
                       <span className="text-green-700 font-mono">
                         {tripData.operated_in}
@@ -299,8 +299,9 @@ function Trip() {
                 <h1 className="ml-3 font-serif text-xl pb-2">Gallery</h1>
                 {tripData.images ? (
                   <div className="grid grid-cols-2 lg:grid-cols-3 gap-y-2 ">
-                    {tripData.images.map((img) => (
+                    {tripData.images.map((img, i) => (
                       <img
+                        key={i}
                         src={img.url}
                         alt={img._id}
                         className="w-[380px] h-[280px] mx-auto rounded-sm object-cover"
@@ -498,7 +499,7 @@ function Trip() {
                   onClick={goToPrevious}
                   className="absolute top-1/2 left-20 transform -translate-y-1/2 px-2 bg-white/70 focus:outline-none rounded-full hover:bg-white"
                 >
-                  <i class="fas fa-chevron-left text-base"></i>
+                  <i className="fas fa-chevron-left text-base"></i>
                 </button>
 
                 {/* Next Button */}
@@ -506,7 +507,7 @@ function Trip() {
                   onClick={goToNext}
                   className="absolute top-1/2 right-20 transform -translate-y-1/2 bg-white/70 focus:outline-none px-2 rounded-full hover:bg-white"
                 >
-                  <i class="fas fa-chevron-right text-base"></i>
+                  <i className="fas fa-chevron-right text-base"></i>
                 </button>
               </div>
               {/* <!-- Room Title and View --> */}
@@ -521,7 +522,7 @@ function Trip() {
               {/* <!-- Features --> */}
               <div className="border-t border-gray-200 px-6 py-4 flex justify-between text-center text-gray-700 text-xs select-none">
                 <div className="flex flex-col items-center space-y-1 w-1/3">
-                  <i class="fa-solid fa-map-location text-lg"></i>
+                  <i className="fa-solid fa-map-location text-lg"></i>
                   <span className="font-serif">Hotel available</span>
                 </div>
                 <div className="flex flex-col items-center space-y-1 w-1/3">
@@ -529,7 +530,7 @@ function Trip() {
                   <span className="font-serif">Food available</span>
                 </div>
                 <div className="flex flex-col items-center space-y-1 w-1/3">
-                  <i class="fa-solid fa-truck-pickup text-lg"></i>
+                  <i className="fa-solid fa-truck-pickup text-lg"></i>
                   <span className="font-serif">transport available</span>
                 </div>
               </div>
@@ -590,7 +591,7 @@ function Trip() {
                     {tripBookedData.data.duration} day/night
                   </a>
                   <div className="flex items-center gap-1">
-                    <i class="fa-solid fa-id-badge text-lg text-green-700"></i>
+                    <i className="fa-solid fa-id-badge text-lg text-green-700"></i>
                     <span className="text-base text-green-700">
                       {tripBookedData.data.people}
                     </span>

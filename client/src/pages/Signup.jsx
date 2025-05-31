@@ -72,7 +72,7 @@ function Signup() {
   };
 
   return (
-    <div className=" w-full h-screen bg-slate-700">
+    <div className=" w-full h-screen ">
       {/* overlay */}
       <div className=" absolute top-0 left-0 w-full h-full bg-black z-50 opacity-60 blur-[20rem]"></div>
 

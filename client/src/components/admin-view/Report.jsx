@@ -170,6 +170,33 @@ export default function Report() {
 
   return (
     <div>
+      <div className="max-w-xs mx-auto mt-3 bg-white rounded-sm shadow-lg flex items-center py-1 px-3">
+        <img
+          alt="Boat on water with trees and temple in background"
+          className="w-20 h-20 rounded-md object-cover"
+          height="80"
+          src={data.images[1].url}
+          width="80"
+        />
+        <div>
+          <div className="flex items-center ml-4 space-x-16">
+            <h3 className="font-semibold text-green-900 font-serif text-sm ">
+              {data.name.charAt(0).toUpperCase() + data.name.slice(1)}
+              ...
+            </h3>
+            <i className="fas fa-ellipsis-h text-gray-600 text-xs"></i>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setTripBookedView(true)}
+            className=" text-pink-800 text-lg ml-4 font-serif hover:font-semibold focus:outline-none transition-all duration-500 ease-in-out"
+          >
+            View
+          </button>
+        </div>
+      </div>
+
       <div className="flex justify-end mb-2">
         <button
           onClick={handlePrint}

@@ -7,14 +7,10 @@ import { Avatar, Space } from "antd";
 import EditProfile from "./editprofile";
 
 export default function Profile() {
-  // const [formData, setFormData] = useState({});
-  // const [updateSuccess, setUpdateSuccess] = useState(false);
-  // const { loading, setLoading } = useState(true);
   const [isEditing, setIsEditing] = useState(false); // Track whether the user is currently editing the profile
-  //const { currentUser, loading, error } = useSelector((state) => state.user); // Select relevant state from Redux store
+
   const userData = useSelector((state) => state.auth.userData);
 
-  //console.log(userData);
   if (userData && userData.data && userData.data.user) {
     console.log(userData.data.user);
   } else {
@@ -22,9 +18,6 @@ export default function Profile() {
       "userData, userData.data, or userData.data.user is null or undefined"
     );
   }
-
-  // Function to handle changes in input fields. Updates formData object with new field values
-  const dispatch = useDispatch(); // Initialize useDispatch hook to dispatch actions
 
   const handleEditProfile = () => {
     setIsEditing(true); // Set isEditing state to true when the "Edit Profile" button is clicked
@@ -36,7 +29,7 @@ export default function Profile() {
       <div className=" w-full h-[15rem] bg-slate-700 relative">
         {" "}
         <h1 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          Add Cover photo
+          Cover photo
         </h1>
       </div>
       <div className=" w-full h-[15rem] flex justify-center items-center bg-slate-50">

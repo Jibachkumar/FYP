@@ -88,10 +88,6 @@ function ViewTrip() {
       if (!response.ok) throw new Error(`Failed to fetch trip details`);
 
       const data = await response.json();
-      console.log(data);
-      // if (data) {
-      //   // dispatch(tripSlice(data));
-      // }
     } catch (error) {
       new Error(error.message);
     }
@@ -158,7 +154,7 @@ function ViewTrip() {
             <div className="bg-white shadow-sm p-4 flex flex-col items-center text-center">
               <i className="far fa-calendar-alt text-red-600 text-xl mb-1"></i>
               <p className="text-xs sm:text-sm text-gray-700 font-semibold">
-                October 31, 2023
+                Aug-10-2025
               </p>
             </div>
             <div className="bg-white shadow-sm p-4 flex flex-col items-center text-center">

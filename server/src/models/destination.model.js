@@ -40,6 +40,9 @@ const destinationSchema = new Schema({
   operated_in: {
     type: String,
   },
+  type: {
+    type: String,
+  },
 });
 
 //TODO:

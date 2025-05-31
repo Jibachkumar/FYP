@@ -8,10 +8,11 @@ import { Spin } from "antd";
 
 function Package() {
   const { tripData, loader } = useTripData();
+  console.log(tripData);
 
   const navigate = useNavigate();
 
-  const text = `"The tour included the captivating city renowned for its stunning, where I \n natural beauty, particularly its majestic mountain views and the tranquil \n Phewa Lake.."`;
+  // const text = `"The tour included the captivating city renowned for its stunning, where I \n natural beauty, particularly its majestic mountain views and the tranquil \n Phewa Lake.."`;
   return (
     <div className="w-full mt-14">
       {tripData.length > 0 && (
@@ -72,8 +73,9 @@ function Package() {
 
                     <div className=" flex">
                       <div className="relative h-20 border-l-2 border-gray-300 md:mr-2 border-b-gray-50"></div>
-                      <p className="relative -top-1 font-serif text-sm text-black/60 whitespace-pre-line">
-                        {text}
+                      <p className="relative w-[30rem] -top-1 font-serif text-sm text-black/60 whitespace-pre-line">
+                        {tripData.description}
+
                         <span className="block mt-2">Traveled in December</span>
                       </p>
                       {/* <p className="block">Traveled in December </p> */}

@@ -30,7 +30,6 @@ const ComponentToPrint = React.forwardRef(({ trip, userData }, ref) => {
   if (!userData) return;
   const { createdAt, updatedAt, _id } = trip[0];
   const { userName, phoneNumber, email } = userData.data.user;
-  console.log(trip);
 
   return (
     <div ref={ref}>
@@ -119,10 +118,10 @@ const ComponentToPrint = React.forwardRef(({ trip, userData }, ref) => {
               <span className="font-semibold">
                 {trip[0].trip.operated_in},{" "}
               </span>
-              Trip Due Date <span className="font-semibold">October, </span> and
-              Pickup point location{" "}
-              <span className="font-semibold">Kathmandu, </span> Time{" "}
-              <span className="font-semibold">10:00 AM</span>
+              Trip Due Date{" "}
+              <span className="font-semibold">August/10/2025, </span> and Pickup
+              point location <span className="font-semibold">Kathmandu, </span>{" "}
+              Time <span className="font-semibold">10:00 AM</span>
             </p>
 
             <p className="font-semibold">Terms and Conditions</p>

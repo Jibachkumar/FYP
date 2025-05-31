@@ -41,6 +41,7 @@ function Sales() {
       email: b.user?.email,
       destination: b.trip?.name,
       duration: b.trip?.duration,
+      price: b.trip.price,
     }));
 
     // Normalize trips
@@ -51,6 +52,7 @@ function Sales() {
       email: t.user_id?.email || "N/A",
       destination: t.name || t.destination,
       duration: t.duration,
+      price: t.price,
     }));
 
     // Combine both arrays
@@ -159,6 +161,12 @@ function Sales() {
                     <i className="fas fa-sort text-blue-900"></i>
                   </div>
                 </th>
+                <th className="pl-2 pr-3 py-2 text-left align-top font-semibold text-[#6B7280] select-none cursor-pointer">
+                  <div className="flex items-center space-x-1">
+                    <span className="font-serif text-blue-900">Payment</span>
+                    <i className="fas fa-sort text-blue-900"></i>
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody className="text-[14px] text-blue-900 font-serif">
@@ -183,6 +191,9 @@ function Sales() {
                   </td>
                   <td className="pl-2 pr-3 py-3 align-top leading-tight">
                     <div>{trip.duration || "N/A"}</div>
+                  </td>
+                  <td className="pl-2 pr-3 py-3 align-top leading-tight">
+                    <div>{trip.price || "N/A"}</div>
                   </td>
                 </tr>
               ))}

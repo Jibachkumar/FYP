@@ -43,7 +43,6 @@ const getUserBookingTrip = asyncHandler(async (req, res) => {
     if (!user) throw new ApiError(401, "Unauthorized User");
 
     const bookedTrip = await Booking.find({ user: user._id }).populate("trip");
-    if (!bookedTrip) throw new Error(404, "trip not found!");
     console.log("bookedTrip: ", bookedTrip);
 
     return res

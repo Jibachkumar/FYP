@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="bg-[#333446] text-lg-start bg-body-tertiary font-serif">
+    <footer className="bg-[#0f3f0f] text-lg-start bg-body-tertiary font-serif">
       {/* <!-- Section: Social media --> */}
       <section className="flex justify-content-center justify-content-lg-between p-4 border-bottom text-white">
         {/* <!-- Left --> */}

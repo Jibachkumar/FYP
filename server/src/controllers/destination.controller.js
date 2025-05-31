@@ -6,7 +6,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const getDestination = asyncHandler(async function (req, res) {
   try {
-    const { name, price, description, duration, age_range, operated_in } =
+    const { name, price, description, duration, age_range, operated_in, type } =
       req.body;
 
     // empty validation check
@@ -16,7 +16,8 @@ const getDestination = asyncHandler(async function (req, res) {
       !description ||
       !duration ||
       !age_range ||
-      !operated_in
+      !operated_in ||
+      !type
     )
       throw new ApiError(400, "all fields are required!");
 
@@ -62,6 +63,7 @@ const getDestination = asyncHandler(async function (req, res) {
       duration,
       age_range,
       operated_in,
+      type,
     });
 
     if (!destination)

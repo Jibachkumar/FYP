@@ -6,11 +6,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaFire } from "react-icons/fa";
 import { getTrip } from "../store/tripSlice.js";
 import { useDispatch } from "react-redux";
+import { useTripData } from "../components/hooks/useTripData";
 
 function Home() {
-  const { register } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { tripData } = useTripData();
+  console.log(tripData);
 
   const images = [
     {
@@ -225,7 +228,7 @@ function Home() {
           Places to go
         </h1>
         <h2 className="text-center font-mono font-bold text-xl">
-          Nepal Tourism Board
+          Nepal Tourism center
         </h2>
         <div className="relative top-3 left-0 h-[20rem] flex justify-between items-center">
           <div className=" relative text-black -top-[35px] z-10 pl-[13rem] font-serif">
@@ -414,34 +417,37 @@ function Home() {
           </div>
 
           <div className="relative flex flex-wrap gap-[22px] justify-center pb-8">
-            {displayImages.map((image, index) => (
-              <div
-                key={index}
-                className="relative mt-2 w-[13rem] h-[11.4rem] overflow-hidden rounded-xl shadow-md cursor-pointer group"
-              >
-                <div className="relative w-full h-full overflow-hidden">
-                  <img
-                    className="w-full h-full object-cover rounded-xl transition-transform duration-1000 ease-in-out group-hover:scale-150"
-                    src={image.url}
-                    alt={image.title}
-                  />
-                </div>
-
-                <div className="absolute top-0 left-0 w-full h-full">
-                  <div className="mt-3 py-1 w-28 flex items-center custom-shape opacity-90">
-                    <FaFire className="text-red-800 font-semibold" />
-                    <p className="text-white text-base font-serif pl-2">
-                      Offers
-                    </p>
+            {tripData
+              .filter((item) => item.type === "classic")
+              .map((image, index) => (
+                <div
+                  key={index}
+                  className="relative mt-2 w-[13rem] h-[11.4rem] overflow-hidden rounded-xl shadow-md cursor-pointer group"
+                  onClick={() => navigate(`/trip/${image._id}`)}
+                >
+                  <div className="relative w-full h-full overflow-hidden">
+                    <img
+                      className="w-full h-full object-cover rounded-xl transition-transform duration-1000 ease-in-out group-hover:scale-150"
+                      src={image.images[0].url}
+                      alt={image.name}
+                    />
                   </div>
 
-                  <div className="mt-16 text-center z-50 text-white">
-                    <p className="font-serif text-[16px]">{image.text}</p>
-                    <h2 className="font-serif text-2xl">{image.title}</h2>
+                  <div className="absolute top-0 left-0 w-full h-full">
+                    <div className="mt-3 py-1 w-28 flex items-center custom-shape opacity-90">
+                      <FaFire className="text-red-800 font-semibold" />
+                      <p className="text-white text-base font-serif pl-2">
+                        Offers
+                      </p>
+                    </div>
+
+                    <div className="mt-16 text-center z-50 text-white">
+                      {/* <p className="font-serif text-[16px]">{image.text}</p> */}
+                      <h2 className="font-serif text-2xl">{image.name}</h2>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
 
@@ -473,34 +479,37 @@ function Home() {
           </div>
 
           <div className="relative flex flex-wrap gap-[22px] justify-center pb-8">
-            {adventureImages.map((image, index) => (
-              <div
-                key={index}
-                className="relative mt-2 w-[13rem] h-[11.4rem] overflow-hidden rounded-xl shadow-md cursor-pointer group"
-              >
-                <div className="relative w-full h-full overflow-hidden">
-                  <img
-                    className="w-full h-full object-cover rounded-xl transition-transform duration-1000 ease-in-out group-hover:scale-150"
-                    src={image.url}
-                    alt={image.title}
-                  />
-                </div>
-
-                <div className="absolute top-0 left-0 w-full h-full">
-                  <div className="mt-3 py-1 w-28 flex items-center custom-shape opacity-90">
-                    <FaFire className="text-red-800 font-semibold" />
-                    <p className="text-white text-base font-serif pl-2">
-                      Treeking
-                    </p>
+            {tripData
+              .filter((item) => item.type === "adventure")
+              .map((image, index) => (
+                <div
+                  key={index}
+                  className="relative mt-2 w-[13rem] h-[11.4rem] overflow-hidden rounded-xl shadow-md cursor-pointer group"
+                  onClick={() => navigate(`/trip/${image._id}`)}
+                >
+                  <div className="relative w-full h-full overflow-hidden">
+                    <img
+                      className="w-full h-full object-cover rounded-xl transition-transform duration-1000 ease-in-out group-hover:scale-150"
+                      src={image.images[0].url}
+                      alt={image.name}
+                    />
                   </div>
 
-                  <div className="mt-16 text-center z-50 text-white">
-                    <p className="font-serif text-[16px]">{image.text}</p>
-                    <h2 className="font-serif text-2xl">{image.title}</h2>
+                  <div className="absolute top-0 left-0 w-full h-full">
+                    <div className="mt-3 py-1 w-28 flex items-center custom-shape opacity-90">
+                      <FaFire className="text-red-800 font-semibold" />
+                      <p className="text-white text-base font-serif pl-2">
+                        Treeking
+                      </p>
+                    </div>
+
+                    <div className="mt-16 text-center z-50 text-white">
+                      {/* <p className="font-serif text-[16px]">{image.text}</p> */}
+                      <h2 className="font-serif text-2xl">{image.name}</h2>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
