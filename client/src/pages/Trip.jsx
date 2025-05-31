@@ -10,19 +10,21 @@ import { IoMdSearch } from "react-icons/io";
 import { getTrip } from "../store/tripSlice.js";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import CheckoutPayment from "../components/CheckoutPayment.jsx";
+import Rating from "@mui/material/Rating";
+import Box from "@mui/material/Box";
+import StarIcon from "@mui/icons-material/Star";
 
 function Trip() {
   const tripData = useSelector((state) => state.trip.trips);
   console.log(tripData);
 
   const tripBookedData = useSelector((state) => state.trip?.tripData?.tripData);
-  console.log(tripBookedData?.success);
   console.log(tripBookedData);
 
   const { register, handleSubmit, control, watch, setValue, reset } = useForm({
     defaultValues: {
       name: tripData?.name || "",
-      startDate: null,
+      startDate: "",
       duration: "",
       people: "",
       message: "",
@@ -134,7 +136,7 @@ function Trip() {
   };
 
   return (
-    <div className="w-full h-full mt-[3.6rem] bg-[#f9f7f0]">
+    <div className="w-full h-full mt-[3.2rem] bg-[#f9f7f0]">
       {tripData.images ? (
         <div className="w-full h-full">
           <img
@@ -210,18 +212,83 @@ function Trip() {
                   </div>
                 ) : (
                   <div>
-                    <h2 className="text-lg font-bold">{tripData.name}</h2>
-                    <p>This is the trip information.</p>
+                    <h2 class="text-2xl font-semibold flex flex-wrap font-serif items-center gap-2">
+                      {tripData.name.charAt(0).toUpperCase() +
+                        tripData.name.slice(1)}
+                    </h2>
 
-                    <div className=" flex gap-x-2">
-                      {tripData.images?.slice(0, 3).map((img) => (
-                        <img
-                          key={img._id}
-                          src={img.url}
-                          alt={img._id}
-                          className="w-[250px] h-[200px] object-cover rounded-sm"
-                        />
-                      ))}
+                    <div class="flex items-center space-x-1 mt-2 text-lg">
+                      <div className=" flex gap-x-2">
+                        <Box>
+                          <Rating
+                            name="hover-feedback"
+                            value={tripData.averageRating}
+                            readOnly
+                            emptyIcon={
+                              <StarIcon
+                                style={{ opacity: 0.55 }}
+                                fontSize="inherit"
+                              />
+                            }
+                          />
+                        </Box>
+                        <span className="text-base font-medium font-serif text-black/45">
+                          ({tripData.ratingCount} reviews)
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="mt-4 text-gray-700 font-mono text-sm leading-relaxed max-w-3xl">
+                      <p class="mt-1">{tripData.description}</p>
+
+                      <p class="mt-1">
+                        <span class="italic font-semibold text-green-700">
+                          Price includes:
+                        </span>
+                      </p>
+                      <ul class="list-disc list-inside mt-1 space-y-0.5 text-gray-700">
+                        <li>Comfortable transport during the tour.</li>
+                        <li>include food and hotel.</li>
+                        <li>Entrance fee.</li>
+                      </ul>
+                    </div>
+
+                    <div class="mt-8 flex flex-wrap gap-2 max-w-md">
+                      <button
+                        class="flex items-center bg-[#3fc1c9] text-white px-4 py-2 text-sm font-medium rounded-sm"
+                        type="button"
+                      >
+                        <i class="far fa-calendar-alt mr-2"></i>1
+                      </button>
+                      <button
+                        class="bg-[#3fc1c9] text-white px-6 py-2 text-sm font-light rounded-sm"
+                        type="button"
+                      >
+                        Classic &amp; Cultural
+                      </button>
+                      <button
+                        class="bg-[#3fc1c9] text-white px-6 py-2 text-sm font-light rounded-sm"
+                        type="button"
+                      >
+                        Popular Tours
+                      </button>
+                    </div>
+
+                    <div class="mt-8 max-w-md flex justify-between text-sm font-semibold text-gray-900">
+                      <span className="font-mono">Departure Time</span>
+                      <span className="text-green-700 font-mono">10:00 AM</span>
+                    </div>
+                    <div class="mt-8 max-w-md flex justify-between text-sm font-semibold text-gray-900">
+                      <span className="font-mono">Departure Location</span>
+                      <span className="text-green-700 font-mono">
+                        Kathmandu
+                      </span>
+                    </div>
+                    <div class="mt-8 max-w-md flex justify-between text-sm font-semibold text-gray-900">
+                      <span className="font-mono">Operated In</span>
+                      <span className="text-green-700 font-mono">
+                        {tripData.operated_in}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -283,7 +350,8 @@ function Trip() {
                           open={isDatePickerOpen}
                           onClose={() => setIsDatePickerOpen(false)}
                           onOpen={() => setIsDatePickerOpen(true)}
-                          value={value ?? null}
+                          // value={value ?? null}
+                          // value={value}
                           onChange={onChange}
                           format="YYYY-MM-DD"
                           slots={{
@@ -348,7 +416,7 @@ function Trip() {
                   {/* w-full bg-[#66cbd2] text-[13px] text-white placeholder-white pl-10 py-2 rounded focus:outline-none */}
                   <select
                     className="w-full appearance-none bg-[#66cbd2] text-[13px] text-white pl-10 pr-8 py-2 rounded placeholder-white focus:outline-none focus:ring-2 focus:ring-[#66cbd2]"
-                    defaultValue=""
+                    defaultValue={0}
                     {...register("duration", {
                       required: true,
                       valueAsNumber: true, // ✅ converts the selected value to a number

@@ -53,7 +53,11 @@ function CheckoutPayment({ trip }) {
   return (
     <>
       {trip && (
-        <button className="" onClick={handleCheckout} type="submit">
+        <button
+          className="focus:outline-none"
+          onClick={handleCheckout}
+          type="submit"
+        >
           Book a Trip
         </button>
       )}

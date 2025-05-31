@@ -58,7 +58,10 @@ export default function Profile() {
               </button>
             </div>
             {isEditing ? (
-              <EditProfile />
+              <EditProfile
+                userData={userData}
+                onEditSuccess={() => setIsEditing(false)}
+              />
             ) : (
               <div className="block py-3">
                 <h2 className=" font-semibold">

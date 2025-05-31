@@ -259,9 +259,9 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 /*---------------- updateAccountDetails ----------------------*/
 const updateAccountDetails = asyncHandler(async (req, res) => {
-  const { fullName, email } = req.body;
+  const { userName, email, phoneNumber } = req.body;
 
-  if (!fullName || !email) {
+  if (!userName || !email || !phoneNumber) {
     throw new ApiError(400, "All fields are required");
   }
 
@@ -269,8 +269,9 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     req.user?._id,
     {
       $set: {
-        fullName,
+        userName: userName,
         email: email,
+        phoneNumber: phoneNumber,
       },
     },
     { new: true }
@@ -278,7 +279,13 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Account details updated successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        { user: user },
+        "Account details updated successfully"
+      )
+    );
 });
 
 /*---------------- updateUserAvatar ----------------------*/

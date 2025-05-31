@@ -47,7 +47,7 @@ const getUserBookingTrip = asyncHandler(async (req, res) => {
     console.log("bookedTrip: ", bookedTrip);
 
     return res
-      .status(201)
+      .status(200)
       .json(
         new ApiResponse(200, bookedTrip, "sucessfully fetched booked trip")
       );
