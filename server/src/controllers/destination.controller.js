@@ -46,12 +46,32 @@ const getDestination = asyncHandler(async function (req, res) {
     // check destination already exit
     const existedDestination = await Destination.findOne({ name });
 
+    // modify the Destination package
     if (existedDestination) {
+      //  add new images
       existedDestination.images.push(...imageLocalPath);
+
+      // update other fields
+      if (price && price !== existedDestination.price) {
+        existedDestination.price = price;
+      }
+      existedDestination.duration = duration;
+      existedDestination.age_range = age_range;
+      existedDestination.operated_in = operated_in;
+      existedDestination.type = type;
+      existedDestination.description = description;
+
       await existedDestination.save();
 
-      console.log("added image: ", existedDestination);
-      return;
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            existedDestination,
+            "Destination updated successfully"
+          )
+        );
     }
 
     // create destination
@@ -79,11 +99,10 @@ const getDestination = asyncHandler(async function (req, res) {
         500,
         "Something Went Wrong while creating the destination"
       );
-    console.log(createdDestination);
 
     // return response
     return res
-      .status(201)
+      .status(200)
       .json(
         new ApiResponse(
           201,
@@ -123,4 +142,27 @@ const getTripById = asyncHandler(async (req, res) => {
   }
 });
 
-export { getDestination, getTrip, getTripById };
+const deleteTripbyId = asyncHandler(async (req, res) => {
+  try {
+    // get trip ID
+    const { ID } = req.params;
+
+    // matched trip Id to the DB
+    const matchedId = await Destination.findById(ID);
+
+    if (!matchedId) throw new ApiError(404, "Destination ID not matched");
+
+    const deleteTrip = await Destination.findByIdAndDelete(ID);
+
+    return res
+      .status(201)
+      .json(
+        new ApiResponse(200, deleteTrip, "Destination deleted Successfully")
+      );
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(error.statusCode, error.message);
+  }
+});
+
+export { getDestination, getTrip, getTripById, deleteTripbyId };

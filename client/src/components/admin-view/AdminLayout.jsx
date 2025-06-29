@@ -23,25 +23,25 @@ function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <aside className="flex flex-col bg-white w-48 border-r border-gray-200 select-none fixed h-screen z-10">
-        <div className="flex items-center gap-1 px-4 py-3 border-b border-gray-200">
-          <div className=" flex text-xl font-mono text-red-950 pl-[6px] italic font-extrabold">
-            {/* <span className="">Geek</span> */}
-            <div className="">
-              <span className="font-bolditalic">
-                {userData.data?.user?.userName}
-              </span>
-            </div>
+    <div className="min-h-screen bg-[#131D4F] flex">
+      <aside className="flex flex-col bg-[#242f66] w-52  select-none fixed h-screen z-10">
+        <div className="flex items-center gap-2 px-4 py-[14px] shadow-md">
+          <div className="flex text-xl font-mono italic font-extrabold bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 bg-clip-text text-transparent">
+            <span className="font-bolditalic">
+              {userData.data?.user?.userName}
+            </span>
           </div>
         </div>
-        <div className="flex flex-col mt-4 space-y-1 text-sm font-semibold">
+
+        <div className="flex flex-col mt-4 space-y-1 px-2  text-sm font-semibold">
           <NavLink
             to="/admin"
             end
             className={({ isActive }) =>
-              `flex items-center gap-2 px-4 py-2 rounded-r-lg ${
-                isActive ? "bg-sky-200 text-purple-800" : " hover:bg-sky-50"
+              `flex items-center gap-2 px-4 py-2 rounded-lg ${
+                isActive
+                  ? "bg-sky-200 text-white"
+                  : " hover:bg-slate-50 text-sky-600"
               }`
             }
           >
@@ -64,10 +64,10 @@ function AdminLayout() {
           <NavLink
             to="sales"
             className={({ isActive }) =>
-              `flex items-center gap-2 px-4 py-2 rounded-r-lg ${
+              `flex items-center gap-2 px-4 py-2 rounded-lg ${
                 isActive
                   ? "bg-sky-200 text-sky-700"
-                  : "text-sky-600 hover:bg-sky-50"
+                  : "text-sky-600 hover:bg-slate-50"
               }`
             }
           >
@@ -84,10 +84,10 @@ function AdminLayout() {
           <NavLink
             to="post"
             className={({ isActive }) =>
-              `flex items-center gap-2 px-4 py-2 rounded-r-lg ${
+              `flex items-center gap-2 px-4 py-2 rounded-lg ${
                 isActive
                   ? "bg-sky-200 text-purple-700"
-                  : "text-purple-600 hover:bg-sky-50"
+                  : "text-purple-600 hover:bg-slate-50"
               }`
             }
           >
@@ -106,34 +106,31 @@ function AdminLayout() {
           </NavLink>
         </div>
       </aside>
-      <div className="flex flex-col flex-1 ml-48">
+      <div className="flex flex-col flex-1 ml-52">
         {/* Top bar */}
-        <div className=" px-4 py-[14px] flex items-center border-b border-gray-200 bg-white sticky top-0 z-10">
-          <div className="flex justify-between items-end lg:gap-x-[750px] text-xs text-gray-600 mb-2 select-none">
-            <div className="flex w-full items-end gap-1 font-normal">
-              <span className=" text-blue-900 font-medium text-center font-serif sm:mb-0">
+        <div className=" px-4 py-[14px] shadow-md bg-[#192458] sticky top-0 z-10">
+          <div className="flex justify-between items-center text-xs text-gray-600 mb-2 select-none">
+            <div className="pl-16">
+              <span className=" text-white/50 font-medium text-center font-serif sm:mb-0">
                 Hi {userData.data.user.userName}
               </span>
-              <button
-                type="button"
-                className="flex items-center gap-2 lg:ml-6 bg-yellow-400 rounded-md px-2 py-1 text-[10px] font-semibold text-gray-900"
-              >
-                <span>free trial with all features available</span>
-                <span className="text-green-600 font-semibold">
-                  subscription
+              {/* <div className="flex items-center justify-center gap-2 lg:ml-6  bg-[#1f2e7c] rounded-md px-2 text-[10px] font-semibold text-gray-900">
+                <span className="text-white/50">
+                  free trial with all features available
                 </span>
-              </button>
+                <span className="text-red-600 font-semibold">subscription</span>
+              </div> */}
             </div>
-            <div className="flex items-center gap-4 lg:mr-20">
+            <div className=" flex  gap-4 lg:mr-20">
               <button
                 aria-label="Notifications"
                 className="text-gray-700 hover:text-gray-900"
               >
-                <i className="fas fa-bell"></i>
+                <i className="fas fa-bell text-white/50"></i>
               </button>
               <div
                 aria-label="User menu"
-                className="flex items-center gap-1 text-gray-700 hover:text-gray-900"
+                className="flex items-center gap-1 text-white/50 hover:text-gray-900"
               >
                 <i className="fas fa-user"></i>
                 <span className="text-sm font-semibold">

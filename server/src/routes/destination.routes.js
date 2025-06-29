@@ -3,6 +3,7 @@ import {
   getDestination,
   getTrip,
   getTripById,
+  deleteTripbyId,
 } from "../controllers/destination.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
@@ -14,5 +15,6 @@ destinationRouter
 
 destinationRouter.route("/alltrip").get(getTrip);
 destinationRouter.route(`/alltrip/:tripId`).get(getTripById);
+destinationRouter.route(`/deletetripbyid/:ID`).delete(deleteTripbyId);
 
 export { destinationRouter };

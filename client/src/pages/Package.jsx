@@ -5,30 +5,77 @@ import StarIcon from "@mui/icons-material/Star";
 import { useTripData } from "../components/hooks/useTripData";
 import { useNavigate } from "react-router-dom";
 import { Spin } from "antd";
+import L from "leaflet";
 
 function Package() {
   const { tripData, loader } = useTripData();
   console.log(tripData);
 
   const navigate = useNavigate();
+  const coords = [27.7172, 85.324]; // kathmandu location
+  const [viewMap, setViewMap] = useState(null);
+
+  function TripMap({ lat, lng, mapId, w = "170px", h = "130px" }) {
+    useEffect(() => {
+      const map = L.map(mapId).setView([lat, lng], 13);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map
+      );
+
+      return () => {
+        map.remove();
+      };
+    }, [lat, lng]);
+
+    return (
+      <div
+        id={mapId}
+        style={{
+          height: `${h}`,
+          width: `${w}`,
+          zIndex: 1,
+          position: "relative",
+        }}
+      ></div>
+    );
+  }
 
   // const text = `"The tour included the captivating city renowned for its stunning, where I \n natural beauty, particularly its majestic mountain views and the tranquil \n Phewa Lake.."`;
   return (
     <div className="w-full mt-14">
+      <div className=" border-b-2 p-3 w-[57rem] mx-auto mb-4 text-center">
+        <h2 className="font-serif font-bold text-xl">Tours & Trips Package</h2>
+      </div>
+
       {tripData.length > 0 && (
         <div className="flex flex-col w-full px-4">
-          {tripData.map((tripData) => (
+          {tripData.map((tripData, i) => (
             <div
               key={tripData._id}
               className="flex self-stretch mb-6 px-4 shadow-sm rounded-xl py-3 overflow-hidden border-2 border-gray-200 mx-auto"
             >
               {/* left content */}
-              <div className=" lg:h-[12.7rem] h-[11.7rem] border p-1 border-gray-300 rounded-md">
-                <img
-                  className="lg:w-[10rem] lg:h-[12rem] w-[9rem] h-[11rem]  rounded-sm object-cover transition-transform duration-500 ease-in-out hover:scale-95 cursor-pointer"
-                  src={tripData.images[0].url}
-                  alt={tripData.name}
-                />
+              <div>
+                <div className="rounded-md overflow-hidden">
+                  <img
+                    className="w-[170px] h-[11rem] shadow-sm object-cover transition-transform duration-500 ease-in-out hover:scale-95 cursor-pointer"
+                    src={tripData.images[0].url}
+                    alt={tripData.name}
+                  />
+                </div>
+
+                {/* Pass unique id for each map container */}
+                <div
+                  className="mt-2 shadow-sm rounded-md"
+                  onClick={() => setViewMap(tripData._id)}
+                >
+                  <TripMap
+                    lat={27.7} // replace with real coords if available
+                    lng={85.3}
+                    mapId={`map-container-${tripData._id}`}
+                  />
+                </div>
               </div>
 
               {/* center Content */}
@@ -146,6 +193,103 @@ function Package() {
                   </button>
                 </div>
               </div>
+              {viewMap === tripData._id && (
+                <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+                  <div className="flex w-full max-w-6xl mx-auto items-stretch font-serif">
+                    {/* Left Side: Map container */}
+                    <div className="h-[600px] w-2/3">
+                      <TripMap
+                        lat={27.7}
+                        lng={85.3}
+                        mapId={`map-container-${i}`}
+                        w="100%"
+                        h="600px"
+                      />
+                    </div>
+
+                    {/* Right Side: Info Panel */}
+                    <div className="h-[600px] w-1/3 p-6 flex flex-col justify-between bg-white">
+                      <div>
+                        {/* Header info */}
+                        <div className="flex justify-between items-start mb-4">
+                          <h3 className="font-semibold text-gray-900 text-base leading-tight max-w-[70%]">
+                            Queen Cleopatra - 7 days
+                          </h3>
+                          <button
+                            aria-label="Close"
+                            className="text-gray-400 hover:text-gray-700 focus:outline-none"
+                            type="button"
+                            onClick={() => setViewMap(null)}
+                          >
+                            <svg
+                              className="h-5 w-5"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M6 18L18 6M6 6l12 12"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              ></path>
+                            </svg>
+                          </button>
+                        </div>
+
+                        {/* Price Info */}
+                        <div className="mb-4">
+                          <p className="text-xl font-extrabold text-teal-700 leading-none">
+                            $540
+                          </p>
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="mt-6 pt-4 border-t border-b border-gray-200 text-xs text-gray-700 text-center">
+                          <button
+                            className="mb-4 bg-teal-700 hover:bg-teal-800 text-white text-sm font-semibold py-2 px-5 rounded flex items-center justify-center gap-2 w-full max-w-[180px]"
+                            type="button"
+                          >
+                            View tour
+                            <svg
+                              className="h-4 w-4"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M9 5l7 7-7 7"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              ></path>
+                            </svg>
+                          </button>
+                        </div>
+
+                        {/* Destinations List */}
+                        <div>
+                          <p className="font-bold text-lg text-gray-900 mb-2">
+                            Destinations
+                          </p>
+                          <ul className="text-gray-900 text-sm space-y-1">
+                            <li className="flex items-center gap-2">
+                              <span className="text-teal-700 text-lg leading-none">
+                                <i className="fas fa-map-marker-alt"></i>
+                              </span>
+                              <span className="font-semibold">
+                                Cairo (Egypt)
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

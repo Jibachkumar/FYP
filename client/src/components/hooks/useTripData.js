@@ -1,32 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export const useTripData = () => {
   const [tripData, setTripData] = useState([]);
   const [loader, setLoader] = useState(false);
 
-  useEffect(() => {
-    const fetchTrips = async () => {
-      setLoader(true);
-      try {
-        const response = await fetch(
-          "http://localhost:7000/api/v1/users/alltrip"
-        );
-
-        if (!response.ok) {
-          throw new Error(`${response.statusText}`);
-        }
-
-        const data = await response.json();
-        setTripData(data.data);
-      } catch (error) {
-        console.log(error.message);
-      } finally {
-        setLoader(false);
+  const fetchTrips = useCallback(async () => {
+    setLoader(true);
+    try {
+      const response = await fetch(
+        "http://localhost:7000/api/v1/users/alltrip"
+      );
+      if (!response.ok) {
+        throw new Error(`${response.statusText}`);
       }
-    };
-
-    fetchTrips();
+      const data = await response.json();
+      setTripData(data.data);
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setLoader(false);
+    }
   }, []);
 
-  return { tripData, loader };
+  useEffect(() => {
+    fetchTrips();
+  }, [fetchTrips]);
+
+  return { tripData, loader, refetch: fetchTrips };
 };
