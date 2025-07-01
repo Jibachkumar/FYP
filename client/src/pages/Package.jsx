@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 import StarIcon from "@mui/icons-material/Star";
@@ -6,22 +6,105 @@ import { useTripData } from "../components/hooks/useTripData";
 import { useNavigate } from "react-router-dom";
 import { Spin } from "antd";
 import L from "leaflet";
+import geocodeLocation from "../components/utils/geocodeLocation";
 
 function Package() {
   const { tripData, loader } = useTripData();
-  console.log(tripData);
-
   const navigate = useNavigate();
-  const coords = [27.7172, 85.324]; // kathmandu location
-  const [viewMap, setViewMap] = useState(null);
+  const [allDestinationCoords, setAllDestinationCoords] = useState({});
+  const [activeMap, setActiveMap] = useState({ id: null, coords: null });
 
-  function TripMap({ lat, lng, mapId, w = "170px", h = "130px" }) {
+  // Mini Map location coords fetch
+  useEffect(() => {
+    const fetchCoordsForDestination = async () => {
+      const coordsMap = {};
+      for (const trip of tripData) {
+        const coords = await geocodeLocation(`nepal, ${trip.name}`);
+        coordsMap[trip._id] = coords;
+      }
+      setAllDestinationCoords(coordsMap);
+    };
+    if (tripData.length > 0) {
+      fetchCoordsForDestination();
+    }
+  }, [tripData]);
+
+  // for big Map location coords fetch
+  const getCoods = async (id, destinationName) => {
+    const coordinates = await geocodeLocation(`nepal, ${destinationName}`);
+    setActiveMap({ id, coords: coordinates });
+  };
+
+  // display the Map
+  function TripMap({
+    lat,
+    lng,
+    mapId,
+    w = "170px",
+    h = "130px",
+    popUp,
+    showRoute = false,
+    showPopup = true,
+  }) {
+    const destination = [lat, lng];
+    const kathmandu = [27.7172, 85.324]; // Kathmandu coordinates
+
     useEffect(() => {
       const map = L.map(mapId).setView([lat, lng], 13);
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-        map
-      );
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+      ).addTo(map);
+
+      const destinationMarkerContent = L.marker([lat, lng]).addTo(map);
+
+      if (showPopup) {
+        destinationMarkerContent
+          .bindPopup(
+            L.popup({
+              autoClose: false,
+              closeOnClick: false,
+            })
+          )
+          .setPopupContent(`${popUp}`)
+          .openPopup();
+      }
+
+      if (showRoute) {
+        // Add polyline (straight line) from Kathmandu to destination
+        const route = L.polyline([kathmandu, destination], {
+          color: "red",
+          weight: 1,
+          opacity: 0.7,
+          smoothFactor: 1,
+        }).addTo(map);
+
+        // Optional: Add markers for Kathmandu and destination
+        L.marker(kathmandu)
+          .addTo(map)
+          .bindPopup(
+            L.popup({
+              autoClose: false,
+              closeOnClick: false,
+            })
+          )
+          .setPopupContent(
+            `<div style="
+              white-space: normal;
+              word-wrap: break-word;
+              font-size: 14px;
+              font-family: serif;
+              padding: 2px;
+              text-align: center;
+            ">
+              kathmandu
+            </div>`
+          )
+          .openPopup();
+
+        // Fit map to bounds
+        map.fitBounds(route.getBounds());
+      }
 
       return () => {
         map.remove();
@@ -41,7 +124,6 @@ function Package() {
     );
   }
 
-  // const text = `"The tour included the captivating city renowned for its stunning, where I \n natural beauty, particularly its majestic mountain views and the tranquil \n Phewa Lake.."`;
   return (
     <div className="w-full mt-14">
       <div className=" border-b-2 p-3 w-[57rem] mx-auto mb-4 text-center">
@@ -65,17 +147,26 @@ function Package() {
                   />
                 </div>
 
-                {/* Pass unique id for each map container */}
-                <div
-                  className="mt-2 shadow-sm rounded-md"
-                  onClick={() => setViewMap(tripData._id)}
-                >
-                  <TripMap
-                    lat={27.7} // replace with real coords if available
-                    lng={85.3}
-                    mapId={`map-container-${tripData._id}`}
-                  />
-                </div>
+                {/* Mini map view based on properties/id */}
+                {allDestinationCoords[tripData._id] && (
+                  <div className="mt-2 shadow-sm rounded-md relative">
+                    <TripMap
+                      lat={allDestinationCoords[tripData._id].lat}
+                      lng={allDestinationCoords[tripData._id].lng}
+                      mapId={`map-container-${tripData._id}`}
+                      popUp={tripData.name}
+                      showPopup={false}
+                    />
+
+                    <button
+                      onClick={() => getCoods(tripData._id, tripData.name)}
+                      className="absolute top-2 left-auto right-2 bg-white focus:outline-none text-gray-800 text-xs font-serif  px-2 py-2 rounded-2xl flex items-center space-x-3 border border-gray-300 hover:shadow-xl z-10"
+                    >
+                      <i className="fa-regular fa-map text-base"></i>
+                      <span>View Map</span>
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* center Content */}
@@ -193,33 +284,40 @@ function Package() {
                   </button>
                 </div>
               </div>
-              {viewMap === tripData._id && (
+
+              {/* ViewMap Content */}
+              {activeMap.id === tripData._id && activeMap.coords && (
                 <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
                   <div className="flex w-full max-w-6xl mx-auto items-stretch font-serif">
                     {/* Left Side: Map container */}
                     <div className="h-[600px] w-2/3">
                       <TripMap
-                        lat={27.7}
-                        lng={85.3}
+                        lat={activeMap.coords.lat}
+                        lng={activeMap.coords.lng}
                         mapId={`map-container-${i}`}
                         w="100%"
                         h="600px"
+                        popUp={tripData.name}
+                        showRoute={activeMap.id === tripData._id}
+                        showPopup={true}
                       />
                     </div>
 
                     {/* Right Side: Info Panel */}
-                    <div className="h-[600px] w-1/3 p-6 flex flex-col justify-between bg-white">
+                    <div className="h-[600px] w-1/3 p-6 flex flex-col justify-between bg-white font-serif">
                       <div>
                         {/* Header info */}
                         <div className="flex justify-between items-start mb-4">
-                          <h3 className="font-semibold text-gray-900 text-base leading-tight max-w-[70%]">
-                            Queen Cleopatra - 7 days
+                          <h3 className="font-semibold text-gray-900 text-base leading-tight max-w-[80%]">
+                            {`Kathmandu - ${tripData.name} - ${tripData.duration} days`}
                           </h3>
                           <button
                             aria-label="Close"
                             className="text-gray-400 hover:text-gray-700 focus:outline-none"
                             type="button"
-                            onClick={() => setViewMap(null)}
+                            onClick={() =>
+                              setActiveMap({ id: null, coords: null })
+                            }
                           >
                             <svg
                               className="h-5 w-5"
@@ -241,15 +339,16 @@ function Package() {
                         {/* Price Info */}
                         <div className="mb-4">
                           <p className="text-xl font-extrabold text-teal-700 leading-none">
-                            $540
+                            ${`${tripData.price}`}
                           </p>
                         </div>
 
                         {/* Buttons */}
                         <div className="mt-6 pt-4 border-t border-b border-gray-200 text-xs text-gray-700 text-center">
                           <button
-                            className="mb-4 bg-teal-700 hover:bg-teal-800 text-white text-sm font-semibold py-2 px-5 rounded flex items-center justify-center gap-2 w-full max-w-[180px]"
+                            className="mb-4 bg-teal-700 focus:outline-none hover:bg-teal-800 text-white text-sm font-semibold  py-2 px-5 rounded flex items-center justify-center gap-2 w-full max-w-[180px]"
                             type="button"
+                            onClick={() => navigate(`/trip/${tripData._id}`)}
                           >
                             View tour
                             <svg
@@ -280,7 +379,7 @@ function Package() {
                                 <i className="fas fa-map-marker-alt"></i>
                               </span>
                               <span className="font-semibold">
-                                Cairo (Egypt)
+                                {`${tripData.name}`}(Nepal)
                               </span>
                             </li>
                           </ul>
