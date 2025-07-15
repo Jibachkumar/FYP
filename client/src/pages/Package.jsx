@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Spin } from "antd";
 import L from "leaflet";
 import geocodeLocation from "../components/utils/geocodeLocation";
+import "leaflet-routing-machine";
 
 function Package() {
   const { tripData, loader } = useTripData();
@@ -71,15 +72,7 @@ function Package() {
       }
 
       if (showRoute) {
-        // Add polyline (straight line) from Kathmandu to destination
-        const route = L.polyline([kathmandu, destination], {
-          color: "red",
-          weight: 1,
-          opacity: 0.7,
-          smoothFactor: 1,
-        }).addTo(map);
-
-        // Optional: Add markers for Kathmandu and destination
+        // Add Kathmandu marker
         L.marker(kathmandu)
           .addTo(map)
           .bindPopup(
@@ -102,13 +95,38 @@ function Package() {
           )
           .openPopup();
 
-        // Fit map to bounds
-        map.fitBounds(route.getBounds());
-      }
+        // Add realistic route line using Leaflet Routing Machine
+        const routingControl = L.Routing.control({
+          waypoints: [
+            L.latLng(kathmandu[0], kathmandu[1]),
+            L.latLng(destination[0], destination[1]),
+          ],
+          lineOptions: {
+            styles: [{ color: "blue", weight: 3 }],
+          },
+          routeWhileDragging: false,
+          addWaypoints: false,
+          draggableWaypoints: false,
+          fitSelectedRoutes: true,
+          show: false, // Hide default routing UI
+          createMarker: () => null,
+        }).addTo(map);
 
-      return () => {
-        map.remove();
-      };
+        // Completely remove any UI container
+        document
+          .querySelectorAll(".leaflet-routing-container")
+          .forEach((el) => el.remove());
+
+        // Clean up on unmount
+        return () => {
+          map.remove();
+          routingControl.remove();
+        };
+      } else {
+        return () => {
+          map.remove();
+        };
+      }
     }, [lat, lng]);
 
     return (
