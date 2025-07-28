@@ -1,103 +1,29 @@
-import { useState, useEffect, useRef } from "react";
-import { useTripData } from "../hooks/useTripData";
-import { useForm, Controller } from "react-hook-form";
-import { toast } from "react-toastify";
-import { Spin } from "antd";
+import { useState, useEffect, useMemo } from "react";
+import BarChart from "../utils/BarChart";
+import Rating from "@mui/material/Rating";
+import Box from "@mui/material/Box";
+import StarIcon from "@mui/icons-material/Star";
 
 function Dashboard() {
   const [data, setTripData] = useState([]);
-  const [tripEdit, setTripEdit] = useState(false);
-  const [deleteDestinationView, setDeleteDestinationView] = useState(null);
-  const [destinationName, setDestinationName] = useState("");
-  const fileInputRef = useRef();
-  const [loader, setLoader] = useState(false);
+  const [bookedTripData, setBookedTripData] = useState([]);
+  const [rating, setRating] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 3;
 
-  const {
-    control,
-    handleSubmit,
-    register,
-    reset,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      name: destinationName,
-      images: [],
-      price: "",
-      duration: "",
-      operated_in: "",
-      age_range: "",
-      description: "",
-      type: "",
-    },
-  });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const cardWidth = 320;
+  const gap = 48;
+  const visibleCards = 3;
 
-  useEffect(() => {
-    if (destinationName && typeof destinationName === "string") {
-      reset((prev) => ({
-        ...prev,
-        name: destinationName,
-      }));
-    }
-  }, [destinationName, reset]);
+  const maxIndex = Math.max(0, rating.length - visibleCards);
 
-  const editDestinationDetails = async (data) => {
-    setLoader(true);
-
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("price", data.price);
-    formData.append("description", data.description);
-    formData.append("duration", data.duration);
-    formData.append("age_range", data.age_range);
-    formData.append("operated_in", data.operated_in);
-    formData.append("type", data.type);
-    // ✅ Append multiple files
-    if (data.images && data.images.length > 0) {
-      Array.from(data.images).forEach((file) => {
-        formData.append("images", file);
-      });
-    } else {
-      console.warn("No files selected.");
-    }
-    try {
-      const response = await fetch("/api/v1/users/destination", {
-        method: "POST",
-        body: formData,
-      });
-      console.log(response);
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to create trip. Server response with ${response.status}!`
-        );
-      }
-
-      const tripData = await response.json();
-      console.log(tripData);
-
-      if (tripData) {
-        setTripEdit(false);
-        toast.success(tripData.message);
-        reset({
-          name: "",
-          images: [],
-          price: "",
-          description: "",
-          duration: "",
-          age_range: "",
-          operated_in: "",
-          type: "",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoader(false);
-    }
+  const handlePrev = () => {
+    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
   };
 
-  const handleBrowseClick = () => {
-    fileInputRef.current.click();
+  const handleNext = () => {
+    if (currentIndex < maxIndex) setCurrentIndex(currentIndex + 1);
   };
 
   useEffect(() => {
@@ -113,7 +39,6 @@ function Dashboard() {
         }
 
         const data = await response.json();
-        console.log(data);
         setTripData(data.data);
       } catch (error) {
         console.log(error.message);
@@ -125,29 +50,105 @@ function Dashboard() {
     fetchTrips();
   }, []);
 
-  const { tripData, refetch } = useTripData();
-  // console.log(tripData);
+  useEffect(() => {
+    const fetchTrips = async () => {
+      // setLoader(true);
+      try {
+        const response = await fetch(
+          "http://localhost:7000/api/v1/users/trip/userbookedtripdetails"
+        );
 
-  const deleteDestination = async (id) => {
-    try {
-      const response = await fetch(
-        `http://localhost:7000/api/v1/users/deletetripbyid/${id}`,
-        {
-          method: "DELETE", // 👈 important!
+        if (!response.ok) {
+          throw new Error(`${response.statusText}`);
         }
-      );
-      if (!response.ok) {
-        throw new Error(`${response.statusText}`);
-      }
 
-      const data = await response.json();
-      console.log(data);
-      refetch();
-      setDeleteDestinationView(null);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+        const data = await response.json();
+        console.log(data);
+        setBookedTripData([data.data]);
+      } catch (error) {
+        console.log(error.message);
+      } finally {
+        // setLoader(false);
+      }
+    };
+
+    fetchTrips();
+  }, []);
+
+  const allBookedTrips = useMemo(() => {
+    const bookings = bookedTripData[0]?.bookings || [];
+    const trips = bookedTripData[0]?.trips || [];
+
+    // Normalize bookings
+    const bookingItems = bookings.map((b) => ({
+      userName: b.user?.userName,
+      email: b.user?.email,
+      destination: b.trip?.name,
+      duration: b.trip?.duration,
+      booked: "Package Booked",
+      people: b.trip.people || 2,
+      image: b.trip.images[0].url,
+    }));
+
+    // Normalize trips
+    const tripItems = trips.map((t) => ({
+      userName: t.user_id.userName,
+      email: t.user_id?.email || "N/A",
+      destination: t.name || t.destination,
+      duration: t.duration,
+      image: t.image[0],
+      people: t.people,
+      booked: "Customize Trip",
+    }));
+
+    // Combine both arrays
+    return [...bookingItems, ...tripItems];
+  }, [bookedTripData]);
+
+  console.log(allBookedTrips);
+
+  const totalPages = Math.ceil(allBookedTrips.length / pageSize);
+
+  const visibleItems = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    return allBookedTrips.slice(start, end);
+  }, [allBookedTrips, page]);
+
+  // console.log(visibleItems);
+
+  // fetch rating
+  useEffect(() => {
+    const fetchRating = async () => {
+      // setLoader(true);
+      try {
+        const response = await fetch(
+          "http://localhost:7000/api/v1/users/triprating",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log(data.data);
+        setRating(data.data);
+      } catch (error) {
+        console.log(error.message);
+      } finally {
+        // setLoader(false);
+      }
+    };
+
+    fetchRating();
+  }, []);
+
   return (
     <>
       <div className="flex min-h-screen">
@@ -155,7 +156,7 @@ function Dashboard() {
         <div className="flex-1 p-2">
           {/* Heading and filter */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-            <h1 className="font-serif font-extrabold text-lg text-white/50">
+            <h1 className="font-serif font-extrabold text-lg text-black">
               Overview
             </h1>
             {/* <div className="sm:ml-auto">
@@ -186,8 +187,8 @@ function Dashboard() {
           </div>
 
           {/* Stats */}
-          <section className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-white/50 font-serif">
-            <div className="bg-[#192458] shadow-md rounded-md p-4 flex flex-col justify-between">
+          <section className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-black font-serif mb-4">
+            <div className="bg-white/80 shadow-md rounded-md p-4 flex flex-col justify-between">
               <div className="flex items-center mb-2 ">
                 <i className="fas fa-chart-line text-sm"></i>
               </div>
@@ -196,7 +197,7 @@ function Dashboard() {
                 <p className="text-xs ">Total Booking</p>
               </div>
             </div>
-            <div className="bg-[#192458] shadow-md rounded-md p-4 flex flex-col justify-between">
+            <div className="bg-white shadow-md rounded-md p-4 flex flex-col justify-between">
               <div className="flex items-center mb-2">
                 <i className="fas fa-cash-register text-sm"></i>
               </div>
@@ -205,7 +206,7 @@ function Dashboard() {
                 <p className="text-xs ">Highest Booked Trip</p>
               </div>
             </div>
-            <div className="bg-[#192458] shadow-md rounded-md p-4 flex flex-col justify-between">
+            <div className="bg-white shadow-md rounded-md p-4 flex flex-col justify-between">
               <div className="flex items-center mb-2">
                 <span className="text-sm font-semibold">$</span>
               </div>
@@ -214,336 +215,192 @@ function Dashboard() {
                 <p className="text-xs ">Total Earning</p>
               </div>
             </div>
-            <div className="bg-[#192458] shadow-md rounded-md p-4 flex flex-col justify-between">
+            <div className="bg-white shadow-md rounded-md p-4 flex flex-col justify-between">
               <div className="flex items-center mb-2">
-                <i className="fas fa-list-ul text-sm"></i>
+                <i className="fa-solid fa-id-card-clip"></i>
               </div>
               <div className="text-right">
                 <p className="font-semibold ">1</p>
-                <p className="text-[9px] ">1 higher from last week</p>
-                <p className="text-xs ">Tickets</p>
+                <p className="text-xs ">Total User</p>
               </div>
             </div>
           </section>
 
-          {/* created trip view */}
-          <section className=" font-serif mt-3 bg-[#192458] shadow-md rounded-md pl-4 py-4">
-            <div className=" overflow-y-auto max-h-[28rem]">
-              <div className="grid grid-cols-4 gap-4 pr-4">
-                {tripData &&
-                  tripData.map((trip, i) => (
-                    <div
-                      key={i}
-                      className="flex justify-between text-white/50 items-center bg-[#212b5f] rounded-xl p-4 flex-1 min-w-[120px]"
-                      onClick={() => {
-                        setTripEdit(true);
-                        setDeleteDestinationView(null);
-                        // Delay setting name slightly so form has time to mount
-                        setTimeout(() => {
-                          setDestinationName(trip.name);
-                        }, 0);
-                      }}
-                    >
-                      <div>
-                        <div className="flex justify-between">
-                          <p className="text-xs font-semibold  mb-1">
-                            {trip.name.charAt(0).toUpperCase() +
-                              trip.name.slice(1)}
-                          </p>
-                          <div
-                            className="bg-black w-10 h-10 relative -top-4 rounded-full flex justify-center items-center cursor-pointer"
-                            aria-label="Project completed icon"
-                          >
-                            <i
-                              className="fa-solid fa-trash text-white/65 text-lg"
-                              onClick={(e) => {
-                                e.stopPropagation(); // 👈 Prevents parent div click
-                                setDeleteDestinationView(trip._id);
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className=" overflow-hidden h-[120px]">
-                          <img src={trip.images[2].url} alt={trip.name} />
-                        </div>
-                      </div>
-
-                      {deleteDestinationView === trip._id && (
-                        <div className="fixed inset-0 w-2/5 top-[40%] left-52 bg-white max-w-5xl h-52 rounded-md z-50 mx-auto">
-                          <div className=" flex flex-col justify-center items-center text-black py-4">
-                            <label className="text-black text-lg font-semibold">
-                              Are you sure you want to delete the Package?
-                            </label>
-
-                            <label htmlFor={trip.name}>
-                              Destination Name:{" "}
-                              <span className="text-green-700">
-                                {trip.name.charAt(0).toUpperCase() +
-                                  trip.name.slice(1)}
-                              </span>
-                            </label>
-
-                            <div className="pt-5">
-                              <button
-                                className=" text-red-500 bg-slate-800 rounded-md shadow-md px-3 py-1 focus:outline-none hover:scale-105  transition duration-300 ease-in-out"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteDestination(trip._id);
-                                }}
-                              >
-                                Delete
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation(); // 🔥 prevents card's editTrip from firing
-                                  setDeleteDestinationView(null); // hide confirmation
-                                }}
-                                className="ml-4 text-red-500 bg-slate-800 rounded-md shadow-md px-3 py-1 focus:outline-none hover:scale-105  transition duration-300 ease-in-out"
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+          {/* booking Schedule and booking bar chart */}
+          <div className="flex gap-6 mb-4">
+            <div
+              className="w-[640px] h-[400px] px-8 py-3 rounded-sm bg-white"
+              style={{
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <h2 className="font-serif text-lg font-medium  mb-3">
+                Recent Booking Schedule
+              </h2>
+              <div className="space-y-3 w-full h-[260px] transition-transform duration-500 ease-in-out">
+                {visibleItems.map((trip, index) => (
+                  <div className="flex" key={index}>
+                    <div>
+                      <img
+                        src={trip.image}
+                        alt="tripImage"
+                        className="w-[150px] h-[80px] overflow-hidden rounded-md"
+                      />
                     </div>
-                  ))}
-              </div>
-            </div>
-          </section>
-
-          {tripEdit && (
-            // <div className=" absolute font-serif top-0 bg-white shadow-md rounded-md p-4 z-50">
-            <div className="relative -top-2/4 bg-white rounded-md max-w-5xl mx-auto">
-              {/* <!-- Close button top right --> */}
-              <div className="border-b p-2">
-                <button
-                  onClick={() => setTripEdit(false)}
-                  aria-label="Close"
-                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black bg-opacity-70 flex items-center justify-center text-white text-xl hover:bg-opacity-90 transition"
-                >
-                  <i className="fas fa-times"></i>
-                </button>
-
-                {/* <!-- Top filter section --> */}
-                <div className="flex items-center justify-center space-x-6 text-xs text-gray-600 font-semibold select-none">
-                  <label
-                    htmlFor="label"
-                    className="font-serif text-lg font-bold text-green-700"
-                  >
-                    Edit Trip
-                  </label>
-                </div>
-              </div>
-
-              {/* <!-- Package Name tabs --> */}
-              <div className="flex justify-between space-x-3 py-2 px-4 text-xs font-semibold">
-                <button className="bg-[#00a88f] text-white font-serif rounded px-3 py-1.5 border border-[#00a88f] focus:outline-none">
-                  Mustang
-                </button>
-              </div>
-
-              <form
-                onSubmit={handleSubmit(editDestinationDetails)}
-                className=" text-black px-4 rounded-md w-full"
-              >
-                <label
-                  htmlFor="image"
-                  className="block text-sm font-medium mb-1 font-serif"
-                >
-                  Add Images <span className="text-red-600">*</span>
-                </label>
-
-                <Controller
-                  name="images"
-                  control={control}
-                  rules={{ required: "Please select a file." }}
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <>
-                      <div
-                        className="border border-dotted bg-slate-50 border-slate-900 rounded-md h-16 flex justify-center items-center cursor-pointer hover:border-white transition"
-                        onClick={handleBrowseClick}
+                    <div className="px-3 flex flex-col gap-[3px]">
+                      <h2 className="font-serif text-base font-semibold">
+                        {trip.destination}
+                      </h2>
+                      <p className="font-serif w-full">{trip.userName}</p>
+                      <label className="text-sm font-serif" htmlFor="people">
+                        {trip.people} people
+                      </label>
+                    </div>
+                    <div className="relative ml-auto flex justify-center items-center">
+                      <label
+                        htmlFor="tripDuration"
+                        className="bg-green-700 p-2 rounded-md text-white font-serif font-medium md:ml-44"
                       >
-                        <span className="text-black font-serif text-xs">
-                          {value && value.length > 0
-                            ? `${value.length} file selected`
-                            : "Drag & Drop your files or Browser"}
-                        </span>
-                        <input
-                          type="file"
-                          multiple
-                          ref={fileInputRef}
-                          className="hidden"
-                          onChange={(e) => {
-                            const files = Array.from(e.target.files);
-                            onChange(files); // this updates the RHF value
-                          }}
-                        />
-                      </div>
-                      {error && (
-                        <p className="text-red-500 text-xs mt-1">
-                          {error.message}
-                        </p>
-                      )}
-                    </>
-                  )}
-                />
-
-                <div className="flex flex-col gap-3">
-                  {/* <!-- Destination Name --> */}
-                  <div className="hidden">
-                    <label
-                      htmlFor="destination name"
-                      className="font-medium text-sm font-serif mb-1"
-                    >
-                      Destination Name :
-                    </label>
-                    <input {...register("name", { required: true })} />
-                  </div>
-
-                  {/* <!-- Description --> */}
-                  <div className="mt-2">
-                    <label
-                      htmlFor="description"
-                      className="block font-medium text-sm font-serif mb-1"
-                    >
-                      Description <span className="text-red-600">*</span>
-                    </label>
-                    <textarea
-                      {...register("description", { required: true })}
-                      className="w-full p-2 border border-gray-300 bg-slate-50 hover:outline-none text-gray-900 placeholder-gray-400 placeholder:text-xs placeholder:font-serif focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 rounded-md resize-none break-words"
-                      rows="2"
-                      placeholder="Write your description..."
-                    ></textarea>
-                    {errors.description && (
-                      <p className="text-red-500 text-xs mt-1">
-                        please write the description
-                      </p>
-                    )}
-                  </div>
-
-                  {/* <!-- Price --> */}
-                  <div className="flex items-center gap-x-14 ">
-                    <label
-                      htmlFor="price"
-                      className="font-medium text-sm font-serif mb-1"
-                    >
-                      Price :
-                    </label>
-                    <input
-                      {...register("price", { required: true })}
-                      placeholder="price"
-                      className="w-96 border border-gray-300 rounded-md h-7 placeholder-gray-400 placeholder:text-xs placeholder:font-serif focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                    />
-                    {errors.price && (
-                      <p className="text-red-500 text-xs mt-1">
-                        please enter the price
-                      </p>
-                    )}
-                  </div>
-
-                  {/* <!-- Duration--> */}
-                  <div className="flex gap-x-8">
-                    <label
-                      htmlFor="duration"
-                      className="block font-medium text-sm font-serif mb-1"
-                    >
-                      Duration :
-                    </label>
-                    <input
-                      {...register("duration", { required: true })}
-                      placeholder="Duration"
-                      className="w-96 border border-gray-300 rounded-md h-7 placeholder-gray-400 placeholder:text-xs placeholder:font-serif focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                    />
-                    {errors.duration && (
-                      <p className="text-red-500 text-xs mt-1">
-                        please enter the duration
-                      </p>
-                    )}
-                  </div>
-
-                  {/* <!-- Operated In --> */}
-                  <div className="flex gap-x-3">
-                    <label
-                      htmlFor="operated_in"
-                      className="block font-medium text-sm font-serif mb-1"
-                    >
-                      Operated In :
-                    </label>
-                    <input
-                      {...register("operated_in", { required: true })}
-                      placeholder="Operated In"
-                      className="w-96 border border-gray-300 rounded-md h-7 placeholder-gray-400 placeholder:text-xs placeholder:font-serif focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                    />
-                    {errors.operated_in && (
-                      <p className="text-red-500 text-xs mt-1">
-                        please write the value
-                      </p>
-                    )}
-                  </div>
-
-                  {/* <!-- Age range --> */}
-                  <div className="flex gap-x-6">
-                    <label
-                      htmlFor="age_range"
-                      className="block font-medium text-sm font-serif mb-1"
-                    >
-                      Age Range:
-                    </label>
-                    <input
-                      {...register("age_range", { required: true })}
-                      placeholder="Age Range"
-                      className="w-96 border border-gray-300 rounded-md h-7 placeholder-gray-400 placeholder:text-xs placeholder:font-serif focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                    />
-                    {errors.age_range && (
-                      <p className="text-red-500 text-xs mt-1">
-                        please enter the value
-                      </p>
-                    )}
-                  </div>
-
-                  {/* <!-- type --> */}
-                  <div className="flex gap-x-14">
-                    <label
-                      htmlFor="type"
-                      className="block font-medium text-sm font-serif mb-1"
-                    >
-                      Type :
-                    </label>
-                    <input
-                      {...register("type", { required: true })}
-                      placeholder="Type"
-                      className="w-96 border border-gray-300 rounded-md h-7 placeholder-gray-400 placeholder:text-xs placeholder:font-serif focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                    />
-                    {errors.type && (
-                      <p className="text-red-500 text-xs mt-1">
-                        please enter the type of destination
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* <!-- Bottom buttons --> */}
-                <div className="flex  justify-center mt-8 text-xs font-semibold text-[#00a88f] pb-4">
-                  <button
-                    type="submit"
-                    className="bg-[#00a88f] font-serif text-white text-center rounded px-6 py-2 focus:outline-none hover:bg-[#00806f] transition"
-                  >
-                    Proceed To Edit
-                  </button>
-                  {loader && (
-                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-opacity-50 z-50">
-                      <Spin />
+                        {trip.duration} Days
+                      </label>
                     </div>
-                  )}
-                </div>
-              </form>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-center items-center pt-6 space-x-3">
+                {/* Previous */}
+                <button
+                  type="button"
+                  aria-label="Previous page"
+                  disabled={page <= 1}
+                  onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+                  className={`rounded-md px-4 py-2 focus:outline-none ${
+                    page <= 1
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-[#E5E7EB] text-[#6B7280] hover:bg-[#D1D5DB] focus:ring-2 focus:ring-[#2B2B9B]"
+                  }`}
+                >
+                  <i className="fas fa-chevron-left"></i>
+                </button>
+
+                {/* Next */}
+                <button
+                  type="button"
+                  aria-label="Next page"
+                  disabled={page >= totalPages}
+                  onClick={() =>
+                    setPage((prev) => Math.min(totalPages, prev + 1))
+                  }
+                  className={`rounded-md px-4 py-2 focus:outline-none ${
+                    page * pageSize >= allBookedTrips.length
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-[#E5E7EB] text-[#6B7280] hover:bg-[#D1D5DB] focus:ring-2 focus:ring-[#2B2B9B]"
+                  }`}
+                >
+                  <i className="fas fa-chevron-right"></i>
+                </button>
+              </div>
             </div>
-            // </div>
-          )}
+
+            <BarChart data={bookedTripData} />
+          </div>
+
+          {/* booking review content */}
+          <div className="max-w-[1307px] mx-auto p-6 rounded-md shadow-lg bg-white flex items-center justify-center mb-4">
+            <div className="w-full">
+              <h2 className="font-semibold text-slate-800 text-md font-serif mb-6">
+                Latest Review by Customers
+              </h2>
+
+              <div className="relative flex items-center">
+                {/* Left arrow */}
+                <button
+                  aria-label="Previous"
+                  onClick={handlePrev}
+                  disabled={currentIndex === 0}
+                  className="absolute left-0 z-10 bg-green-900 text-white w-10 h-10 rounded-md flex items-center justify-center"
+                >
+                  <i className="fas fa-arrow-left"></i>
+                </button>
+
+                {/* 🔒 This wrapper hides overflow and sets visible width to exactly 3 cards */}
+                <div
+                  className="overflow-hidden mx-auto"
+                  style={{
+                    width: `${
+                      cardWidth * visibleCards + gap * (visibleCards - 1)
+                    }px`,
+                  }}
+                >
+                  {/* Sliding container */}
+                  <div
+                    className="flex space-x-12 transition-transform duration-500 ease-in-out"
+                    style={{
+                      transform: `translateX(-${
+                        currentIndex * (cardWidth + gap)
+                      }px)`,
+                      willChange: "transform",
+                    }}
+                  >
+                    {rating &&
+                      rating.map((rate) => (
+                        <div
+                          key={rate._id}
+                          className="min-w-[320px] max-w-[320px] font-serif bg-white rounded-xl shadow-md p-6 flex flex-col justify-between border border-transparent"
+                        >
+                          <h2 className="font-semibold font-serif mb-2">
+                            {rate.trip_id.name}
+                          </h2>
+                          <p className="text-gray-500 text-xs leading-relaxed mb-6">
+                            {rate.comments}
+                          </p>
+                          <div className="flex items-center space-x-4">
+                            <img
+                              alt="Portrait"
+                              className="w-12 h-12 rounded-lg object-cover"
+                              src={rate.trip_id.images[0].url}
+                            />
+                            <div className="flex-1">
+                              <p className="text-gray-700 font-semibold text-sm">
+                                {rate.user_id.userName}
+                              </p>
+                              <p className="text-gray-700 italic text-xs">
+                                {rate.user_id.email}
+                              </p>
+                              <Box>
+                                <Rating
+                                  name="hover-feedback"
+                                  value={rate.rating}
+                                  readOnly
+                                  emptyIcon={
+                                    <StarIcon
+                                      style={{ opacity: 0.55 }}
+                                      fontSize="inherit"
+                                    />
+                                  }
+                                />
+                              </Box>
+                            </div>
+                            <i className="fas fa-check-circle text-green-500 text-lg"></i>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
+                {/* Right arrow */}
+                <button
+                  aria-label="Next"
+                  onClick={handleNext}
+                  disabled={currentIndex === maxIndex}
+                  className="absolute right-0 z-10 bg-green-900 text-white w-10 h-10 rounded-md flex items-center justify-center"
+                >
+                  <i className="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

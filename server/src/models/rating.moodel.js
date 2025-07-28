@@ -14,7 +14,7 @@ const ratingScheme = new Schema({
   },
   trip_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Trip",
+    ref: "Destination",
     index: true,
   },
   user_id: {

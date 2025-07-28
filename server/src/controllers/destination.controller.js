@@ -3,11 +3,36 @@ import { Destination } from "../models/destination.model.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { ApiError } from "../utils/apiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import fs from "fs";
 
 const getDestination = asyncHandler(async function (req, res) {
   try {
-    const { name, price, description, duration, age_range, operated_in, type } =
-      req.body;
+    const {
+      name,
+      price,
+      description,
+      duration,
+      age_range,
+      operated_in,
+      type,
+      startDate,
+
+      // hotels,
+    } = req.body;
+    let itinerary = req.body.itinerary;
+
+    // Parse itinerary if sent as a string
+    if (typeof itinerary === "string") {
+      const cleanedItinerary = itinerary.replace(/[\t\n\r]/g, " ");
+      itinerary = JSON.parse(cleanedItinerary);
+    } else if (Array.isArray(itinerary)) {
+      // already parsed
+    } else {
+      throw new ApiError(400, "Invalid itinerary format. JSON parse failed.");
+    }
+
+    console.log("Parsed itinerary type:", typeof itinerary); // should be 'object'
+    console.log("Is itinerary an array:", Array.isArray(itinerary)); // should be true
 
     // empty validation check
     if (
@@ -17,31 +42,75 @@ const getDestination = asyncHandler(async function (req, res) {
       !duration ||
       !age_range ||
       !operated_in ||
-      !type
+      !type ||
+      !startDate ||
+      !itinerary
+      // !hotels
     )
       throw new ApiError(400, "all fields are required!");
 
-    if (!req.files && !req.files.images && req.files.images.length === 0)
-      throw new ApiError(400, "Image file is missing");
-    console.log("whole image file: ", req.files?.images);
-
     // check for image
     const imageLocalPath = [];
-    for (const files of req.files.images) {
-      // upload on cloudinary
-      const photo = await uploadOnCloudinary(files.path);
-      if (!photo)
-        throw new ApiError(
-          400,
-          "file is missing while uploading on cloudinary"
-        );
-      // console.log("photo: ", photo);
-      // console.log(req.files);
-      imageLocalPath.push({ url: photo.url });
-      if (!imageLocalPath) {
-        throw new ApiError(400, "Image file is missing");
-      }
+
+    const mainImages = req.files.filter((file) => file.fieldname === "images");
+    if (mainImages.length === 0) {
+      throw new ApiError(400, "Image file is missing");
     }
+
+    for (const file of mainImages) {
+      const photo = await uploadOnCloudinary(file.path);
+
+      // console.log(req.files);
+      // console.log("photo: ", photo);
+      if (!photo) {
+        throw new ApiError(400, "Error uploading image to Cloudinary");
+      }
+      // ✅ Delete temp file after successful upload
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+      imageLocalPath.push({ url: photo.url });
+    }
+
+    // Parse hotels if sent as JSON string (e.g. from Postman or frontend)
+    // const parsedHotels = JSON.parse(hotels);
+
+    // // Track uploaded image status per hotel
+    // const hotelImageTracker = {};
+
+    // for (const file of req.files) {
+    //   console.log(file);
+    //   const match = file.fieldname.match(/^hotelImages\[(.+?)\]$/);
+    //   if (match) {
+    //     const hotelName = match[1].trim().toLowerCase();
+    //     const matchedHotel = parsedHotels.find(
+    //       (h) => h.name.toLowerCase() === hotelName.toLowerCase()
+    //     );
+    //     if (matchedHotel) {
+    //       if (!matchedHotel.hotelImages) matchedHotel.hotelImages = [];
+    //       const uploaded = await uploadOnCloudinary(file.path);
+
+    //       // ✅ Delete temp file after successful upload
+    //       if (fs.existsSync(file.path)) {
+    //         fs.unlinkSync(file.path);
+    //       }
+
+    //       if (uploaded?.url) {
+    //         matchedHotel.hotelImages.push({ url: uploaded.url });
+    //         // Track that this hotel got at least one image
+    //         hotelImageTracker[hotelName] = true;
+    //       }
+    //     }
+    //   }
+    // }
+
+    // // ✅ After upload loop, validate each hotel has at least one image
+    // for (const hotel of parsedHotels) {
+    //   const hotelKey = hotel.name.trim().toLowerCase();
+    //   if (!hotelImageTracker[hotelKey]) {
+    //     throw new ApiError(400, `Image(s) missing for hotel: ${hotel.name}`);
+    //   }
+    // }
 
     // check destination already exit
     const existedDestination = await Destination.findOne({ name });
@@ -84,6 +153,9 @@ const getDestination = asyncHandler(async function (req, res) {
       age_range,
       operated_in,
       type,
+      startDate,
+      itinerary,
+      // hotels: parsedHotels,
     });
 
     if (!destination)
@@ -111,6 +183,7 @@ const getDestination = asyncHandler(async function (req, res) {
         )
       );
   } catch (error) {
+    console.log(error.message);
     throw new ApiError(500, error.message);
   }
 });

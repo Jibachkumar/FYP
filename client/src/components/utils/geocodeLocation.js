@@ -9,12 +9,13 @@ async function geocodeLocation(destinationName) {
     const response = await fetch(url);
 
     const data = await response.json();
+    // console.log(data);
 
-    if (data) {
-      const { lat, lng } = data.results[0].geometry;
-      return { lat, lng };
+    if (data.results && data.results.length > 0) {
+      return data.results[0].geometry;
     } else {
-      throw new Error("No results found");
+      console.warn("No geocode results for:", destinationName);
+      return { lat: 27.7172, lng: 85.324 }; // or fallback coordinates if desired
     }
   } catch (error) {
     console.error("Geocoding failed:", error);

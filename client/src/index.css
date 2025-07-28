@@ -20,3 +20,15 @@
   padding: 0 4px; /* Adjust as needed */
   margin: 3px; /* Adjust as needed */
 }
+
+.expandable-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+}
+
+.expandable-content.show {
+  max-height: 200px; /* adjust depending on content size */
+  opacity: 1;
+}

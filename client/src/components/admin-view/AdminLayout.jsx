@@ -23,7 +23,7 @@ function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#131D4F] flex">
+    <div className="min-h-screen bg-slate-50 flex">
       <aside className="flex flex-col bg-[#242f66] w-52  select-none fixed h-screen z-10">
         <div className="flex items-center gap-2 px-4 py-[14px] shadow-md">
           <div className="flex text-xl font-mono italic font-extrabold bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 bg-clip-text text-transparent">
@@ -38,7 +38,7 @@ function AdminLayout() {
             to="/admin"
             end
             className={({ isActive }) =>
-              `flex items-center gap-2 px-4 py-2 rounded-lg ${
+              `flex items-center font-mono gap-2 px-4 py-2 rounded-lg ${
                 isActive
                   ? "bg-sky-200 text-white"
                   : " hover:bg-slate-50 text-sky-600"
@@ -64,7 +64,7 @@ function AdminLayout() {
           <NavLink
             to="sales"
             className={({ isActive }) =>
-              `flex items-center gap-2 px-4 py-2 rounded-lg ${
+              `flex items-center gap-2 font-mono px-4 py-2 rounded-lg ${
                 isActive
                   ? "bg-sky-200 text-sky-700"
                   : "text-sky-600 hover:bg-slate-50"
@@ -79,12 +79,12 @@ function AdminLayout() {
             >
               <path d="M3 3h18v2H3V3zm2 4h14v14H5V7zm3 3v4h2v-4H8zm4 0v4h2v-4h-2z" />
             </svg>
-            Sales
+            Bookings
           </NavLink>
           <NavLink
             to="post"
             className={({ isActive }) =>
-              `flex items-center gap-2 px-4 py-2 rounded-lg ${
+              `flex items-center font-sans gap-2 px-4 py-2 rounded-lg ${
                 isActive
                   ? "bg-sky-200 text-purple-700"
                   : "text-purple-600 hover:bg-slate-50"
@@ -102,35 +102,29 @@ function AdminLayout() {
               <rect x="3" y="14" width="18" height="2" rx="1" />
               <rect x="3" y="19" width="18" height="2" rx="1" />
             </svg>
-            POST
+            Trip Management
           </NavLink>
         </div>
       </aside>
       <div className="flex flex-col flex-1 ml-52">
         {/* Top bar */}
-        <div className=" px-4 py-[14px] shadow-md bg-[#192458] sticky top-0 z-10">
+        <div className=" px-4 py-[14px] shadow-md bg-slate-200 sticky top-0 z-10">
           <div className="flex justify-between items-center text-xs text-gray-600 mb-2 select-none">
             <div className="pl-16">
-              <span className=" text-white/50 font-medium text-center font-serif sm:mb-0">
+              <span className=" text-black font-medium text-center font-serif sm:mb-0">
                 Hi {userData.data.user.userName}
               </span>
-              {/* <div className="flex items-center justify-center gap-2 lg:ml-6  bg-[#1f2e7c] rounded-md px-2 text-[10px] font-semibold text-gray-900">
-                <span className="text-white/50">
-                  free trial with all features available
-                </span>
-                <span className="text-red-600 font-semibold">subscription</span>
-              </div> */}
             </div>
             <div className=" flex  gap-4 lg:mr-20">
               <button
                 aria-label="Notifications"
                 className="text-gray-700 hover:text-gray-900"
               >
-                <i className="fas fa-bell text-white/50"></i>
+                <i className="fas fa-bell text-black"></i>
               </button>
               <div
                 aria-label="User menu"
-                className="flex items-center gap-1 text-white/50 hover:text-gray-900"
+                className="flex items-center gap-1 text-black hover:text-gray-900"
               >
                 <i className="fas fa-user"></i>
                 <span className="text-sm font-semibold">

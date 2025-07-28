@@ -11,6 +11,10 @@ const destinationSchema = new Schema({
     type: Number,
     required: true,
   },
+  startDate: {
+    type: Date,
+    required: true,
+  },
   // Store the calculated rating
   averageRating: {
     type: Number,
@@ -43,11 +47,53 @@ const destinationSchema = new Schema({
   type: {
     type: String,
   },
+  // hotels: [
+  //   {
+  //     name: {
+  //       type: String,
+  //       required: true,
+  //     },
+  //     hotelImages: [
+  //       {
+  //         url: {
+  //           type: String,
+  //           _id: false,
+  //         },
+  //       },
+  //     ],
+  //     rooms: [
+  //       {
+  //         type: {
+  //           type: String, // e.g., "single room", "double room"
+  //           required: true,
+  //         },
+  //         price: {
+  //           type: Number,
+  //           required: true,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // ],
+  // ✅ NEW FIELD: Itinerary (array of daily plans)
+  itinerary: [
+    {
+      day: {
+        type: Number,
+        // required: true,
+      },
+      place: {
+        type: String,
+      },
+      title: {
+        type: String,
+      },
+      description: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
-
-//TODO:
-// get destinationDetails
-// when the user search for destination based on that attached specific destination details
-// display result
 
 export const Destination = mongoose.model("Destination", destinationSchema);

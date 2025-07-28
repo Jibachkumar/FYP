@@ -71,6 +71,8 @@ function Package() {
           .openPopup();
       }
 
+      let routingControl;
+
       if (showRoute) {
         // Add Kathmandu marker
         L.marker(kathmandu)
@@ -83,51 +85,54 @@ function Package() {
           )
           .setPopupContent(
             `<div style="
-              white-space: normal;
-              word-wrap: break-word;
-              font-size: 14px;
-              font-family: serif;
-              padding: 2px;
-              text-align: center;
-            ">
-              kathmandu
-            </div>`
+            white-space: normal;
+            word-wrap: break-word;
+            font-size: 14px;
+            font-family: serif;
+            padding: 2px;
+            text-align: center;
+          ">
+            kathmandu
+          </div>`
           )
           .openPopup();
 
-        // Add realistic route line using Leaflet Routing Machine
-        const routingControl = L.Routing.control({
-          waypoints: [
-            L.latLng(kathmandu[0], kathmandu[1]),
-            L.latLng(destination[0], destination[1]),
-          ],
-          lineOptions: {
-            styles: [{ color: "blue", weight: 3 }],
-          },
-          routeWhileDragging: false,
-          addWaypoints: false,
-          draggableWaypoints: false,
-          fitSelectedRoutes: true,
-          show: false, // Hide default routing UI
-          createMarker: () => null,
-        }).addTo(map);
+        try {
+          routingControl = L.Routing.control({
+            waypoints: [
+              L.latLng(kathmandu[0], kathmandu[1]),
+              L.latLng(destination[0], destination[1]),
+            ],
+            lineOptions: {
+              styles: [{ color: "blue", weight: 3 }],
+            },
+            routeWhileDragging: false,
+            addWaypoints: false,
+            draggableWaypoints: false,
+            fitSelectedRoutes: true,
+            show: false,
+            createMarker: () => null,
+          }).addTo(map);
 
-        // Completely remove any UI container
-        document
-          .querySelectorAll(".leaflet-routing-container")
-          .forEach((el) => el.remove());
+          routingControl.on("routingerror", (e) => {
+            console.error("Routing error:", e);
+          });
 
-        // Clean up on unmount
-        return () => {
-          map.remove();
-          routingControl.remove();
-        };
-      } else {
-        return () => {
-          map.remove();
-        };
+          // Remove UI controls
+          document
+            .querySelectorAll(".leaflet-routing-container")
+            .forEach((el) => el.remove());
+        } catch (error) {
+          console.error("Routing setup failed:", error);
+        }
       }
-    }, [lat, lng]);
+
+      // ✅ Cleanup outside of conditionals/try
+      return () => {
+        map.remove();
+        if (routingControl) routingControl.remove();
+      };
+    }, [lat, lng, showRoute, showPopup, popUp, mapId]);
 
     return (
       <div

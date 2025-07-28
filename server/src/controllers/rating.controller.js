@@ -109,4 +109,18 @@ const calculateRating = async (tripId) => {
   }
 };
 
-export { ratingTrip };
+const getTripRating = asyncHandler(async (req, res) => {
+  try {
+    const rating = await Rating.find().populate("user_id").populate("trip_id");
+
+    //console.log(rating);
+    if (!rating) throw new ApiError(500, "Internal Server Error");
+    return res
+      .status(201)
+      .json(new ApiResponse(201, rating, "rating fetched sucessfully"));
+  } catch (err) {
+    throw new ApiError(500, err.message);
+  }
+});
+
+export { ratingTrip, getTripRating };

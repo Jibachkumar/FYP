@@ -1,10 +1,13 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import CheckoutPayment from "../components/CheckoutPayment.jsx";
 import { useDispatch } from "react-redux";
 import { Spin } from "antd";
+import L from "leaflet";
+import "leaflet-routing-machine";
 import { trip } from "../store/tripSlice.js";
+import geocodeLocation from "./utils/geocodeLocation.js";
 
 function ViewTrip() {
   const [data, setData] = useState(null);
@@ -16,6 +19,9 @@ function ViewTrip() {
   const [people, setPeople] = useState(1);
   const [price, setPrice] = useState(0);
   const [pricePerPerson, setPricePerPerson] = useState(0);
+  const [expanded, setExpanded] = useState(null);
+  const [mappedItinerary, setMappedItinerary] = useState([]);
+  const [viewMap, setViewMap] = useState(false);
 
   const peopleRef = useRef(null);
 
@@ -23,7 +29,7 @@ function ViewTrip() {
     setPeople((prev) => prev + 1);
     setPrice((old) => old + pricePerPerson);
 
-    // Add highlight class
+    // Add highlight className
     if (peopleRef.current) {
       peopleRef.current.classList.add(
         "text-green-600",
@@ -52,6 +58,10 @@ function ViewTrip() {
     setCurrentIndex((prev) =>
       prev === data.data.images.length - 1 ? 0 : prev + 1
     );
+  };
+
+  const toggleItem = (id) => {
+    setExpanded((prev) => (prev == id ? null : id));
   };
 
   // fetching Destination
@@ -93,8 +103,199 @@ function ViewTrip() {
     }
   };
 
+  // for Map location coords fetch
+  useEffect(() => {
+    if (!data?.data?.itinerary) return;
+
+    const fetchItineraryCoords = async () => {
+      const itineraryWithCoords = await Promise.all(
+        data.data.itinerary.map(async (item, index) => {
+          const coords = await geocodeLocation(`Nepal, ${item.place}`);
+
+          // Determine mode from title
+          let mode = null;
+          const title = item.title.toLowerCase();
+
+          if (title.includes("drive")) {
+            mode = "🚐";
+          } else if (title.includes("fly")) {
+            mode = "✈️";
+          } else if (title.includes("trek")) {
+            mode = "🚶";
+          } else {
+            mode = "🚐"; // default to drive if none matched
+          }
+
+          return {
+            ...item,
+            coords,
+            day: item.day,
+            mode,
+          };
+        })
+      );
+      setMappedItinerary(itineraryWithCoords);
+    };
+
+    fetchItineraryCoords();
+  }, [data]);
+
+  console.log(mappedItinerary);
+
+  // ✈️, 🚐, 🚶
+  function TripMap({ mapId, myItinerary, w = "455px", h = "100%" }) {
+    const itinerary = myItinerary;
+
+    const coords = itinerary[0].coords;
+
+    useEffect(() => {
+      const map = L.map(mapId).setView([coords.lat, coords.lng], 7);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
+
+      // Group by coordinate string
+      const coordGroups = {};
+
+      // Add numbered markers for each stop
+      itinerary.forEach((stop) => {
+        if (!stop.coords) {
+          console.warn(`Missing coords for Day ${stop.day}: ${stop.place}`);
+        }
+
+        const key = `${stop.coords.lat},${stop.coords.lng}`;
+
+        if (!coordGroups[key]) {
+          coordGroups[key] = {
+            coords: stop.coords,
+            days: [],
+            place: stop.place,
+          };
+        }
+
+        coordGroups[key].days.push(stop.day);
+      });
+
+      // Create one marker per unique location
+      Object.values(coordGroups).forEach((group) => {
+        const { coords, days, place } = group;
+
+        const icon = L.divIcon({
+          html: `
+      <div style="
+        background: #e74c3c;
+        color: white;
+        padding: 4px 4px;
+        border-radius: 1px;
+        font-size: 10px;
+        font-weight: bold;
+        text-align: center;
+        display: inline-block;
+        max-width: 100px;
+        line-height: 1.2;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      ">
+        <div>Day ${days.join(", ")}</div>
+        <div style="font-size: 10px; font-weight: normal;">${place}</div>
+      </div>
+    `,
+          className: "custom-marker",
+          iconAnchor: [20, 20],
+        });
+
+        L.marker([coords.lat, coords.lng], { icon }).addTo(map);
+      });
+
+      for (let i = 1; i < itinerary.length; i++) {
+        const from = itinerary[i - 1];
+        const to = itinerary[i];
+        const mode = to.mode || "🚐";
+        const isDashed = mode === "✈️" || mode === "🚶";
+
+        if (!from.coords || !to.coords) {
+          console.warn(
+            `Skipping route from day ${from.day} to ${to.day} due to missing coords`
+          );
+          continue;
+        }
+
+        if (mode === "🚐") {
+          // Use routing machine only for driving segments
+          L.Routing.control({
+            waypoints: [
+              L.latLng(from.coords.lat, from.coords.lng),
+              L.latLng(to.coords.lat, to.coords.lng),
+            ],
+            lineOptions: {
+              styles: [
+                {
+                  color: "blue",
+                  weight: 2,
+                  dashArray: isDashed ? "6, 8" : null,
+                },
+              ],
+            },
+            routeWhileDragging: false,
+            addWaypoints: false,
+            draggableWaypoints: false,
+            fitSelectedRoutes: false,
+            show: false,
+            createMarker: () => null,
+          }).addTo(map);
+        } else {
+          // Use dashed polyline for flight or walking
+          L.polyline(
+            [
+              [from.coords.lat, from.coords.lng],
+              [to.coords.lat, to.coords.lng],
+            ],
+            {
+              color: "blue",
+              weight: 1,
+              dashArray: "6, 6",
+            }
+          ).addTo(map);
+        }
+
+        // Travel mode emoji in the middle
+        const midLat = (from.coords.lat + to.coords.lat) / 2;
+        const midLng = (from.coords.lng + to.coords.lng) / 2;
+
+        if (mode) {
+          const emojiIcon = L.divIcon({
+            html: `<div style="font-size: 22px;">${mode}</div>`,
+            className: "emoji-marker",
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+          });
+          L.marker([midLat, midLng], { icon: emojiIcon }).addTo(map);
+        }
+      }
+      // Completely remove any UI container
+      document
+        .querySelectorAll(".leaflet-routing-container")
+        .forEach((el) => el.remove());
+
+      return () => map.remove();
+    }, [mapId]);
+
+    return (
+      <div
+        id={mapId}
+        style={{
+          height: `${h}`,
+          width: `${w}`,
+          zIndex: 1,
+          backgroundColor: "#f9fafb",
+          borderRadius: "8px",
+        }}
+      ></div>
+    );
+  }
+
   return (
-    <div className=" mt-12 w-full pb-5 mx-auto bg-slate-50">
+    <div className=" mt-12 w-full pb-5 mx-auto bg-slate-50 scroll-smooth">
       {data ? (
         <div className=" w-full">
           {/* images */}
@@ -118,80 +319,240 @@ function ViewTrip() {
           {/* <!-- Bottom navigation bar --> */}
           <div className="flex flex-wrap justify-between px-[13rem] items-center border-b border-gray-200 bg-gray-50 py-4 text-gray-700">
             <h2 className="font-bold font-serif text-2xl  text-black">
-              {data.data.name.charAt(0).toUpperCase() + data.data.name.slice(1)}
+              {data.data.name.charAt(0).toUpperCase() + data.data.name.slice(1)}{" "}
+              Tour
             </h2>
             <ul className="flex space-x-8 font-serif">
               <li>
                 <a
                   className="text-red-600 border-b-2 border-red-600 pb-[30px]"
-                  href="#"
+                  href="#main-info"
                 >
                   Main Information
                 </a>
               </li>
               <li>
-                <a className="hover:underline" href="#">
+                <a className="hover:underline" href="#cost-includes">
+                  Cost Includes
+                </a>
+              </li>
+              <li>
+                <a className="hover:underline" href="#itinerary">
                   Itinerary
                 </a>
               </li>
 
               <li>
-                <a className="hover:underline" href="#">
-                  Reviews
+                <a className="hover:underline" href="#trip-info">
+                  Trip Information
                 </a>
               </li>
             </ul>
           </div>
 
-          <div className="grid max-w-5xl bg-white mx-auto grid-cols-2 sm:grid-cols-4 gap-24 p-5 mt-5 mb-6 relative">
+          {/* main information */}
+          <div
+            id="main-info"
+            className="max-w-5xl bg-white mx-auto gap-24 p-5 mt-5 mb-6 relative"
+          >
             <div className="absolute top-0 left-0 h-6 w-1.5 bg-[#d0021b]"></div>
-            <div className="bg-white shadow-sm  p-4 flex flex-col items-center text-center">
-              <i className="far fa-clock text-red-600 text-xl mb-1"></i>
-              <p className="text-xs sm:text-sm text-gray-700 font-serif font-semibold">
-                {data.data.duration} days/nights
+            <div className="">
+              <p className="text-[#4a4a4a] font-mono text-sm leading-relaxed mb-2">
+                {data.data.description}.
               </p>
             </div>
-            <div className="bg-white shadow-sm p-4 flex flex-col items-center text-center">
-              <i className="far fa-calendar-alt text-red-600 text-xl mb-1"></i>
-              <p className="text-xs sm:text-sm text-gray-700 font-semibold">
-                Aug-10-2025
-              </p>
-            </div>
-            <div className="bg-white shadow-sm p-4 flex flex-col items-center text-center">
-              <i className="fas fa-box-open text-red-600 text-xl mb-1"></i>
-              <p className="text-xs sm:text-sm text-gray-700 font-semibold">
-                Operated In: {data.data.operated_in}
-              </p>
-            </div>
-            <div className="bg-white shadow-sm p-4 flex flex-col items-center text-center">
-              <i className="far fa-user text-red-600 text-xl mb-1"></i>
-              <p className="text-xs sm:text-sm font-serif text-gray-700 font-semibold">
-                Age: {data.data.age_range}
-              </p>
+            <div className="flex">
+              <div className="w-full">
+                <div className="bg-white p-3 flex gap-x-4">
+                  <i className="far fa-clock text-red-600 text-3xl"></i>
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="duration"
+                      className="text-sm text-slate-700  font-serif font-medium leading-none m-0 p-0"
+                    >
+                      Duration
+                    </label>
+                    <p className="text-xs sm:text-sm text-gray-700 font-serif font-semibold leading-none m-0 p-0">
+                      {data.data.duration} days
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-white p-3 flex gap-x-4">
+                  <i className="far fa-calendar-alt text-red-600 text-3xl"></i>
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="date"
+                      className="text-sm text-slate-700  font-serif font-medium leading-none m-0 p-0"
+                    >
+                      Start Date
+                    </label>
+                    <p className="text-xs sm:text-sm text-gray-700 font-serif font-semibold">
+                      {data.data.startDate.split("T")[0] || 8 / 15 / 2025}
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-white p-3 flex gap-x-5">
+                  <i className="far fa-user text-red-600 text-3xl"></i>
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="age"
+                      className="text-sm text-slate-700  font-serif font-medium leading-none m-0 p-0"
+                    >
+                      Age
+                    </label>
+                    <p className="text-xs sm:text-sm text-gray-700 font-serif font-semibold leading-none m-0 p-0">
+                      {data.data.age_range}
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-white p-3 flex gap-x-4">
+                  <i className="fa-solid fa-location-dot text-red-600 text-3xl"></i>
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="age"
+                      className="text-sm text-slate-700  font-serif font-medium leading-none m-0 p-0"
+                    >
+                      Starting City
+                    </label>
+                    <p className="text-xs sm:text-sm text-gray-700 font-serif font-semibold leading-none m-0 p-0">
+                      Kathmandu
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-white p-3 flex gap-x-4">
+                  <i className="fas fa-box-open text-red-600 text-2xl"></i>
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="operatedIn"
+                      className="text-sm text-slate-700  font-serif font-medium leading-none m-0 p-0"
+                    >
+                      Operated In
+                    </label>
+                    <p className="text-xs sm:text-sm text-gray-700 font-serif font-semibold">
+                      {data.data.operated_in}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="w-full h-[320px]"
+                onClick={() => {
+                  setViewMap(true);
+                }}
+              >
+                {mappedItinerary.length > 0 && (
+                  <TripMap
+                    mapId={`map-route-${mappedItinerary[0]._id}`}
+                    myItinerary={mappedItinerary}
+                  />
+                )}
+              </div>
             </div>
           </div>
 
           {/* info section */}
-          <section className="bg-white max-w-5xl mx-auto w-full p-8 relative">
+          <section
+            id="trip-info"
+            className="bg-white max-w-5xl mx-auto w-full p-8 relative font-serif"
+          >
             <div className="absolute top-0 left-0 h-6 w-1.5 bg-[#d0021b]"></div>
-            <section>
+            {/* Flights & Transfers */}
+            <div>
+              <h3 className="font-bold text-lg mb-2">Flights & Transfers</h3>
+              <ul className="space-y-1">
+                <li className="flex items-start gap-2">
+                  <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>
+                    complimentary arrival, and departure airport transfers by
+                    private car | van
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>
+                    Group airport transfers for Lukla flights by private van
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>
+                    Kathmandu (Ramechhap) - Lukla - Kathmandu (Ramechhap)
+                    flights
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Gears, Guides & Entry Permits */}
+            <div className="mt-4">
+              <h3 className="font-bold text-lg mb-2">
+                Gears, Guides & Entry Permits
+              </h3>
+              <ul className="space-y-1">
+                <li className="flex items-start gap-2">
+                  <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>Two Trek Leaders for the group</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>One Porter for each two trekkers</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>
+                    Individual duffle bag, pair of trekking poles & sleeping bag
+                    per person
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>
+                    Trekking Permits: Sagarmatha National Park fees, Local
+                    Government taxes
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Accommodations & Meals */}
+            <div className="mt-4">
+              <h3 className="font-bold text-lg mb-2">Accommodations & Meals</h3>
+              <ul className="space-y-1">
+                <li className="flex items-start gap-2">
+                  <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>
+                    3 nights 4 star hotel accommodation with breakfast in
+                    Kathmandu
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>
+                    11 nights of mountain lodges accommodation on full board in
+                    the Himalayas
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                  <span>14 breakfasts, 11 lunches & 14 dinner</span>
+                </li>
+              </ul>
+            </div>
+            {/* <section>
               <h2 className="font-bold  text-lg text-[#d0021b] font-serif mb-3">
-                Main Info
+                Flights & Transfers
               </h2>
-              <p className="text-[#4a4a4a] text-sm font-mono leading-relaxed mb-8">
-                trip offers a diverse experience combining cultural exploration,
-                natural beauty, and adventure, making it a popular destination
-                for travelers. Key highlights include visiting UNESCO World
-                Heritage sites like Kathmandu Durbar Square and Pashupatinath
-                Temple, experiencing the tranquil beauty of Pokhara, and
-                engaging in wildlife encounters at Chitwan National Park. Many
-                tours also include trekking opportunities and opportunities to
-                learn about Nepali culture and traditions.
-              </p>
+              <div className="flex">
+                <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
+                <p className="text-[#4a4a4a] mt-1 text-sm font-mono leading-relaxed mb-8">
+                  complimentary arrival, and departure airport transfers by
+                  private car | van
+                </p>
+              </div>
             </section>
             <section>
               <h1 className="font-bold text-lg font-serif text-[#d0021b] mb-4">
-                Details for {data.data.name} Tour Packages
+                Gears, Guides & Entry Permits
               </h1>
               <p className="text-[#4a4a4a] font-mono text-sm leading-relaxed mb-4">
                 {data.data.description}.
@@ -199,10 +560,11 @@ function ViewTrip() {
             </section>
             <section>
               <h3 className="font-bold text-xl font-serif text-[#d0021b] mb-4">
-                Tour Inclusions and Exclusions
+                Accommodations & Meals
               </h3>
               <ul className="text-[#4a4a4a] font-serif text-sm leading-relaxed list-disc list-inside space-y-1">
                 <li>
+                  <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
                   Expore Nepal can help you plan and book trips and manage your
                   itineraries
                 </li>
@@ -210,11 +572,75 @@ function ViewTrip() {
                 <li>include food and hotel.</li>
                 <li>Entrance fee.</li>
               </ul>
-            </section>
+            </section> */}
+          </section>
+
+          {/* Itinerary details */}
+          <section
+            id="itinerary"
+            className="bg-white max-w-5xl mt-4 mx-auto w-full p-8 font-serif relative"
+          >
+            <div className="absolute top-0 left-0 h-6 w-1.5 bg-[#d0021b]"></div>
+
+            <ul className="space-y-3 text-[#222222] font-serif text-base font-semibold relative z-10">
+              {data?.data?.itinerary?.map((item, index) => {
+                const isFirst = index === 0;
+                const isLast = index === data.data.itinerary.length - 1;
+
+                return (
+                  <li key={index} className="relative flex gap-3 items-start">
+                    {/* Icon stays in fixed position */}
+                    {isFirst && (
+                      <div className="relative">
+                        <i className="fas fa-map-marker-alt text-[#f26a4b] z-20"></i>
+                      </div>
+                    )}
+                    {!isFirst && !isLast && (
+                      <div className="relative -left-[2px]">
+                        <i className="far fa-circle text-[#f26a4b] z-20"></i>
+                      </div>
+                    )}
+                    {isLast && (
+                      <div className="relative">
+                        <i className="fas fa-flag text-[#f26a4b] z-20"></i>
+                      </div>
+                    )}
+                    {/* Timeline vertical line (below icon only, not overlapping) */}
+                    {!isLast && (
+                      <span className="absolute top-4 left-[5px] w-px h-full bg-[#f26a4b] z-0"></span>
+                    )}
+
+                    {/* Text and expanding content stack vertically */}
+                    <div key={item._id} className="flex flex-col">
+                      <button
+                        onClick={() => toggleItem(item._id)}
+                        className="text-left focus:outline-none "
+                      >
+                        <strong>{item.day}:</strong> {item.title}
+                      </button>
+                      {expanded === item._id && (
+                        <p
+                          className={`transition-all duration-700 ease-in-out overflow-hidden mt-1 text-xs font-mono text-gray-500 ${
+                            expanded === item._id
+                              ? "max-h-[1000px] opacity-100"
+                              : "max-h-0 opacity-0"
+                          }`}
+                        >
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </section>
 
           {/* booking details */}
-          <section className="bg-white max-w-5xl mt-4 mx-auto w-full p-8 font-serif relative">
+          <section
+            id="cost-includes"
+            className="bg-white max-w-5xl mt-4 mx-auto w-full p-8 font-serif relative"
+          >
             <div className="absolute top-0 left-0 h-6 w-1.5 bg-[#d0021b]"></div>
             <h2 className="text-gray-900 font-semibold text-lg mb-3">
               Price details
@@ -338,6 +764,29 @@ function ViewTrip() {
                   >
                     <i className="fas fa-chevron-right text-base"></i>
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {viewMap && (
+            <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 flex items-center justify-center z-10">
+              <div className="relative bg-white rounded-lg shadow-lg ">
+                <button
+                  onClick={() => setViewMap(false)}
+                  className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-2 py-1 text-xs z-50"
+                >
+                  ✕ Close
+                </button>
+                <div className="max-w-5xl h-[600px]">
+                  {mappedItinerary.length > 0 && (
+                    <TripMap
+                      mapId={`modal-map-route-full"`}
+                      myItinerary={mappedItinerary}
+                      w="64rem"
+                      h="600px"
+                    />
+                  )}
                 </div>
               </div>
             </div>
