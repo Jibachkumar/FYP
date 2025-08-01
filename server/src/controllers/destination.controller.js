@@ -129,6 +129,8 @@ const getDestination = asyncHandler(async function (req, res) {
       existedDestination.operated_in = operated_in;
       existedDestination.type = type;
       existedDestination.description = description;
+      existedDestination.startDate = startDate;
+      existedDestination.itinerary = itinerary;
 
       await existedDestination.save();
 

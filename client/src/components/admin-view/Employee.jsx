@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useTripData } from "../hooks/useTripData";
 import { Spin } from "antd";
@@ -36,7 +36,13 @@ function post() {
       age_range: "",
       description: "",
       type: "",
+      itinerary: [{ day: "", place: "", title: "", description: "" }],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "itinerary",
   });
 
   useEffect(() => {
@@ -60,6 +66,9 @@ function post() {
     formData.append("age_range", data.age_range);
     formData.append("operated_in", data.operated_in);
     formData.append("type", data.type);
+    formData.append("startDate", data.startDate);
+    formData.append("itinerary", JSON.stringify(data.itinerary));
+
     // ✅ Append multiple files
     if (data.images && data.images.length > 0) {
       Array.from(data.images).forEach((file) => {
@@ -96,6 +105,8 @@ function post() {
           age_range: "",
           operated_in: "",
           type: "",
+          startDate: "",
+          itinerary: "",
         });
       }
     } catch (error) {
@@ -140,6 +151,8 @@ function post() {
     formData.append("age_range", data.age_range);
     formData.append("operated_in", data.operated_in);
     formData.append("type", data.type);
+    formData.append("startDate", data.startDate);
+    formData.append("itinerary", JSON.stringify(data.itinerary));
     // ✅ Append multiple files
     for (let i = 0; i < data.images.length; i++) {
       formData.append("images", data.images[i]);
@@ -159,6 +172,7 @@ function post() {
       }
 
       const tripData = await response.json();
+      console.log("created package data: ", tripData);
 
       if (tripData) {
         toast.success(tripData.message);
@@ -264,17 +278,60 @@ function post() {
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
               />
             </div>
-            <div>
+          </div>
+          <div className="mb-4 h-[11rem] overflow-y-auto">
+            <div className="flex">
               <label for="itinerary" className="block font-semibold mb-1">
                 Itinerary
               </label>
-              <input
-                {...register("itinerary", { required: true })}
-                type="text"
-                placeholder="itinerary"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-              />
+              <button
+                type="button"
+                onClick={() =>
+                  append({ day: "", place: "", title: "", description: "" })
+                }
+                className="btn btn-outline text-xl font-bold text-blue-900 -mt-3 "
+              >
+                +
+              </button>
             </div>
+
+            {fields.map((field, index) => (
+              <div key={field.id}>
+                <input
+                  {...register(`itinerary.${index}.day`, {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
+                  type="number"
+                  placeholder="Day"
+                  className="w-[18.5rem] mr-[1rem] border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                />
+                <input
+                  {...register(`itinerary.${index}.place`, {
+                    required: false,
+                  })}
+                  type="text"
+                  placeholder="Place"
+                  className="w-[18.5rem] mr-[1rem] border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                />
+                <input
+                  {...register(`itinerary.${index}.title`, {
+                    required: true,
+                  })}
+                  type="text"
+                  placeholder="Title"
+                  className="w-[18.5rem] border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                />
+                <textarea
+                  {...register(`itinerary.${index}.description`, {
+                    required: true,
+                  })}
+                  placeholder="Description"
+                  className="lg:w-[38rem] mt-2 w-full p-2 border border-gray-300 hover:outline-none text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 rounded-md resize-none break-words"
+                  rows="4"
+                />
+              </div>
+            ))}
           </div>
           <div className="mb-4">
             <label className="block font-semibold mb-1">Image</label>
@@ -337,7 +394,7 @@ function post() {
               tripData.map((trip, i) => (
                 <div
                   key={i}
-                  className="flex justify-between text-white/50 items-center bg-[#212b5f] rounded-xl p-4 flex-1 min-w-[120px]"
+                  className="flex justify-between text-blue-700 items-center border rounded-xl p-4 flex-1 min-w-[120px]"
                   onClick={() => {
                     setTripEdit(true);
                     setDeleteDestinationView(null);
@@ -365,8 +422,12 @@ function post() {
                         />
                       </div>
                     </div>
-                    <div className=" overflow-hidden h-[120px]">
-                      <img src={trip.images[2].url} alt={trip.name} />
+                    <div className=" overflow-hidden h-[120px] rounded-md">
+                      <img
+                        src={trip.images[2].url}
+                        alt={trip.name}
+                        className="overflow-hidden"
+                      />
                     </div>
                   </div>
 
@@ -414,7 +475,7 @@ function post() {
         </div>
         {tripEdit && (
           // <div className=" absolute font-serif top-0 bg-white shadow-md rounded-md p-4 z-50">
-          <div className="absolute -mt-[29rem] bg-white border rounded-xl w-3xl left-1/2 -translate-x-1/2">
+          <div className="absolute -mt-[35rem] bg-slate-100 border rounded-2xl w-3xl left-1/2 -translate-x-1/2">
             {/* <!-- Close button top right --> */}
             <div className="border-b p-2">
               <button
@@ -610,11 +671,88 @@ function post() {
                       </p>
                     )}
                   </div>
+
+                  {/* <!-- startDate --> */}
+                  <div className="flex gap-x-7">
+                    <label
+                      for="date"
+                      className="block font-medium text-sm font-serif mb-1"
+                    >
+                      Start Date.
+                    </label>
+                    <input
+                      {...register("startDate", { required: true })}
+                      type="text"
+                      placeholder="startDate"
+                      className="w-60 border border-gray-300 rounded-md h-7 placeholder-gray-400 placeholder:text-xs placeholder:font-serif focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                    />
+                  </div>
+                </div>
+                {/* <!-- itinerary --> */}
+                <div className="h-[8rem] overflow-y-auto">
+                  <div className="flex">
+                    <label for="itinerary" className="block font-semibold mb-1">
+                      Itinerary
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        append({
+                          day: "",
+                          place: "",
+                          title: "",
+                          description: "",
+                        })
+                      }
+                      className="btn btn-outline text-xl font-bold text-blue-900 -mt-3 "
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div>
+                    {fields.map((field, index) => (
+                      <div key={field.id}>
+                        <input
+                          {...register(`itinerary.${index}.day`, {
+                            required: true,
+                            valueAsNumber: true,
+                          })}
+                          type="number"
+                          placeholder="Day"
+                          className="w-40 mr-[1rem] border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                        />
+                        <input
+                          {...register(`itinerary.${index}.place`, {
+                            required: false,
+                          })}
+                          type="text"
+                          placeholder="Place"
+                          className="w-40 mr-[1rem] border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                        />
+                        <input
+                          {...register(`itinerary.${index}.title`, {
+                            required: true,
+                          })}
+                          type="text"
+                          placeholder="Title"
+                          className="w-40 border border-gray-300 rounded-md px-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                        />
+                        <textarea
+                          {...register(`itinerary.${index}.description`, {
+                            required: true,
+                          })}
+                          placeholder="Description"
+                          className="w-full p-2 mt-1 border border-gray-300 bg-slate-50 hover:outline-none text-gray-900 placeholder-gray-400 placeholder:text-xs placeholder:font-serif focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 rounded-md resize-none break-words"
+                          rows="2"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* <!-- Bottom buttons --> */}
-              <div className="flex  justify-center mt-8 text-xs font-semibold text-[#00a88f] pb-4">
+              <div className="flex  justify-center mt-4 text-xs font-semibold text-[#00a88f] pb-4">
                 <button
                   type="submit"
                   className="bg-[#00a88f] font-serif text-white text-center rounded px-6 py-2 focus:outline-none hover:bg-[#00806f] transition"

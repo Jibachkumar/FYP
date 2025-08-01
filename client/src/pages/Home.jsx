@@ -219,7 +219,8 @@ function Home() {
       </div>
 
       {/*  2nd section  */}
-      <div className="bg-[#f9f7f0]">
+      {/* bg-[#f9f7f0] */}
+      <div className="bg-slate-50">
         <h1
           className="text-5xl font-extrabold text-gray-800 text-center pt-4"
           style={{ fontFamily: "'Dancing Script', cursive" }}
@@ -274,7 +275,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="bg-[#123458] relative -top-24 font-serif ml-auto lg:right-[357px] z-10 text-white p-8 max-w-[600px]">
+        {/* <div className="bg-[#123458] relative -top-24 font-serif ml-auto lg:right-[150px] z-10 text-white p-8 max-w-[600px]">
           <h1 className="font-extrabold text-xl leading-tight mb-4">
             Customize your Trip and book trip package
           </h1>
@@ -301,7 +302,7 @@ function Home() {
               <path d="M9 18l6-6-6-6" />
             </svg>
           </button>
-        </div>
+        </div> */}
 
         {/* Policy writing  */}
         <div className=" relative -top-16 z-10">
@@ -380,7 +381,7 @@ function Home() {
         </div>
 
         {/* <!-- Large yellow circle top left --> */}
-        <div className="relative -top-[39rem] left-10 w-40 h-40 rounded-full bg-[#e6a600] "></div>
+        <div className="relative -top-[25rem] left-28 w-40 h-40 rounded-full bg-[#e6a600] "></div>
 
         {/* <!-- Large green circle bottom right --> */}
         <div className="relative -top-[25rem] -right-[34rem] w-40 h-40 rounded-full bg-[#3adba1]"></div>

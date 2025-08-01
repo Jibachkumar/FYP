@@ -616,7 +616,7 @@ function ViewTrip() {
                         onClick={() => toggleItem(item._id)}
                         className="text-left focus:outline-none "
                       >
-                        <strong>{item.day}:</strong> {item.title}
+                        <strong>Day {item.day}:</strong> {item.title}
                       </button>
                       {expanded === item._id && (
                         <p

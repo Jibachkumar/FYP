@@ -90,22 +90,6 @@ const RevenueBarChart = ({ timePeriod = "monthly", data }) => {
     ],
   };
 
-  const yearlyData = {
-    labels: ["2020", "2021", "2022", "2023"],
-    datasets: [
-      {
-        label: "Annual Revenue (USD)",
-        data: [185000, 210000, 245000, 275000],
-        backgroundColor: "rgba(75, 192, 192, 0.7)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-        barThickness: 10, // Set the thickness of the bars
-        categoryPercentage: 0.1,
-        barPercentage: 0.1,
-      },
-    ],
-  };
-
   const options = {
     responsive: true,
     plugins: {
