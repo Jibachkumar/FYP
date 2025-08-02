@@ -8,6 +8,7 @@ function Dashboard() {
   const [data, setTripData] = useState([]);
   const [bookedTripData, setBookedTripData] = useState([]);
   const [rating, setRating] = useState([]);
+  const [user, setUser] = useState([]);
   const [page, setPage] = useState(1);
   const pageSize = 3;
 
@@ -86,8 +87,8 @@ function Dashboard() {
       destination: b.trip?.name,
       duration: b.trip?.duration,
       booked: "Package Booked",
-      people: b.trip.people || 2,
-      image: b.trip.images[0].url,
+      people: b.trip?.people || 2,
+      image: b.trip?.images[0]?.url,
     }));
 
     // Normalize trips
@@ -97,7 +98,7 @@ function Dashboard() {
       destination: t.name || t.destination,
       duration: t.duration,
       image: t.image[0],
-      people: t.people,
+      people: t?.people || 2,
       booked: "Customize Trip",
     }));
 
@@ -147,6 +148,38 @@ function Dashboard() {
     };
 
     fetchRating();
+  }, []);
+
+  // fetch user
+  useEffect(() => {
+    const fetchUser = async () => {
+      // setLoader(true);
+      try {
+        const response = await fetch(
+          "http://localhost:7000/api/v1/users/alluser",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log(data.data.length);
+        setUser(data.data.length);
+      } catch (error) {
+        console.log(error.message);
+      } finally {
+        // setLoader(false);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   return (
@@ -220,7 +253,7 @@ function Dashboard() {
                 <i className="fa-solid fa-id-card-clip"></i>
               </div>
               <div className="text-right">
-                <p className="font-semibold ">1</p>
+                <p className="font-semibold ">{user}</p>
                 <p className="text-xs ">Total User</p>
               </div>
             </div>
@@ -229,7 +262,7 @@ function Dashboard() {
           {/* booking Schedule and booking bar chart */}
           <div className="flex gap-6 mb-4">
             <div
-              className="w-[640px] h-[400px] px-8 py-3 rounded-sm bg-white"
+              className="w-[640px] h-[400px] px-2  py-3 rounded-sm bg-white"
               style={{
                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
               }}
@@ -237,7 +270,7 @@ function Dashboard() {
               <h2 className="font-serif text-lg font-medium  mb-3">
                 Recent Booking Schedule
               </h2>
-              <div className="space-y-3 w-full h-[260px] transition-transform duration-500 ease-in-out">
+              <div className="space-y-3  w-full h-[260px] transition-transform duration-500 ease-in-out">
                 {visibleItems.map((trip, index) => (
                   <div className="flex" key={index}>
                     <div>
@@ -350,7 +383,7 @@ function Dashboard() {
                           className="min-w-[320px] max-w-[320px] font-serif bg-white rounded-xl shadow-md p-6 flex flex-col justify-between border border-transparent"
                         >
                           <h2 className="font-semibold font-serif mb-2">
-                            {rate.trip_id.name}
+                            {rate.trip_id?.name}
                           </h2>
                           <p className="text-gray-500 text-xs leading-relaxed mb-6">
                             {rate.comments}

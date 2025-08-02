@@ -424,7 +424,7 @@ function post() {
                     </div>
                     <div className=" overflow-hidden h-[120px] rounded-md">
                       <img
-                        src={trip.images[2].url}
+                        src={trip.images[0].url}
                         alt={trip.name}
                         className="overflow-hidden"
                       />

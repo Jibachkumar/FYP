@@ -29,7 +29,7 @@ const userPayment = asyncHandler(async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.origin}/success`,
+      success_url: `${req.headers.origin}/paymentsuccess`,
       cancel_url: `${req.headers.origin}/cancel`,
     });
 

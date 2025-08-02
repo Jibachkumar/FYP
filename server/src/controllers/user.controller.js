@@ -9,11 +9,12 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
   const { userName, phoneNumber, email, password } = req.body;
+  console.log(userName, email, phoneNumber, password);
 
   //  validation - field empty, username/email unique
   if (
     [userName, email, password].some(
-      (field) => typeof field === "string" && field?.trim() === " "
+      (field) => typeof field === "string" && field?.trim() === ""
     )
   ) {
     throw new ApiError(400, "All fields are required");
@@ -352,6 +353,18 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "Cover image updated successfully"));
 });
 
+const getUser = asyncHandler(async (req, res) => {
+  try {
+    const data = await User.find();
+    //console.log(data);
+    if (!data) throw new ApiError(500, "Internal Server Error");
+    return res
+      .status(201)
+      .json(new ApiResponse(201, data, "Destination fetched sucessfully"));
+  } catch (err) {
+    throw new ApiError(500, err.message);
+  }
+});
 export {
   registerUser,
   loginUser,
@@ -362,4 +375,5 @@ export {
   updateAccountDetails,
   updateUserAvatar,
   updateUserCoverImage,
+  getUser,
 };
