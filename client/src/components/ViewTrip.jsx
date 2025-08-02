@@ -387,7 +387,7 @@ function ViewTrip() {
                       Start Date
                     </label>
                     <p className="text-xs sm:text-sm text-gray-700 font-serif font-semibold">
-                      {data.data.startDate.split("T")[0] || 8 / 15 / 2025}
+                      {data.data?.startDate?.split("T")[0] || 8 / 15 / 2025}
                     </p>
                   </div>
                 </div>
@@ -463,53 +463,33 @@ function ViewTrip() {
                 <li className="flex items-start gap-2">
                   <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
                   <span>
-                    complimentary arrival, and departure airport transfers by
+                    complimentary arrival, and departure airport transfers and
                     private car | van
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
-                  <span>
-                    Group airport transfers for Lukla flights by private van
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
-                  <span>
-                    Kathmandu (Ramechhap) - Lukla - Kathmandu (Ramechhap)
-                    flights
-                  </span>
+                  <span>Group airport transfers and private van</span>
                 </li>
               </ul>
             </div>
 
             {/* Gears, Guides & Entry Permits */}
             <div className="mt-4">
-              <h3 className="font-bold text-lg mb-2">
-                Gears, Guides & Entry Permits
-              </h3>
+              <h3 className="font-bold text-lg mb-2">Guides & Entry Permits</h3>
               <ul className="space-y-1">
                 <li className="flex items-start gap-2">
                   <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
-                  <span>Two Trek Leaders for the group</span>
+                  <span>one Trek Leaders for the group</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
-                  <span>One Porter for each two trekkers</span>
+                  <span>One Porter for each trekkers</span>
                 </li>
+
                 <li className="flex items-start gap-2">
                   <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
-                  <span>
-                    Individual duffle bag, pair of trekking poles & sleeping bag
-                    per person
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <i class="fa-regular fa-circle-check text-red-700 text-lg"></i>
-                  <span>
-                    Trekking Permits: Sagarmatha National Park fees, Local
-                    Government taxes
-                  </span>
+                  <span>Trekking and tour Permits: Local Government taxes</span>
                 </li>
               </ul>
             </div>
@@ -521,20 +501,12 @@ function ViewTrip() {
                 <li className="flex items-start gap-2">
                   <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
                   <span>
-                    3 nights 4 star hotel accommodation with breakfast in
-                    Kathmandu
+                    3 nights 4 star hotel accommodation with breakfast
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
-                  <span>
-                    11 nights of mountain lodges accommodation on full board in
-                    the Himalayas
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <i className="fa-regular fa-circle-check text-red-700 text-lg"></i>
-                  <span>14 breakfasts, 11 lunches & 14 dinner</span>
+                  <span>breakfasts, lunches & dinner</span>
                 </li>
               </ul>
             </div>
